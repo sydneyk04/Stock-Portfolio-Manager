@@ -1,0 +1,8 @@
+1. Works on the Chrome web browser and mobile devices
+2. The application must be secure and protect confidentiality of users’ data.
+3. Users must be able to create an account in the system
+4. Must be implemented as a client-server based web application
+
+During the sprint planning meeting, we discussed the complexity of each feature. Since the home, login, and signup pages are more basic features compared to the others, we decided to start with those for the first sprint. For the other five features, we plan to research ways to implement them first before adding them to to future sprint backlogs.
+
+Meeting participants: Sarah Cheung, Kendall Mayo, Nandhakumar Saravana, Jackson Sun
