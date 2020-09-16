@@ -1,0 +1,4 @@
+1. Works on the Chrome web browser and mobile devices
+2. The application must be secure and protect confidentiality of users’ data.
+3. Users must be able to create an account in the system
+4. Must be implemented as a client-server based web application
