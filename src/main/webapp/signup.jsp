@@ -5,12 +5,12 @@
 	</head>
 	<body>
 		<h1>create an account now!</h1>
-		<div class = "container">
-			<input id = "email" class = "input" type="text" id="email" placeholder="email">
-			<input id = "password" class = "input" type="password" id="password" placeholder="password">
-			<input id = "password2" class = "input" type="password" id="password" placeholder="password">
+		<form class = "container" action="/signup" method="post">
+			<input id = "email" class = "input" type="text" placeholder="email">
+			<input id = "password" class = "input" type="password" placeholder="password">
+			<input id = "password2" class = "input" type="password" placeholder="password">
 			<button class = "signup" onclick="signUp()">sign up</button>
-		</div>
+		</form>
 
 		<!-- The core Firebase JS SDK is always required and must be listed first -->
 		<!-- <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
