@@ -1,6 +1,3 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
-<!DOCTYPE html>
 <html>
   <head>
     <meta charset="ISO-8859-1">
@@ -12,8 +9,8 @@
       <div class="row">
         <div class="col-md-12">
           <h2>Login</h2>
-          <div id="login-error-msg" div class="alert alert-danger collapse" role="alert">Invalid username and/or password</div>
           <form id="login-form" action="/login" method="post">
+          	<div id="login-error-msg" class="alert alert-danger collapse" role="alert">Invalid username and/or password</div>
             <div class="form-group">
               <label>Username</label>
               <input type="text" name="username" class="form-control" required>
@@ -25,7 +22,7 @@
             <div class="form-group">
               <input type="submit" class="btn btn-primary" value="Login" id="login-form-submit" onclick="authenticate()">
             </div>
-            <p>Don't have an account? <a href="signup.html">Signup here</a>.</p>
+            <p>Don't have an account? <a href="signup.jsp">Signup here</a>.</p>
           </form>
         </div>
       </div>
