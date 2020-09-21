@@ -3,12 +3,15 @@ package csci310.servlets;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
@@ -19,12 +22,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+@WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static String LOGINPG= "/login.jsp";
-	private static String HOMEPG= "/home.jsp";
-	private static HttpServletRequest postRequest;
-	private static HttpServletResponse postResponse;
+	private static String LOGINPG= "login.jsp";
+	private static String HOMEPG= "home.jsp";
+	
+	private HttpSession session;
+	private HttpServletResponse response;
+	private boolean dateFetched = false;
+	private PrintWriter out;
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -35,14 +42,51 @@ public class LoginServlet extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		postRequest = request;
-		postResponse = response;
+		session = request.getSession();
+		this.response = response;
+		out = response.getWriter();
+		dateFetched = false;
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 		
-		authenticate(username, password);
+		try {
+			authenticate(username, password);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 	
+	public boolean authenticate(final String username, final String password) throws InterruptedException {
+		initializeFirebase();
+		final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(username);
+		
+		userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+			@Override
+			public void onDataChange(DataSnapshot snapshot) {
+				if (snapshot.exists() && snapshot.child("password").getValue(String.class).equals(password)) {
+					onAuthenticate(username);
+				}
+				else {
+					onAuthenticate(null);
+				}
+			}
+	
+			@Override
+			public void onCancelled(DatabaseError error) {
+				System.out.println(error.getMessage());
+			}
+		});
+		
+		for (int i = 0; i < 20; ++i) {
+			TimeUnit.SECONDS.sleep(1);
+			if (dateFetched) {
+				break;
+			}
+		}		
+		
+		return true;
+	}
+
 	@SuppressWarnings("deprecation")
 	public FirebaseApp initializeFirebase() {
 		if (FirebaseApp.getApps().isEmpty()) {
@@ -60,43 +104,23 @@ public class LoginServlet extends HttpServlet {
 		return null;
 	}
 	
-	public void authenticate(final String username, final String password) {
-		initializeFirebase();
-		final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(username);
-		
-		userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-			@Override
-			public void onDataChange(DataSnapshot snapshot) {
-				if (snapshot.exists() && snapshot.child("password").getValue(String.class).equals(password)) {
-					onAuthenticate(true);
-				}
-				else {
-					onAuthenticate(false);
-				}
-			}
-	
-			@Override
-			public void onCancelled(DatabaseError error) {
-				System.out.println(error.getMessage());
-			}
-		});
-	}
-
-	public void onAuthenticate(Boolean isAuthenticated) {
+	public void onAuthenticate(String username) {
 		try {
-			if (isAuthenticated) {
-				postResponse.sendRedirect(HOMEPG);
+			dateFetched = true;
+			out = response.getWriter();
+			
+			if (username != null) {
+				System.out.println("login success");
+				response.sendRedirect(HOMEPG);
 			} else {
-				PrintWriter out = postResponse.getWriter();
-				out.println("<script type=\"text/javascript\">");
-				out.println("alert('Username and/or password incorrect');");
-				out.println("$('#login-error-msg').show();");
-				out.println("</script>");
-				System.out.println("fail");
-				postRequest.getRequestDispatcher(LOGINPG).forward(postRequest, postResponse);
+				System.out.println("login fail");
+				session.setAttribute("login_error_message", "Invalid login and/or password");
+				response.sendRedirect(LOGINPG);
 			}
-		} catch (ServletException | IOException e) {
+			out.close();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
+
 }
