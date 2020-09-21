@@ -21,8 +21,8 @@ import com.google.firebase.database.ValueEventListener;
 
 public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static String LOGINPG= "login.jsp";
-	private static String HOMEPG= "home.jsp";
+	private static String LOGINPG= "/login.jsp";
+	private static String HOMEPG= "/home.jsp";
 	private static HttpServletRequest postRequest;
 	private static HttpServletResponse postResponse;
 
@@ -67,10 +67,8 @@ public class LoginServlet extends HttpServlet {
 		userRef.addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot snapshot) {
-				if (snapshot.exists()) {
-					if (snapshot.child("password").getValue(String.class).equals(password)); {
-						onAuthenticate(true);
-					}
+				if (snapshot.exists() && snapshot.child("password").getValue(String.class).equals(password)) {
+					onAuthenticate(true);
 				}
 				else {
 					onAuthenticate(false);
@@ -94,6 +92,7 @@ public class LoginServlet extends HttpServlet {
 				out.println("alert('Username and/or password incorrect');");
 				out.println("$('#login-error-msg').show();");
 				out.println("</script>");
+				System.out.println("fail");
 				postRequest.getRequestDispatcher(LOGINPG).forward(postRequest, postResponse);
 			}
 		} catch (ServletException | IOException e) {
