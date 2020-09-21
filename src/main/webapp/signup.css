@@ -19,10 +19,15 @@ h1 {
 }
 
 .input {
-		width: 70%;
-		padding: 5px;
+	width: 70%;
+	padding: 5px;
   	text-align: center;
   	margin: 10px;
+}
+
+.error{
+	color: red;
+	/*  visibility: hidden;*/
 }
 
 .signup{

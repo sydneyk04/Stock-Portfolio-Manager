@@ -6,10 +6,11 @@
 	<body>
 		<h1>create an account now!</h1>
 		<form class = "container" action="/signup" method="post">
-			<input id = "email" class = "input" type="text" placeholder="email">
-			<input id = "password" class = "input" type="password" placeholder="password">
-			<input id = "password2" class = "input" type="password" placeholder="password">
-			<button class = "signup" onclick="signUp()">sign up</button>
+			<input id = "email" name = "email" class = "input" type="text" placeholder="email">
+			<input id = "password" name = "password" class = "input" type="password" placeholder="password">
+			<input id = "password2" name = "password2" class = "input" type="password" placeholder="password">
+			<div id="error" name = "error"></div>
+			<button class = "signup">sign up</button>
 		</form>
 
 		<!-- The core Firebase JS SDK is always required and must be listed first -->
