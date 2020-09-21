@@ -12,4 +12,12 @@
   	<servlet-name>GreetingServlet</servlet-name>
   	<url-pattern>/greeting</url-pattern>
   </servlet-mapping>
+  <servlet>
+  	<servlet-name>SignUpServlet</servlet-name>
+  	<servlet-class>csci310.servlets.SignUpServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>SignUpServlet</servlet-name>
+  	<url-pattern>/signup</url-pattern>
+  </servlet-mapping>
 </web-app>
