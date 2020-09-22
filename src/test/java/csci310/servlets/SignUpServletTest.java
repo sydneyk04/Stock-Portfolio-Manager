@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Random;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
+
+import com.google.firebase.FirebaseApp;
 
 public class SignUpServletTest extends Mockito {
 	static SignUpServlet servlet;
@@ -31,36 +34,57 @@ public class SignUpServletTest extends Mockito {
     }
 	
 	@Test
+	public void testDoGet() throws IOException, ServletException {	
+		servlet.doGet(request, response);
+	}
+	
+	@Test
+	public void testDoPost() throws IOException, ServletException {		
+		when(request.getParameter("username")).thenReturn("hi");
+		when(request.getParameter("password")).thenReturn("hi");
+		when(request.getParameter("password2")).thenReturn("hi");
+		servlet.doPost(request, response);	
+	}
+	
+	
+	@Test
 	public void testInitializeFirebase() {	
-		assertNotNull(servlet.initializeFireBase());
+		FirebaseApp fb = servlet.initializeFireBase();
+		assertTrue(fb != null);
 	}
 	
 	@Test
 	public void testcheckUserInputs() throws ServletException, IOException {
-		//missing field login
-		Boolean output = servlet.checkUserInputs("johnDoe", "", "", request);
-		assertTrue(output.equals(false));
+//		missing field login
+		String output = servlet.checkUserInputs("johnDoe", "", "");
+		assertTrue(output.equals("Please fill out empty fields."));
 		
 		//passwords do not match
-		Boolean output1 = servlet.checkUserInputs("johnDoe", "test123", "test922929", request);
-		assertTrue(output1.equals(false));
+		String output1 = servlet.checkUserInputs("johnDoe", "test123", "test922929");
+		assertTrue(output1.equals("Please ensure that your passwords match."));
 		
 		//correct login
-		Boolean output2 = servlet.checkUserInputs("johnDoe", "test123", "test123", request);
-		assertTrue(output2.equals(true));
+		String output2 = servlet.checkUserInputs("johnDoe", "test123", "test123");
+		assertTrue(output2 == null);
 	}
 	
 	@Test
 	public void testCreateUser() {
+		//test user that already exists
 		Boolean output = servlet.createUser("johnDoe", "test123");
 		assertTrue(output == true);
+		
+		//test new user
+		Random rand = new Random();
+		char a = (char)(rand.nextInt(26) + 'a');
+		Random rand1 = new Random();
+		char b = (char)(rand1.nextInt(26) + 'a');
+		String user = new StringBuilder().append(a).append(b).toString();
+		Boolean output1 = servlet.createUser(user, "test123");
+		assertTrue(output1 == true);
 	}
 	
-	@Test
-	public void testDoPost() {		
-		
-		
-	}
+	
 
 	
 	

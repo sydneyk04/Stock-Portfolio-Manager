@@ -45,9 +45,13 @@ public class SignUpServlet extends HttpServlet {
 		String password = request.getParameter("password");
 		String password2 = request.getParameter("password2");
 		
-		Boolean check = checkUserInputs(username, password, password2, request);
+		String check = checkUserInputs(username, password, password2);
 		
-		if(check) {
+		if(check != null) {
+			System.out.println("hi");
+			request.getRequestDispatcher("signup.jsp").include(request, response);
+			out.println("<script>document.getElementById('error').innerHTML='" + check + "'; </script>");
+		} else {
 			//Create User
 			Boolean success = createUser(username, password);
 			
@@ -55,25 +59,22 @@ public class SignUpServlet extends HttpServlet {
 				response.sendRedirect("/home.jsp");
 			}
 			//otherwise user tried to make an account with a username that already exists
+			System.out.println(request);
+			System.out.println(response);
 			request.getRequestDispatcher("signup.jsp").include(request, response);
 			out.println("<script>document.getElementById('error').innerHTML='That account already exists! Please try again.'; </script>");
 		}
 		
 	}
 	
-	public Boolean checkUserInputs(String username, String password, String password2, HttpServletRequest request) throws ServletException, IOException {
+	public String checkUserInputs(String username, String password, String password2) {
 		if(username.contentEquals("") || password.contentEquals("") || password2.contentEquals("")) {
-			System.out.println("find blank");
-			request.getRequestDispatcher("signup.jsp").include(request, response);
-			out.println("<script>document.getElementById('error').innerHTML='Please fill out empty fields.'; </script>");
-			return false;
+			return "Please fill out empty fields.";
 		} else if (!password.equals(password2)) {
-			request.getRequestDispatcher("signup.jsp").include(request, response);
-			out.println("<script>document.getElementById('error').innerHTML='Please ensure that your passwords match.'; </script>");
-			return false;
+			return "Please ensure that your passwords match.";
 		}
 		 
-		return true;
+		return null;
 	}
 	
 	public boolean createUser(final String username, final String password) {
