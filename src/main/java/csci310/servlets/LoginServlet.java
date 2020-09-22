@@ -32,13 +32,6 @@ public class LoginServlet extends HttpServlet {
 	private HttpServletResponse response;
 	private boolean dataFetched = false;
 	private PrintWriter out;
-
-	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		response.setStatus(HttpServletResponse.SC_OK);
-		RequestDispatcher dispatcher = request.getRequestDispatcher(LOGINPG);
-		dispatcher.forward(request, response);
-	}
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -56,7 +49,7 @@ public class LoginServlet extends HttpServlet {
 		}
 	}
 	
-	public boolean authenticate(final String username, final String password) throws InterruptedException {
+	public void authenticate(final String username, final String password) throws InterruptedException {
 		initializeFirebase();
 		final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(username);
 		
@@ -85,14 +78,12 @@ public class LoginServlet extends HttpServlet {
 			}
 		});
 		
-		for (int i = 0; i < 20; ++i) {
+		for (int i = 0; i < 30; ++i) {
 			TimeUnit.SECONDS.sleep(1);
 			if (dataFetched) {
 				break;
 			}
 		}		
-		
-		return true;
 	}
 
 	@SuppressWarnings("deprecation")
@@ -112,7 +103,7 @@ public class LoginServlet extends HttpServlet {
 		return null;
 	}
 	
-	public void onAuthenticate(String username) {
+	private void onAuthenticate(String username) {
 		try {
 			dataFetched = true;
 			out = response.getWriter();
