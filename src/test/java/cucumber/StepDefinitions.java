@@ -88,7 +88,7 @@ public class StepDefinitions {
 			e.printStackTrace();
 		}
 		
-		driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/home.jsp");
+		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/home.jsp"));
 		
 	    //throw new io.cucumber.java.PendingException();
 	}
@@ -115,9 +115,10 @@ public class StepDefinitions {
 			e.printStackTrace();
 		}
 		
-		String info = driver.switchTo().alert().getText();
+		//String info = driver.switchTo().alert().getText();
 		
-		//String info = driver.findElement(By.id("login-error-msg")).getText();
+		String info = driver.findElement(By.id("login_error")).getText();
+		
 		
 		assertTrue(info.equalsIgnoreCase(string));
 		
@@ -135,9 +136,11 @@ public class StepDefinitions {
 			e.printStackTrace();
 		}
 		
-		String info = driver.switchTo().alert().getText();
+		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/login.jsp"));
 		
-		assertTrue(info.equalsIgnoreCase(string));
+		//String info = driver.switchTo().alert().getText();
+		
+		//assertTrue(info.equalsIgnoreCase(string));
 		
 	    //throw new io.cucumber.java.PendingException();
 	}
