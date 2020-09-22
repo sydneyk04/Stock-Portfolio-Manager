@@ -30,7 +30,7 @@ public class LoginServlet extends HttpServlet {
 	
 	private HttpSession session;
 	private HttpServletResponse response;
-	private boolean dateFetched = false;
+	private boolean dataFetched = false;
 	private PrintWriter out;
 
 	@Override
@@ -45,7 +45,7 @@ public class LoginServlet extends HttpServlet {
 		session = request.getSession();
 		this.response = response;
 		out = response.getWriter();
-		dateFetched = false;
+		dataFetched = false;
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 		
@@ -74,12 +74,20 @@ public class LoginServlet extends HttpServlet {
 			@Override
 			public void onCancelled(DatabaseError error) {
 				System.out.println(error.getMessage());
+				out.print("server error");
+				session.setAttribute("login_error_message", "Unable to access server");
+				
+				try {
+					response.sendRedirect(LOGINPG);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		});
 		
 		for (int i = 0; i < 20; ++i) {
 			TimeUnit.SECONDS.sleep(1);
-			if (dateFetched) {
+			if (dataFetched) {
 				break;
 			}
 		}		
@@ -106,14 +114,14 @@ public class LoginServlet extends HttpServlet {
 	
 	public void onAuthenticate(String username) {
 		try {
-			dateFetched = true;
+			dataFetched = true;
 			out = response.getWriter();
 			
 			if (username != null) {
-				System.out.println("login success");
+				out.print("login success");
 				response.sendRedirect(HOMEPG);
 			} else {
-				System.out.println("login fail");
+				out.print("login fail");
 				session.setAttribute("login_error_message", "Invalid login and/or password");
 				response.sendRedirect(LOGINPG);
 			}
