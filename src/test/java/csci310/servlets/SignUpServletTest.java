@@ -38,26 +38,26 @@ public class SignUpServletTest extends Mockito {
 	@Test
 	public void testcheckUserInputs() throws ServletException, IOException {
 		//missing field login
-		Boolean output = servlet.checkUserInputs("johnDoe", "", "", printWriter, request, response);
+		Boolean output = servlet.checkUserInputs("johnDoe", "", "");
 		assertTrue(output.equals(false));
 		
 		//passwords do not match
-		Boolean output1 = servlet.checkUserInputs("johnDoe", "test123", "test922929",printWriter, request, response);
+		Boolean output1 = servlet.checkUserInputs("johnDoe", "test123", "test922929");
 		assertTrue(output1.equals(false));
 		
 		//correct login
-		Boolean output2 = servlet.checkUserInputs("johnDoe", "test123", "test123", printWriter, request, response);
+		Boolean output2 = servlet.checkUserInputs("johnDoe", "test123", "test123");
 		assertTrue(output2.equals(true));
 	}
 	
 	@Test
 	public void testCreateUser() {
-		
+		Boolean output = servlet.createUser("johnDoe", "test123");
+		assertTrue(output == true);
 	}
 	
 	@Test
 	public void testDoPost() {		
-		
 		
 		
 	}
