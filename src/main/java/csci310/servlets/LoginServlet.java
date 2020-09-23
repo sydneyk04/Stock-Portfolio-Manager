@@ -72,8 +72,8 @@ public class LoginServlet extends HttpServlet {
 				
 				try {
 					response.sendRedirect(LOGINPG);
-				} catch (IOException e) {
-					e.printStackTrace();
+				} catch (Exception e) {
+					//e.printStackTrace();
 				}
 			}
 		});

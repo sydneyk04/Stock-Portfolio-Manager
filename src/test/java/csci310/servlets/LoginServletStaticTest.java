@@ -18,6 +18,7 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
@@ -31,6 +32,7 @@ import com.google.firebase.database.ValueEventListener;
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(JUnit4.class)
 @PrepareForTest({ FirebaseDatabase.class, FirebaseOptions.class} )
+@PowerMockIgnore("jdk.internal.reflect.*")
 public class LoginServletStaticTest extends Mockito{
  
 	@Mock
@@ -81,7 +83,7 @@ public class LoginServletStaticTest extends Mockito{
 		when(response.getWriter()).thenReturn(out);
 		 
 		doAnswer(new Answer<Void>() {
-			public Void answer(InvocationOnMock invocation) throws Throwable {
+			public Void answer(InvocationOnMock invocation) {
 				ValueEventListener valueEventListener = (ValueEventListener) invocation.getArguments()[0];
 				DatabaseError error = mock(DatabaseError.class);
 				valueEventListener.onCancelled(error);
