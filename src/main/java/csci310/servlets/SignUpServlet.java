@@ -25,9 +25,8 @@ import com.google.firebase.database.ValueEventListener;
 @WebServlet("/signup")
 public class SignUpServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	static HttpServletRequest request;
-	static HttpServletResponse response;
 	static PrintWriter out;
+	Boolean createdUser = false;
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -35,9 +34,8 @@ public class SignUpServlet extends HttpServlet {
 	}
 	
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+	protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws IOException, ServletException {
 		response.setContentType("text/html;charset=UTF-8");
-		
 		response.setStatus(HttpServletResponse.SC_OK);
 		out = response.getWriter();
 		
@@ -48,21 +46,42 @@ public class SignUpServlet extends HttpServlet {
 		String check = checkUserInputs(username, password, password2);
 		
 		if(check != null) {
-			System.out.println("hi");
 			request.getRequestDispatcher("signup.jsp").include(request, response);
 			out.println("<script>document.getElementById('error').innerHTML='" + check + "'; </script>");
 		} else {
 			//Create User
-			Boolean success = createUser(username, password);
-			
-			if (success) {
-				response.sendRedirect("/home.jsp");
-			}
-			//otherwise user tried to make an account with a username that already exists
 			System.out.println(request);
 			System.out.println(response);
-			request.getRequestDispatcher("signup.jsp").include(request, response);
-			out.println("<script>document.getElementById('error').innerHTML='That account already exists! Please try again.'; </script>");
+			createUser(username, password, new MyCallback() {
+				@Override
+			    public void accountExists() {
+					createdUser = false;
+			     }
+			    
+			    public void accountCreated() {
+			    	System.out.println("abt to make true");
+			    	createdUser = true;
+			    }
+			    
+			});
+			//make sleep while checks Firebase for account
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			if (createdUser) {
+				System.out.println("account created!");
+				response.sendRedirect("/home.jsp");
+			} else {
+				System.out.println("account alrdy exists!");
+				request.getRequestDispatcher("signup.jsp").include(request, response);
+				out.println("<script>document.getElementById('error').innerHTML='That account already exists! Please try again.'; </script>");
+				   
+			}
+			
 		}
 		
 	}
@@ -77,7 +96,7 @@ public class SignUpServlet extends HttpServlet {
 		return null;
 	}
 	
-	public boolean createUser(final String username, final String password) {
+	public void createUser(final String username, final String password, final MyCallback myCallback) {
 
 		initializeFireBase();
 		
@@ -91,11 +110,13 @@ public class SignUpServlet extends HttpServlet {
 
 				//if username already exists
                 if (snapshot.child(username).exists()) {
+                	myCallback.accountExists();
                 	return;
                 } else {
                 	ref.child(username).push();
                 	ref.child(username).child("password").setValueAsync(password);
-                	return;
+                	System.out.println("calling account Created");
+                	myCallback.accountCreated();
                 }
             }
 
@@ -106,8 +127,11 @@ public class SignUpServlet extends HttpServlet {
 			}
 			
 		});
-		
-		return true;
+	}
+	
+	public interface MyCallback {
+	    void accountExists();
+	    void accountCreated();
 	}
 
 	public FirebaseApp initializeFireBase() {
