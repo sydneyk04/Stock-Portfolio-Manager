@@ -1,19 +1,14 @@
 package csci310.servlets;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,9 +22,6 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 
-import com.google.api.core.ApiService.Listener;
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -41,7 +33,7 @@ import com.google.firebase.database.ValueEventListener;
 @PrepareForTest({ FirebaseDatabase.class, FirebaseOptions.class} )
 public class StaticLoginServletTest extends Mockito{
  
- @Mock
+	@Mock
     HttpServletRequest request;
 
     @Mock
@@ -80,29 +72,27 @@ public class StaticLoginServletTest extends Mockito{
     
     
     @Test
-    public void testLoginOnCancelled() throws IOException {
-     
-     when(mockedDatabaseReference.child(anyString())).thenReturn(mockedDatabaseReference);
-     
-     StringWriter writer = new StringWriter();
-     PrintWriter out = new PrintWriter(writer);
-     
-     when(response.getWriter()).thenReturn(out);
-     
-     doAnswer(new Answer<Void>() {
-    	 public Void answer(InvocationOnMock invocation) throws Throwable {
-    		 ValueEventListener valueEventListener = (ValueEventListener) invocation.getArguments()[0];
-    		 DatabaseError error = mock(DatabaseError.class);
-    		 valueEventListener.onCancelled(error);
-    		 return null;     
-    	 }
-     }).when(mockedDatabaseReference).addListenerForSingleValueEvent(any(ValueEventListener.class));
-     
-     doThrow(IOException.class)
-  		.when(response)
-  		.sendRedirect(anyString());
-          
-     servlet.doPost(request, response);
-    }
-    
+    public void testAuthenticateOnCancelled() throws IOException {
+		when(mockedDatabaseReference.child(anyString())).thenReturn(mockedDatabaseReference);
+		 
+		StringWriter writer = new StringWriter();
+		PrintWriter out = new PrintWriter(writer);
+		 
+		when(response.getWriter()).thenReturn(out);
+		 
+		doAnswer(new Answer<Void>() {
+			public Void answer(InvocationOnMock invocation) throws Throwable {
+				ValueEventListener valueEventListener = (ValueEventListener) invocation.getArguments()[0];
+				DatabaseError error = mock(DatabaseError.class);
+				valueEventListener.onCancelled(error);
+				return null;     
+			}
+		}).when(mockedDatabaseReference).addListenerForSingleValueEvent(any(ValueEventListener.class));
+		 
+		doThrow(IOException.class)
+			.when(response)
+			.sendRedirect(anyString());
+		      
+		servlet.doPost(request, response);
+	}   
 }

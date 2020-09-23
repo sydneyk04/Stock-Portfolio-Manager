@@ -8,7 +8,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -20,11 +19,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
 
 public class LoginServletTest extends Mockito{
  
- @Mock
+	@Mock
     HttpServletRequest request;
 
     @Mock
@@ -48,16 +46,9 @@ public class LoginServletTest extends Mockito{
          
         when(request.getSession()).thenReturn(session);        
     }
- 
-//    @Test
-//    public void testDoGet() throws IOException, ServletException {
-//     when(request.getRequestDispatcher("login.jsp")).thenReturn(rd);
-//     servlet.doGet(request, response);
-//     verify(response).setStatus(HttpServletResponse.SC_OK);
-//    }
     
 	 @Test
-	 public void testInitializeFirebaseNotNull() {
+	 public void testInitializeFirebaseNotNull() throws IOException {
 		 for (FirebaseApp app : FirebaseApp.getApps()) {
 			 app.delete();
 		 }
@@ -68,9 +59,9 @@ public class LoginServletTest extends Mockito{
 	 public void testInitializeFirebaseNull() { 
 		 assertNull(servlet.initializeFirebase());
 	 }
- 
+	 
 	 @Test
-	 public void testLoginSuccess() throws Exception {
+	 public void testDoPostSuccess() throws Exception {
 		 StringWriter writer = new StringWriter();
 	     PrintWriter out = new PrintWriter(writer);
 	  
@@ -91,7 +82,7 @@ public class LoginServletTest extends Mockito{
 	}
 	    
 	 @Test
-	 public void testLoginFail() throws Exception {
+	 public void testDoPostFail() throws Exception {
 	     StringWriter writer = new StringWriter();
 	     PrintWriter out = new PrintWriter(writer);
 	        
@@ -113,11 +104,10 @@ public class LoginServletTest extends Mockito{
 
 	 @SuppressWarnings("unchecked")
 	 @Test
-	 public void testDoPostThrowInterruptException() throws Exception {
+	 public void testAuthenticateThrowInterruptedException() throws Exception {
 		 when(response.getWriter()).thenThrow(InterruptedException.class);
 		 
 		 servlet.doPost(request, response);
 	 }
-	 
 	 
 }
