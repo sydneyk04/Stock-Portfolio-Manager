@@ -11,6 +11,7 @@ Feature: Sign Up
     Given I am on the sign up page
     When I enter an email
     And I leave a password field blank
+    And I click the sign up button
     Then I should see alert: "Please fill out empty fields."
 
   Scenario: Enter an invalid email address
