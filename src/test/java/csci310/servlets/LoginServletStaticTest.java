@@ -31,7 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(JUnit4.class)
 @PrepareForTest({ FirebaseDatabase.class, FirebaseOptions.class} )
-public class StaticLoginServletTest extends Mockito{
+public class LoginServletStaticTest extends Mockito{
  
 	@Mock
     HttpServletRequest request;
