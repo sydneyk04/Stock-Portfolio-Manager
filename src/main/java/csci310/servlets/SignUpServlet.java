@@ -1,6 +1,7 @@
 package csci310.servlets;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.regex.Pattern;
@@ -50,8 +51,6 @@ public class SignUpServlet extends HttpServlet {
 			out.println("<script>document.getElementById('error').innerHTML='" + check + "'; </script>");
 		} else {
 			//Create User
-			System.out.println(request);
-			System.out.println(response);
 			createUser(username, password, new MyCallback() {
 				@Override
 			    public void accountExists() {
@@ -68,7 +67,6 @@ public class SignUpServlet extends HttpServlet {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
@@ -96,8 +94,7 @@ public class SignUpServlet extends HttpServlet {
 		return null;
 	}
 	
-	public void createUser(final String username, final String password, final MyCallback myCallback) {
-
+	public void createUser(final String username, final String password, final MyCallback myCallback) throws IOException {
 		initializeFireBase();
 		
 		final FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -107,7 +104,6 @@ public class SignUpServlet extends HttpServlet {
             
 			@Override
             public void onDataChange(DataSnapshot snapshot) {
-
 				//if username already exists
                 if (snapshot.child(username).exists()) {
                 	myCallback.accountExists();
@@ -134,22 +130,22 @@ public class SignUpServlet extends HttpServlet {
 	    void accountCreated();
 	}
 
-	public FirebaseApp initializeFireBase() {
+	public FirebaseApp initializeFireBase() throws IOException {
 		//FireBase Initialization
 		//we need to figure out where we initialize it, since we should probably only do so once
 		if (FirebaseApp.getApps().isEmpty()) {
 			
 			FileInputStream serviceAccount;
-			try {
+//			try {
 				serviceAccount = new FileInputStream("stock16-serviceaccount.json");
 				@SuppressWarnings("deprecation")
 				FirebaseOptions options = new FirebaseOptions.Builder()
 					.setCredentials(GoogleCredentials.fromStream(serviceAccount))
 					.setDatabaseUrl("https://stock16-e451e.firebaseio.com").build();
 				return FirebaseApp.initializeApp(options);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
 		}
 		return null;
 	}
