@@ -28,21 +28,21 @@ public class LoginServlet extends HttpServlet {
 	private static String LOGINPG= "login.jsp";
 	private static String HOMEPG= "home.jsp";
 	
-	private HttpSession session;
-	private HttpServletResponse response;
+	private HttpSession session = null;
+	private HttpServletResponse response = null;
 	private boolean dataFetched = false;
-	private PrintWriter out;
+	private PrintWriter out = null;
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		session = request.getSession();
-		this.response = response;
-		out = response.getWriter();
-		dataFetched = false;
-		String username = request.getParameter("username");
-		String password = request.getParameter("password");
-		
 		try {
+			session = request.getSession();
+			this.response = response;
+			out = response.getWriter();
+			dataFetched = false;
+			String username = request.getParameter("username");
+			String password = request.getParameter("password");
+		
 			authenticate(username, password);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
