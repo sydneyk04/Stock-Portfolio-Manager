@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.concurrent.TimeUnit;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -50,7 +48,7 @@ public class LoginServlet extends HttpServlet {
 	}
 	
 	public void authenticate(final String username, final String password) throws InterruptedException {
-		initializeFirebase();
+		initializeFirebase("stock16-service-account.json");
 		final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(username);
 		
 		userRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -87,11 +85,11 @@ public class LoginServlet extends HttpServlet {
 	}
 
 	@SuppressWarnings("deprecation")
-	public FirebaseApp initializeFirebase() {
+	public FirebaseApp initializeFirebase(String filename) {
 		if (FirebaseApp.getApps().isEmpty()) {
 			FileInputStream serviceAccount;
 			try {
-				serviceAccount = new FileInputStream("stock16-service-account.json");
+				serviceAccount = new FileInputStream(filename);
 				FirebaseOptions options = new FirebaseOptions.Builder()
 					.setCredentials(GoogleCredentials.fromStream(serviceAccount))
 					.setDatabaseUrl("https://stock16-e451e.firebaseio.com").build();

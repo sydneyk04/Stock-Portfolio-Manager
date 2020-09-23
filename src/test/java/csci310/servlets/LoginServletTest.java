@@ -52,12 +52,20 @@ public class LoginServletTest extends Mockito{
 		 for (FirebaseApp app : FirebaseApp.getApps()) {
 			 app.delete();
 		 }
-		 assertNotNull(servlet.initializeFirebase());
+		 assertNotNull(servlet.initializeFirebase("stock16-service-account.json"));
 	 }
  
 	 @Test
 	 public void testInitializeFirebaseNull() { 
-		 assertNull(servlet.initializeFirebase());
+		 assertNull(servlet.initializeFirebase("stock16-service-account.json"));
+	 }
+	 
+	 @Test
+	 public void testInitializeFirebaseThrowIOException() { 
+		 for (FirebaseApp app : FirebaseApp.getApps()) {
+			 app.delete();
+		 }
+		 servlet.initializeFirebase("test-google-credentials.json");
 	 }
 	 
 	 @Test

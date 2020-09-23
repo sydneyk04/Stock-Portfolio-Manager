@@ -47,10 +47,10 @@ public class LoginServletStaticTest extends Mockito{
     @Mock
     RequestDispatcher rd;
     
-    LoginServlet servlet;
-    
     @Mock
     DatabaseReference mockedDatabaseReference;
+    
+    LoginServlet servlet;
     
     @Before
     public void setUp() throws Exception {
@@ -72,9 +72,29 @@ public class LoginServletStaticTest extends Mockito{
         when(FirebaseDatabase.getInstance()).thenReturn(mockedFirebaseDatabase);
     }  
     
-    
     @Test
     public void testAuthenticateOnCancelled() throws IOException {
+		when(mockedDatabaseReference.child(anyString())).thenReturn(mockedDatabaseReference);
+		 
+		StringWriter writer = new StringWriter();
+		PrintWriter out = new PrintWriter(writer);
+		 
+		when(response.getWriter()).thenReturn(out);
+		 
+		doAnswer(new Answer<Void>() {
+			public Void answer(InvocationOnMock invocation) {
+				ValueEventListener valueEventListener = (ValueEventListener) invocation.getArguments()[0];
+				DatabaseError error = mock(DatabaseError.class);
+				valueEventListener.onCancelled(error);
+				return null;     
+			}
+		}).when(mockedDatabaseReference).addListenerForSingleValueEvent(any(ValueEventListener.class));
+		      
+		servlet.doPost(request, response);
+	}   
+    
+    @Test
+    public void testAuthenticateOnCancelledThrowIOException() throws IOException {
 		when(mockedDatabaseReference.child(anyString())).thenReturn(mockedDatabaseReference);
 		 
 		StringWriter writer = new StringWriter();
