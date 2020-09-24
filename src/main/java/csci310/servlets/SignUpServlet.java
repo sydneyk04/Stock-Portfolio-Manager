@@ -48,7 +48,8 @@ public class SignUpServlet extends HttpServlet {
 		
 		if(check != null) {
 			request.getRequestDispatcher("signup.jsp").include(request, response);
-			out.println("<script>document.getElementById('error').innerHTML='" + check + "'; </script>");
+			out.println("<script>document.getElementById('error').innerHTML='" + check + "'; "
+					+ "document.getElementById('error').style.visibility='visible';</script>");
 		} else {
 			//Create User
 			createUser(username, password, new MyCallback() {
@@ -71,7 +72,8 @@ public class SignUpServlet extends HttpServlet {
 				return;
 			} else {
 				request.getRequestDispatcher("signup.jsp").include(request, response);
-				out.println("<script>document.getElementById('error').innerHTML='That account already exists! Please try again.'; </script>");
+				out.println("<script>document.getElementById('error').innerHTML='That account already exists! Please try again.'; "
+						+ "document.getElementById('error').style.visibility='visible';</script>");
 				   
 			}
 			
