@@ -1,10 +1,15 @@
+<!-- <script>
+	document.location = "signup.jsp";
+</script> -->
+
+
 <html>
-<body>
-<div>	
-	<a href="hello.jsp">Click me</a>
-</div>
-<div>
-	<a href="/greeting">Or click me</a>
-</div>
-</body>
+	<body>
+		<div>	
+			<a href="signup.jsp">sign up page</a>
+		</div>
+		<div>
+			<a href="/greeting">greeting servlet test</a>
+		</div>
+	</body>
 </html>

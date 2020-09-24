@@ -116,9 +116,9 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-		  	<groupId>com.google.firebase</groupId>
-		  	<artifactId>firebase-admin</artifactId>
-		  	<version>7.0.0</version>
+			<groupId>com.google.firebase</groupId>
+			<artifactId>firebase-admin</artifactId>
+			<version>7.0.0</version>
 		</dependency>
 		<dependency>
 	      <groupId>org.powermock</groupId>
@@ -132,7 +132,6 @@
 	      <version>${powermock.version}</version>
 	      <scope>test</scope>
 	   </dependency>
-		
 	</dependencies>
 
 	<build>

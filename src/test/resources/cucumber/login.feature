@@ -17,4 +17,4 @@ Feature: Login
     Given I am on the login page
     When I enter my username
     And I click the login button
-    Then I should the alert "Please fill out this field."
+    Then I should see the alert "Please fill out this field."
