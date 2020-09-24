@@ -115,5 +115,4 @@ public class LoginServletTest extends Mockito{
     	when(response.getWriter()).thenThrow(InterruptedException.class);
     	servlet.doPost(request, response);
     }
-	 
 }
