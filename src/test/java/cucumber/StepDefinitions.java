@@ -248,8 +248,8 @@ public class StepDefinitions {
 		assertTrue(info.equalsIgnoreCase(string));
 	}
 	
-	@Then("I should the alert {string}")
-	public void i_should_the_alert(String string) {
+	@Then("I should see the alert {string}")
+	public void i_should_see_the_alert(String string) {
 	    try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
