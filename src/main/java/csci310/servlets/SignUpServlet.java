@@ -53,28 +53,24 @@ public class SignUpServlet extends HttpServlet {
 			//Create User
 			createUser(username, password, new MyCallback() {
 				@Override
-			    public void accountExists() {
-					createdUser = false;
-			     }
-			    
 			    public void accountCreated() {
-			    	System.out.println("abt to make true");
 			    	createdUser = true;
+			    	return;
 			    }
 			    
 			});
-			//make sleep while checks Firebase for account
+			
+			//wait for that check to happen
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(2000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 			
 			if (createdUser) {
-				System.out.println("account created!");
 				response.sendRedirect("/home.jsp");
+				return;
 			} else {
-				System.out.println("account alrdy exists!");
 				request.getRequestDispatcher("signup.jsp").include(request, response);
 				out.println("<script>document.getElementById('error').innerHTML='That account already exists! Please try again.'; </script>");
 				   
@@ -97,36 +93,32 @@ public class SignUpServlet extends HttpServlet {
 	public void createUser(final String username, final String password, final MyCallback myCallback) throws IOException {
 		initializeFireBase();
 		
-		final FirebaseDatabase database = FirebaseDatabase.getInstance();
+		FirebaseDatabase database = FirebaseDatabase.getInstance();
 		final DatabaseReference ref = database.getReference().child("users");
 		
 		ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            
 			@Override
             public void onDataChange(DataSnapshot snapshot) {
 				//if username already exists
                 if (snapshot.child(username).exists()) {
-                	myCallback.accountExists();
                 	return;
                 } else {
                 	ref.child(username).push();
                 	ref.child(username).child("password").setValueAsync(password);
-                	System.out.println("calling account Created");
                 	myCallback.accountCreated();
+                	return;
                 }
             }
 
 			@Override
 			public void onCancelled(DatabaseError error) {
 				// TODO Auto-generated method stub
-				
 			}
 			
 		});
 	}
 	
 	public interface MyCallback {
-	    void accountExists();
 	    void accountCreated();
 	}
 
@@ -134,18 +126,13 @@ public class SignUpServlet extends HttpServlet {
 		//FireBase Initialization
 		//we need to figure out where we initialize it, since we should probably only do so once
 		if (FirebaseApp.getApps().isEmpty()) {
-			
 			FileInputStream serviceAccount;
-//			try {
-				serviceAccount = new FileInputStream("stock16-serviceaccount.json");
-				@SuppressWarnings("deprecation")
-				FirebaseOptions options = new FirebaseOptions.Builder()
-					.setCredentials(GoogleCredentials.fromStream(serviceAccount))
-					.setDatabaseUrl("https://stock16-e451e.firebaseio.com").build();
-				return FirebaseApp.initializeApp(options);
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
+			serviceAccount = new FileInputStream("stock16-serviceaccount.json");
+			@SuppressWarnings("deprecation")
+			FirebaseOptions options = new FirebaseOptions.Builder()
+				.setCredentials(GoogleCredentials.fromStream(serviceAccount))
+				.setDatabaseUrl("https://stock16-e451e.firebaseio.com").build();
+			return FirebaseApp.initializeApp(options);
 		}
 		return null;
 	}

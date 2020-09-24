@@ -62,8 +62,6 @@ public class SignUpServletTest extends Mockito {
 		assertTrue(servlet.createdUser == false);
 		
 		//test user that already exists
-		System.out.println();
-		System.out.println("TEST USER THAT EXISTS:");
 		when(request.getRequestDispatcher("signup.jsp")).thenReturn(dispatcher);
 		when(request.getParameter("username")).thenReturn("johnDoe");
 		when(request.getParameter("password")).thenReturn("test123");
@@ -74,25 +72,19 @@ public class SignUpServletTest extends Mockito {
 		
 		//test new user
 		//make new username
-		Random rand = new Random();
-		char a = (char)(rand.nextInt(26) + 'a');
-		Random rand1 = new Random();
-		char b = (char)(rand1.nextInt(26) + 'a');
-		String user = new StringBuilder().append(a).append(b).toString();
-		System.out.println();
-		System.out.println("TEST NEW USER:");
+		String user = getSaltString();
 		when(request.getRequestDispatcher("signup.jsp")).thenReturn(dispatcher);
 		when(request.getParameter("username")).thenReturn(user);
 		when(request.getParameter("password")).thenReturn("hi");
 		when(request.getParameter("password2")).thenReturn("hi");
 		when(response.getWriter()).thenReturn(printWriter);
 		servlet.doPost(request, response);	
-		System.out.println("created new user: " + servlet.createdUser);
 		assertTrue(servlet.createdUser == true);
 		
 		//test thread.sleep interrupted exception
-//		CountDownLatch mockLatch = mock(CountDownLatch.class);
-//		when(mockLatch.await()).thenThrow(new InterruptedException());
+//		servlet.doPost(request, response);	
+//		Thread.interrupted();
+//		assertTrue(Thread.interrupted());
 	}
 	
 	
@@ -132,34 +124,18 @@ public class SignUpServletTest extends Mockito {
 		assertTrue(output5 == null);
 	}
 	
-//	@Test
-//	public void testCreateUser() throws IOException {
-//		//test user that already exists
-//		final MyCallback callback = mock(MyCallback.class);
-//		servlet.createUser("johnDoe", "test123", callback);
-//		System.out.println("created user that alrdy exists: " + servlet.createdUser);
-//		assertTrue(servlet.createdUser == false);
-//		
-//		//test new user
-//		//make new username
-//		Random rand = new Random();
-//		char a = (char)(rand.nextInt(26) + 'a');
-//		Random rand1 = new Random();
-//		char b = (char)(rand1.nextInt(26) + 'a');
-//		String user = new StringBuilder().append(a).append(b).toString();
-//		//delete firebase
-//		for (FirebaseApp app : FirebaseApp.getApps()) {
-//			app.delete();
-//		}
-//		//generate callback
-//		final MyCallback callback1 = mock(MyCallback.class);
-//		servlet.createUser(user, "test123", callback1);
-//		System.out.println("created new user: " + servlet.createdUser);
-//		assertTrue(servlet.createdUser == true);
-//	}
-	
-	
+	//https://stackoverflow.com/questions/20536566/creating-a-random-string-with-a-z-and-0-9-in-java
+	protected String getSaltString() {
+        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        StringBuilder salt = new StringBuilder();
+        Random rnd = new Random();
+        while (salt.length() < 18) { // length of the random string.
+            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
+            salt.append(SALTCHARS.charAt(index));
+        }
+        String saltStr = salt.toString();
+        return saltStr;
 
-	
+    }
 	
 }
