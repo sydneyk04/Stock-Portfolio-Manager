@@ -36,44 +36,44 @@ import com.google.firebase.database.ValueEventListener;
 public class LoginServletStaticTest extends Mockito{
  
 	@Mock
-    HttpServletRequest request;
+    	HttpServletRequest request;
 
-    @Mock
-    HttpServletResponse response;
+    	@Mock
+    	HttpServletResponse response;
     
-    @Mock
-    HttpSession session;
+	@Mock
+    	HttpSession session;
     
-    @Mock
-    RequestDispatcher rd;
+    	@Mock
+    	RequestDispatcher rd;
     
-    @Mock
-    DatabaseReference mockedDatabaseReference;
+    	@Mock
+    	DatabaseReference mockedDatabaseReference;
     
-    LoginServlet servlet;
+    	LoginServlet servlet;
     
-    @Before
-    public void setUp() throws Exception {
-        request = mock(HttpServletRequest.class);
-        response = mock(HttpServletResponse.class);
-        session = mock(HttpSession.class);
-        rd = mock(RequestDispatcher.class);
-        servlet = new LoginServlet();
+    	@Before
+    	public void setUp() throws Exception {
+        	request = mock(HttpServletRequest.class);
+        	response = mock(HttpServletResponse.class);
+        	session = mock(HttpSession.class);
+        	rd = mock(RequestDispatcher.class);
+        	servlet = new LoginServlet();
          
-        when(request.getSession()).thenReturn(session); 
+        	when(request.getSession()).thenReturn(session); 
         
-        mockedDatabaseReference = Mockito.mock(DatabaseReference.class);
+        	mockedDatabaseReference = Mockito.mock(DatabaseReference.class);
         
-        FirebaseDatabase mockedFirebaseDatabase = Mockito.mock(FirebaseDatabase.class);
-        when(mockedFirebaseDatabase.getReference()).thenReturn(mockedDatabaseReference);
+        	FirebaseDatabase mockedFirebaseDatabase = Mockito.mock(FirebaseDatabase.class);
+        	when(mockedFirebaseDatabase.getReference()).thenReturn(mockedDatabaseReference);
         
-        PowerMockito.mockStatic(FirebaseDatabase.class);
+        	PowerMockito.mockStatic(FirebaseDatabase.class);
    
-        when(FirebaseDatabase.getInstance()).thenReturn(mockedFirebaseDatabase);
-    }  
+        	when(FirebaseDatabase.getInstance()).thenReturn(mockedFirebaseDatabase);
+    	}  
     
-    @Test
-    public void testAuthenticateOnCancelled() throws IOException {
+    	@Test
+    	public void testAuthenticateOnCancelled() throws IOException {
 		when(mockedDatabaseReference.child(anyString())).thenReturn(mockedDatabaseReference);
 		 
 		StringWriter writer = new StringWriter();
@@ -93,8 +93,8 @@ public class LoginServletStaticTest extends Mockito{
 		servlet.doPost(request, response);
 	}   
     
-    @Test
-    public void testAuthenticateOnCancelledThrowIOException() throws IOException {
+    	@Test
+    	public void testAuthenticateOnCancelledThrowIOException() throws IOException {
 		when(mockedDatabaseReference.child(anyString())).thenReturn(mockedDatabaseReference);
 		 
 		StringWriter writer = new StringWriter();
