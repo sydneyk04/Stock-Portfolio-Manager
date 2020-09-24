@@ -57,7 +57,6 @@ public class SignUpServlet extends HttpServlet {
 			    	createdUser = true;
 			    	return;
 			    }
-			    
 			});
 			
 			//wait for that check to happen

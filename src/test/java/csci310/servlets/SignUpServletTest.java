@@ -9,6 +9,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -51,7 +53,7 @@ public class SignUpServletTest extends Mockito {
 	}
 	
 	@Test
-	public void testDoPost() throws IOException, ServletException {		
+	public void testDoPost() throws IOException, ServletException, InterruptedException {		
 		//check not null
 		when(request.getRequestDispatcher("signup.jsp")).thenReturn(dispatcher);
 		when(request.getParameter("username")).thenReturn("");
@@ -81,10 +83,11 @@ public class SignUpServletTest extends Mockito {
 		servlet.doPost(request, response);	
 		assertTrue(servlet.createdUser == true);
 		
-		//test thread.sleep interrupted exception
-//		servlet.doPost(request, response);	
-//		Thread.interrupted();
-//		assertTrue(Thread.interrupted());
+		//test thread
+		Thread.currentThread().interrupt();
+		servlet.doPost(request, response);
+		//since if we catch it, it will reset the flag
+		assertFalse(Thread.currentThread().interrupted());
 	}
 	
 	
@@ -124,6 +127,7 @@ public class SignUpServletTest extends Mockito {
 		assertTrue(output5 == null);
 	}
 	
+	
 	//https://stackoverflow.com/questions/20536566/creating-a-random-string-with-a-z-and-0-9-in-java
 	protected String getSaltString() {
         String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
@@ -137,5 +141,7 @@ public class SignUpServletTest extends Mockito {
         return saltStr;
 
     }
+	
+
 	
 }
