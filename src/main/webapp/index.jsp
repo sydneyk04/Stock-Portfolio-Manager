@@ -6,8 +6,8 @@
 	<body>
 		<h1>Welcome to Stock16</h1>
 		<div class= "container">
-			<a class = "button" href="signup.jsp">Sign Up</a>
-			<a class = "button" href="login.jsp">Login</a>
+			<a id="signup_button" class = "button" href="signup.jsp">Sign Up</a>
+			<a id="login_button" class = "button" href="login.jsp">Login</a>
 		</div>
 	</body>
 </html>
