@@ -30,11 +30,11 @@
 			</div>
             <div class="form-group">
               <label>Username</label>
-              <input type="text" name="username" class="form-control" required>
+              <input id="usrname" type="text" name="username" class="form-control" required>
             </div>
             <div class="form-group">
               <label>Password</label>
-              <input type="password" name="password" class="form-control" required>
+              <input id="password" type="password" name="password" class="form-control" required>
             </div>
             <div class="form-group">
               <input type="submit" class="btn btn-primary" value="Login" id="login-form-submit" onclick="authenticate()">
