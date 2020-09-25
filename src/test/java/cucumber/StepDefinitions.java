@@ -18,7 +18,7 @@ import java.util.Random;
  */
 public class StepDefinitions {
 	private static final String ROOT_URL = "http://localhost:8080/";
-  private static final String Signup_URL = "http://localhost:8080/signup.jsp";
+	private static final String Signup_URL = "http://localhost:8080/signup.jsp";
 	private static final String Login_URL = "http://localhost:8080/login.jsp";
 
 	private final WebDriver driver = new ChromeDriver();
@@ -37,27 +37,8 @@ public class StepDefinitions {
         return saltStr;
 
     }
-
-	@Given("I am on the index page")
-	public void i_am_on_the_index_page() {
-		driver.get(ROOT_URL);
-	}
-
-	@When("I click the link {string}")
-	public void i_click_the_link(String linkText) {
-		driver.findElement(By.linkText(linkText)).click();
-	}
-
-	@Then("I should see header {string}")
-	public void i_should_see_header(String header) {
-		assertTrue(driver.findElement(By.cssSelector("h2")).getText().contains(header));
-	}
 	
-	@Then("I should see text {string}")
-	public void i_should_see_text(String text) {
-		assertTrue(driver.getPageSource().contains(text));
-	}
-	
+	//Landing Page Feature Tests
 	@Given("I am on the landing page")
 	public void i_am_on_the_landing_page() {
 		driver.get(ROOT_URL);
@@ -79,7 +60,6 @@ public class StepDefinitions {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println(driver.getCurrentUrl());
 		String url = driver.getCurrentUrl();
 		assertTrue(url.equalsIgnoreCase("http://localhost:8080/login.jsp"));
 	}
@@ -92,9 +72,28 @@ public class StepDefinitions {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println(driver.getCurrentUrl());
 		String url = driver.getCurrentUrl();
 		assertTrue(url.equalsIgnoreCase("http://localhost:8080/signup.jsp"));
+	}
+	
+	@Given("I am on the index page")
+	public void i_am_on_the_index_page() {
+		driver.get(ROOT_URL);
+	}
+
+	@When("I click the link {string}")
+	public void i_click_the_link(String linkText) {
+		driver.findElement(By.linkText(linkText)).click();
+	}
+
+	@Then("I should see header {string}")
+	public void i_should_see_header(String header) {
+		assertTrue(driver.findElement(By.cssSelector("h2")).getText().contains(header));
+	}
+	
+	@Then("I should see text {string}")
+	public void i_should_see_text(String text) {
+		assertTrue(driver.getPageSource().contains(text));
 	}
 	
 	@Given("I am on the login page")
@@ -130,26 +129,23 @@ public class StepDefinitions {
 		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/home.jsp"));
 	}
 
-  @Given("I am on the sign up page")
+	
+	//Sign Up Feature
+	@Given("I am on the sign up page")
 	public void i_am_on_the_sign_up_page() {
 		driver.get(Signup_URL);
 	}
 
-	@When("I enter an email")
-	public void i_enter_an_email() {
-	  String temp_email = getSaltString();
-		
-		temp_email = temp_email + "@gmail.com";
-		
-		driver.findElement(By.xpath("//*[@id=\"username\"]")).sendKeys(temp_email);
+	@When("I enter a username")
+	public void i_enter_a_username() {
+		String testUser = getSaltString();
+		driver.findElement(By.xpath("//*[@id=\"username\"]")).sendKeys(testUser);
 	}
 
 	@When("I enter the first hidden password field")
 	public void i_enter_the_first_hidden_password_field() {
-	  String temp_pass = getSaltString();
-		
+		String temp_pass = getSaltString();
 		entered_pass = temp_pass;
-		
 		driver.findElement(By.xpath("//*[@id=\"password\"]")).sendKeys(temp_pass);
 	}
 
@@ -160,8 +156,7 @@ public class StepDefinitions {
 
 	@When("I click the sign up button")
 	public void i_click_the_sign_up_button() {
-	  driver.findElement(By.xpath("/html/body/form/button")).click();
-		
+	  driver.findElement(By.xpath("/html/body/div/form/button")).click();
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
@@ -184,20 +179,10 @@ public class StepDefinitions {
 
 	@Then("I should see alert: {string}")
 	public void i_should_see_alert(String string) {
-	  System.out.println("what should be there: " + string);
-		
-		System.out.println("what was there: " + driver.findElement(By.id("error")).getText());
-		
-		assertTrue(driver.findElement(By.id("error")).getText().equalsIgnoreCase(string));
+	  assertTrue(driver.findElement(By.id("error")).getText().equalsIgnoreCase(string));
 	}
 
-	@When("I enter an invalid email")
-	public void i_enter_an_invalid_email() {
-	  String temp_email = getSaltString();
-		
-		driver.findElement(By.xpath("//*[@id=\"username\"]")).sendKeys(temp_email);
-	}
-
+	
 	@Then("I should the alert {string}")
 	public void i_should_the_alert(String string) {
 	  assertTrue(driver.findElement(By.xpath("//*[@id=\"error\"]") ).getText().equalsIgnoreCase(string));
@@ -228,6 +213,17 @@ public class StepDefinitions {
 		String info = driver.findElement(By.id("login_error")).getText();
 		
 		assertTrue(info.equalsIgnoreCase(string));
+	}
+	
+	@Then("I should see an alert {string}")
+	public void i_should_see_an_alert(String string) {
+	  try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/signup.jsp"));
 	}
 	
 	@Then("I should see the alert {string}")
