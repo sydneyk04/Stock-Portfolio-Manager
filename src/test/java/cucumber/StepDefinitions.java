@@ -58,6 +58,45 @@ public class StepDefinitions {
 		assertTrue(driver.getPageSource().contains(text));
 	}
 	
+	@Given("I am on the landing page")
+	public void i_am_on_the_landing_page() {
+		driver.get(ROOT_URL);
+	}
+
+	@When("I click the {string} button")
+	public void i_click_the_string_buttton(String linkText) {		
+		if(linkText.equals("Login"))
+			driver.findElement(By.xpath("/html/body/div/a[2]")).click();
+		else if(linkText.equalsIgnoreCase("Sign Up"))
+			driver.findElement(By.xpath("/html/body/div/a[1]")).click();	
+	}
+	
+	@Then("I should be brought to the login page")
+	public void i_should_login() {
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println(driver.getCurrentUrl());
+		String url = driver.getCurrentUrl();
+		assertTrue(url.equalsIgnoreCase("http://localhost:8080/login.jsp"));
+	}
+	
+	@Then("I should be brought to the sign up page")
+	public void i_should_signup() {
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println(driver.getCurrentUrl());
+		String url = driver.getCurrentUrl();
+		assertTrue(url.equalsIgnoreCase("http://localhost:8080/signup.jsp"));
+	}
+	
 	@Given("I am on the login page")
 	public void i_am_on_the_login_page() {
 		driver.get(Login_URL);
@@ -91,79 +130,49 @@ public class StepDefinitions {
 		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/home.jsp"));
 	}
 
-@Given("I am on the sign up page")
+  @Given("I am on the sign up page")
 	public void i_am_on_the_sign_up_page() {
-	    // Write code here that turns the phrase above into concrete actions
-		
 		driver.get(Signup_URL);
-		
-	    //throw new io.cucumber.java.PendingException();
 	}
 
 	@When("I enter an email")
 	public void i_enter_an_email() {
-	    // Write code here that turns the phrase above into concrete actions
-		
-		String temp_email = getSaltString();
+	  String temp_email = getSaltString();
 		
 		temp_email = temp_email + "@gmail.com";
 		
 		driver.findElement(By.xpath("//*[@id=\"username\"]")).sendKeys(temp_email);
-		
-	    //throw new io.cucumber.java.PendingException();
 	}
 
 	@When("I enter the first hidden password field")
 	public void i_enter_the_first_hidden_password_field() {
-	    // Write code here that turns the phrase above into concrete actions
-		
-		String temp_pass = getSaltString();
+	  String temp_pass = getSaltString();
 		
 		entered_pass = temp_pass;
 		
 		driver.findElement(By.xpath("//*[@id=\"password\"]")).sendKeys(temp_pass);
-		
-	    //throw new io.cucumber.java.PendingException();
 	}
 
 	@When("I enter the second hidden password field")
 	public void i_enter_the_second_hidden_password_field() {
-	    // Write code here that turns the phrase above into concrete actions
-		
-		driver.findElement(By.xpath("//*[@id=\"password2\"]")).sendKeys(entered_pass);
-		
-	    //throw new io.cucumber.java.PendingException();
+	  driver.findElement(By.xpath("//*[@id=\"password2\"]")).sendKeys(entered_pass);
 	}
 
 	@When("I click the sign up button")
 	public void i_click_the_sign_up_button() {
-	    // Write code here that turns the phrase above into concrete actions
-		
-		driver.findElement(By.xpath("/html/body/form/button")).click();
+	  driver.findElement(By.xpath("/html/body/form/button")).click();
 		
 		try {
 			Thread.sleep(1000);
-			
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-	    //throw new io.cucumber.java.PendingException();
 	}
 
 	@Then("I should be brought to the dashboard page")
 	public void i_should_be_brought_to_the_dashboard_page() {
-	    // Write code here that turns the phrase above into concrete actions
-		
-		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/home.jsp"));
-		
-		
-	    //throw new io.cucumber.java.PendingException();
+	  assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/home.jsp"));
 	}
-
-
 
 	@When("I leave a password field blank")
 	public void i_leave_a_password_field_blank() {
@@ -175,68 +184,41 @@ public class StepDefinitions {
 
 	@Then("I should see alert: {string}")
 	public void i_should_see_alert(String string) {
-	    // Write code here that turns the phrase above into concrete actions
-		
-		System.out.println("what should be there: " + string);
+	  System.out.println("what should be there: " + string);
 		
 		System.out.println("what was there: " + driver.findElement(By.id("error")).getText());
 		
 		assertTrue(driver.findElement(By.id("error")).getText().equalsIgnoreCase(string));
-		
-		
-		
-	    //throw new io.cucumber.java.PendingException();
 	}
-
 
 	@When("I enter an invalid email")
 	public void i_enter_an_invalid_email() {
-	    // Write code here that turns the phrase above into concrete actions
-		String temp_email = getSaltString();
+	  String temp_email = getSaltString();
 		
 		driver.findElement(By.xpath("//*[@id=\"username\"]")).sendKeys(temp_email);
-		
-		
-	    //throw new io.cucumber.java.PendingException();
 	}
-
-
 
 	@Then("I should the alert {string}")
 	public void i_should_the_alert(String string) {
-	    // Write code here that turns the phrase above into concrete actions
-		
-		assertTrue(driver.findElement(By.xpath("//*[@id=\"error\"]") ).getText().equalsIgnoreCase(string));
-		
-		
-	    //throw new io.cucumber.java.PendingException();
+	  assertTrue(driver.findElement(By.xpath("//*[@id=\"error\"]") ).getText().equalsIgnoreCase(string));
 	}
-
-
-
 
 	@When("I enter the second hidden password field incorrectly")
 	public void i_enter_the_second_hidden_password_field_incorrectly() {
-	    // Write code here that turns the phrase above into concrete actions
-		
-		String temp_pass = getSaltString();
-		
+	  String temp_pass = getSaltString();
 		
 		driver.findElement(By.xpath("//*[@id=\"password2\"]")).sendKeys(temp_pass);
-		
-		
-	    //throw new io.cucumber.java.PendingException();
 	}
 
 	@When("I enter an incorrect password")
 	public void i_enter_an_incorrect_password() {
-	    String usr = "test1234";
+	  String usr = "test1234";
 		driver.findElement(By.xpath("//*[@id=\"login-form\"]/div[3]/input")).sendKeys(usr);
 	}
 	
 	@Then("I should the error message {string}")
 	public void i_should_the_error_message(String string) {
-	    try {
+	  try {
 			Thread.sleep(1000);
 			
 		} catch (InterruptedException e) {
@@ -250,7 +232,7 @@ public class StepDefinitions {
 	
 	@Then("I should see the alert {string}")
 	public void i_should_see_the_alert(String string) {
-	    try {
+	  try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
