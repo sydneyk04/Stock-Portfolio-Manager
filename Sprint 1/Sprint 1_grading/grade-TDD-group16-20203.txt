@@ -1,0 +1,19 @@
+Best Practice TDD Report
+Owner: group16-20203
+Grade: 2.5/10
+Comments: 
+	No test method found for: loginservlet.dopost
+	No test method found for: loginservlet.authenticate
+	No test method found for: loginservlet.ondatachange
+	No test method found for: loginservlet.oncancelled
+	No test method found for: loginservlet.initializefirebase
+	No test method found for: loginservlet.onauthenticate
+	Test method was not created before method : signupservlet.doget
+	No test method found for: signupservlet.accountcreated
+	No test method found for: signupservlet.ondatachange
+	No test method found for: signupservlet.oncancelled
+	No test method found for: signupservlet.accountexists
+	No test method found for: loginservlet.doget
+Correct TDD methods: 4
+Incorrect TDD methods: 12
+Total methods created: 16
