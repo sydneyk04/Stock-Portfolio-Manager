@@ -1,0 +1,13 @@
+Best Practice GitFlow Report
+Owner: group16-20203
+Grade: 8.0/10
+Comments: 
+	Bad pull (-1) [develop<-remove_greeting_hello]: https://github.com/CSCI310/project-20203-group16-20203/pull/25
+	Bad pull (-1) [develop<-revert-4-feature-login]: https://github.com/CSCI310/project-20203-group16-20203/pull/5
+
+
+	Bad pull (-1) [feature-landingpage<-refactor-add_ids_to_buttons]: https://github.com/CSCI310/project-20203-group16-20203/pull/10
+
+	Bad pull (-1) [feature-login<-refactor-feature-login]: https://github.com/CSCI310/project-20203-group16-20203/pull/2
+
+
