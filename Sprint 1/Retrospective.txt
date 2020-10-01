@@ -1,0 +1,23 @@
+Participants: Sarah Cheung, Kendall Mayo, Jackson (Hao) Sun, Nandhakumar Sarvana, Navid Zaman
+
+What process aspects will be changed? Why?
+
+● Double-check that our documentation requirements are met, because we missed some requirements and one scrum meeting’s video link wasn’t working.
+
+● Instead of requiring one reviewer to approve a PR, we will require two reviewers' approvals before merging it. In Sprint 1, there were errors in the develop branch because a reviewer did not catch a bug in the PR sometimes.
+
+● We will have a more strict schedule for assigned tasks, instead of flexible deadlines. At the end of Sprint 1, we were scrambling a little bit to get everything successfully merged to the master branch without any bugs. And we will make sure everyone has at least one task in progress.
+
+● We will follow the TDD rules more strictly. In Sprint 1, we wrote tests after implementation.
+
+What tasks will be added to the product backlog as a result of review
+feedback?
+
+1. Prediction of future values of the portfolio
+2. Ability to add or remove stocks from the portfolio
+3. Track and visualize changes in value over time of user’s portfolio
+4. View and compare the historical performance of a stock
+5. Works on the Chrome web browser and mobile devices
+6. The application must be secure and protect confidentiality of users’ data.
+8. User interfaces must look modern and be attractive.
+9. Must be implemented as a client-server based web application
