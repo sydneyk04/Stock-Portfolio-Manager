@@ -1,0 +1,16 @@
+1. Prediction of future values of the portfolio
+2. Ability to add or remove stocks from the portfolio
+3. Users must be able to create an account in the system
+4. Track and visualize changes in value over time of user’s portfolio
+5. View and compare the historical performance of a stock
+6. Works on the Chrome web browser and mobile devices
+7. The application must be secure and protect confidentiality of users’ data.
+8. User interfaces must look modern and be attractive.
+9. Must be implemented as a client-server based web application
+
+During our sprint planning meeting, we chose to assign each of the broader features (1-4) and a general home page to a team member. Since we had 
+people researching how to implement these features in the last sprint, each team member has a better idea of what exactly needs to get done to 
+complete them. Requirements 5-8 must also be considered when we are developing features 1-4, so we have included them in our backlog. Additionally, 
+we will be going back and fixing an error in our sign up feature.
+
+Meeting participants: Sarah Cheung, Kendall Mayo, Nandhakumar Saravana, Jackson Sun, Navid Zaman
