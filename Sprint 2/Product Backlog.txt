@@ -4,5 +4,5 @@
 4. View and compare the historical performance of a stock
 5. Works on the Chrome web browser and mobile devices
 6. The application must be secure and protect confidentiality of users’ data.
-8. User interfaces must look modern and be attractive.
-9. Must be implemented as a client-server based web application
+7. User interfaces must look modern and be attractive.
+8. Must be implemented as a client-server based web application
