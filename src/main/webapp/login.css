@@ -1,0 +1,14 @@
+body{
+	background-color: #f5f5f5;
+	font-family: 'Raleway', sans-serif;
+}
+
+.container {
+	padding-top: 30px;
+}
+
+#login-form {
+	max-width: 380px;
+	padding: 15px;
+	margin: auto;
+}

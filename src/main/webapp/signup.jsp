@@ -1,11 +1,17 @@
 <html>
 	<head>
-		<link rel="stylesheet" href="signup.css">
 		<title>Sign Up</title>
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+		<link rel="stylesheet" href="signup.css">
+		<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap" rel="stylesheet">
 	</head>
 	<body>
+		<nav id="banner" class="navbar navbar-dark bg-secondary navbar-static-top justify-content-center">
+	      	<div id="banner-content" class="navbar-brand" style="color:white">
+	      		USC 310 Stock Portfolio Management
+	      	</div>
+		</nav>
+		
 		<div class="container">
 
 		
@@ -14,22 +20,24 @@
 			
 			
 			<div class="form-group">
-				<label for="username">Username:</label>
+				<label for="username">Username</label>
 				<input id = "username" name = "username" class = "form-control" type="text" placeholder="username" required>
 			</div>
 
 			<div class="form-group">
-				<label for="password">Password:</label>
+				<label for="password">Password</label>
 				<input id = "password" name = "password" class = "form-control" type="password" placeholder="password" required>
 			</div>
 
 			<div class="form-group">
-				<label for="confirmPassword">Confirm Password:</label>
+				<label for="confirmPassword">Confirm Password</label>
 				<input id = "password2" name = "password2" class = "form-control" type="password" placeholder="password" required>
 			</div>
 
 			<div id="error" name ="error"></div>
-			<button type="submit" class="btn btn-lg btn-primary btn-block">sign up</button>
+			
+			<button type="submit" class="btn btn-lg btn-primary btn-block">create account</button>
+			<button onclick="location.href='/login.jsp'" type="button" class="btn btn-lg btn-secondary btn-block">cancel</button>
 		</form>
 		</div>
 	</body>
