@@ -6,7 +6,7 @@
 	</head>
 	<body>
 		<nav id="banner" class="navbar navbar-dark bg-secondary navbar-static-top justify-content-center">
-	      	<div id="banner-content" style="color:white">
+	      	<div id="banner-content" class="navbar-brand" style="color:white">
 	      		USC 310 Stock Portfolio Management
 	      	</div>
 	    </nav>
