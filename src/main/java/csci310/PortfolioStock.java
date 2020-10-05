@@ -11,6 +11,8 @@ public class PortfolioStock {
 		this.name = name;
 		this.shares = shares;
 		this.price = 0.00;
+		
+		setPrice();
 	}
 
 	public String getSymbol() {
@@ -29,12 +31,13 @@ public class PortfolioStock {
 		return price;
 	}
 	
-	public Double getTotal() {
+	public Double getTotalValue() {
 		return price * shares;
 	}
 	
 	public void setPrice() {
-		price++;
+		// network call to yahoo finance api
+		++price;
 	}
 	
 }

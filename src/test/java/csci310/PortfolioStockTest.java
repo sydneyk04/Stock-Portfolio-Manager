@@ -1,6 +1,6 @@
 package csci310;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -14,15 +14,14 @@ public class PortfolioStockTest {
 	}
 	
 	@Test
-	public void testGetTotal() {
-		stock.setPrice();
-		assertTrue(stock.getTotal() == 10.00);
+	public void testGetTotalValue() {
+		assertTrue(stock.getTotalValue() == 10.00);
 	}
 
 	@Test
 	public void testSetPrice() {
 		stock.setPrice();
-		assertTrue(stock.getPrice() == 1);
+		assertTrue(stock.getPrice() == 2);
 	}
 
 }

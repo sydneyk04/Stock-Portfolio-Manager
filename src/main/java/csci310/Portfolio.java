@@ -1,49 +1,112 @@
 package csci310;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
+
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class Portfolio {
-	private TreeMap<String, ArrayList<Double>> portfolio;
+	private ArrayList<PortfolioStock> stocks;
 	private String username;
-	private double totalValue;
+	private boolean dataFetched;
+	private double value;
 	
-	public Portfolio (String username) {
+	public Portfolio (String username) throws InterruptedException {
 		this.username = username;
-		this.totalValue = 0;
+		value = 0.00;
+		dataFetched = false;
+
+		fetchData();
+	}
+	
+	@SuppressWarnings("deprecation")
+	public FirebaseApp initializeFirebase(String filename) {
+		if (FirebaseApp.getApps().isEmpty()) {
+			FileInputStream serviceAccount;
+			try {
+				serviceAccount = new FileInputStream(filename);
+				FirebaseOptions options = new FirebaseOptions.Builder()
+					.setCredentials(GoogleCredentials.fromStream(serviceAccount))
+					.setDatabaseUrl("https://stock16-e451e.firebaseio.com").build();
+				return FirebaseApp.initializeApp(options);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
 	}
 	
 	public String getUsername() {
 		return username;
 	}
 	
-	public void fetchData() {
-		/*
-		 * TreeMap of alphabetically ordered stocks in the user's portfolio as the key
-		 * ArrayList of stock info [value, number of shares, total value] as the value
-		*/
-		TreeMap<String, ArrayList<Double>> map = new TreeMap<>();
-		String stock = "GOOGL";
-		ArrayList<Double> stockInfo = new ArrayList<>(Arrays.asList(116.60, 10.00, 1165.60));
-		map.put(stock, stockInfo);
-		portfolio = map;
+	public void fetchData() throws InterruptedException {
+		initializeFirebase("stock16-service-account.json");
+		final ArrayList<PortfolioStock> data = new ArrayList<>();
+		
+		// Fetch firebase portfolio data
+		final DatabaseReference portfolioRef = FirebaseDatabase.getInstance().getReference()
+				.child("users")
+				.child(username)
+				.child("portfolio");
+		
+		portfolioRef.addListenerForSingleValueEvent(new ValueEventListener() {
+			@Override
+			public void onDataChange(DataSnapshot snapshot) {
+				if (snapshot.exists()) {
+					System.out.println("Portfolio: " + snapshot.getValue() + " of class " +  snapshot.getValue().getClass());
+					
+					for (DataSnapshot ds : snapshot.getChildren()) {                    
+						String stockSymbol = ds.getKey();
+                        String stockName = (String) ds.child("name").getValue();
+                        Double stockShares = (Double) ds.child("shares").getValue();
+                        data.add(new PortfolioStock(stockSymbol, stockName, stockShares));
+                    }
+					
+					dataFetched = true;
+				}
+			}
+	
+			@Override
+			public void onCancelled(DatabaseError error) {
+				System.out.println(error.getMessage());
+				dataFetched = false;
+			}
+		});
+		
+		// Wait for Firebase data to be fetched
+		for (int i = 0; i < 30; ++i) {
+			TimeUnit.SECONDS.sleep(1);
+			if (dataFetched) {
+				break;
+			}
+		}	
+		
+		stocks = data;
 	}
 	
 	public void calculateValue() {
-		totalValue++;
+		for (PortfolioStock stock : stocks) {
+			System.out.print(stock.getName() + ": " + stock.getTotalValue());
+			value += stock.getTotalValue();
+		}
 	}
 	
-	public TreeMap<String, ArrayList<Double>> getData() {
-		return portfolio;
+	public ArrayList<PortfolioStock> getStocks() {
+		return stocks;
 	}
 	
 	public double getValue() {
-		return totalValue;
-	}
-	
-	public double calculateStockValue(String stockName, double price, double shares) {
-		return price * shares;
+		return value;
 	}
 	
 }
