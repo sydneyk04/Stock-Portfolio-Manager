@@ -17,7 +17,7 @@ public class PortfolioTest {
 	}
 
 	@Test
-	public void testFetchPortfolio() {
+	public void testFetchData() {
 		portfolio.fetchData();
 		assertTrue(portfolio.getData().size() == 1);
 	}

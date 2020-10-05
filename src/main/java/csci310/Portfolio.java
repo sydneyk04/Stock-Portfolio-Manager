@@ -9,7 +9,7 @@ public class Portfolio {
 	private String username;
 	private double totalValue;
 	
-	Portfolio (String username) {
+	public Portfolio (String username) {
 		this.username = username;
 		this.totalValue = 0;
 	}
