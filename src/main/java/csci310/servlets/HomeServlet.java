@@ -2,6 +2,7 @@ package csci310.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,13 +23,12 @@ public class HomeServlet extends HttpServlet {
 	private PrintWriter out = null;
 	
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		System.out.println("In home servlet post()");
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException  {
+		System.out.println("In home servlet get()");
 		session = request.getSession();
 		this.response = response;
 		out = response.getWriter();
 		String username = (String) session.getAttribute("username");
-		displayPortfolio(getPortfolio(username));
 
 		String action = request.getParameter("action");
 		if (action != null && action.equals("logout")) {
@@ -40,7 +40,7 @@ public class HomeServlet extends HttpServlet {
 	}
 	
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		System.out.println("In home servlet post()");
 		session = request.getSession();
 		this.response = response;
@@ -71,17 +71,26 @@ public class HomeServlet extends HttpServlet {
 	}
 	
 	public void displayPortfolio(Portfolio portfolio) throws IOException {	
+		// Wait for portfolio data to be updated before redirect
+		for (int i = 0; i < 20; ++i) {
+			try {
+				TimeUnit.SECONDS.sleep(1);
+				
+				if (portfolio.getDataFetched()) {
+					break;
+				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}	
+				
 		portfolio.calculateValue();
-		System.out.println("Redirecting to home page");
 		session.setAttribute("portfolio", portfolio);
 		response.sendRedirect(HOMEPG);
 		return;
 	}
 	
 	public void logout() throws IOException {
-		if (session == null) {
-			System.out.println("Session is null in logout test");
-		}
 		session.setAttribute("username", null);
 		session.setAttribute("login_error_message", null);
 		out.print("signout successful");	

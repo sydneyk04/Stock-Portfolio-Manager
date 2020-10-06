@@ -79,7 +79,7 @@
 					            <td><%=stock.getSymbol() %></td>
 				                <td><%=stock.getPrice() %></td>
 				                <td><%=stock.getShares() %></td>
-				                <td><%=stock.getTotalValue() %></td>
+				                <td><%=String.format("%.2f", stock.getTotalValue()) %></td>
 					        </tr>
 					    <%} %>
 				    </table>

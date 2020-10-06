@@ -1,10 +1,11 @@
 package csci310;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -33,20 +34,15 @@ public class PortfolioTest {
 	}
 
 	@Test
-	public void testFetchData() {
-		try {
-			portfolio.fetchData();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		assertTrue(portfolio.getStocks().size() == 2);
+	public void testFetchData() throws InterruptedException {
+		portfolio.fetchData();
+		assertEquals(2, portfolio.getStocks().size());
 	}
 
 	@Test
 	public void testCalculateValue() {
 		portfolio.calculateValue();
-		assertTrue(portfolio.getValue() == 20.10);
+		assertEquals(17048.82, portfolio.getValue(), 0.1);
 	}
 
 }

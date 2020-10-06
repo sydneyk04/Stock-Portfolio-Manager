@@ -49,7 +49,13 @@ public class Portfolio {
 		return username;
 	}
 	
+	/*
+	 * Fetch stock-related data from Yahoo Finance API.
+	 * The portfolio is represented by an ArrayList[PortfolioStock],
+	 * where the class PortfolioStock contains (stockSymbol, stockName, stockShares).
+	 */
 	public void fetchData() throws InterruptedException {
+		dataFetched = false;
 		initializeFirebase("stock16-service-account.json");
 		final ArrayList<PortfolioStock> data = new ArrayList<>();
 		
@@ -62,9 +68,7 @@ public class Portfolio {
 		portfolioRef.addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot snapshot) {
-				if (snapshot.exists()) {
-					System.out.println("Portfolio: " + snapshot.getValue() + " of class " +  snapshot.getValue().getClass());
-					
+				if (snapshot.exists()) {					
 					for (DataSnapshot ds : snapshot.getChildren()) {                    
 						String stockSymbol = ds.getKey();
                         String stockName = (String) ds.child("name").getValue();
@@ -84,7 +88,7 @@ public class Portfolio {
 		});
 		
 		// Wait for Firebase data to be fetched
-		for (int i = 0; i < 30; ++i) {
+		for (int i = 0; i < 20; ++i) {
 			TimeUnit.SECONDS.sleep(1);
 			if (dataFetched) {
 				break;
@@ -96,9 +100,12 @@ public class Portfolio {
 	
 	public void calculateValue() {
 		for (PortfolioStock stock : stocks) {
-			System.out.print(stock.getName() + ": " + stock.getTotalValue());
 			value += stock.getTotalValue();
 		}
+	}
+	
+	public Boolean getDataFetched() {
+		return dataFetched;
 	}
 	
 	public ArrayList<PortfolioStock> getStocks() {

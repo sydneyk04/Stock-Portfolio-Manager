@@ -47,9 +47,15 @@ public class HomeServletTest extends Mockito {
 		when(session.getAttribute("username")).thenReturn("johnDoe");
 		when(request.getParameter("username")).thenReturn("johnDoe");
 	}
+	
+	@Test
+	public void testDoGet() throws IOException, ServletException {
+		servlet.doGet(request, response);
+		assertTrue(true);
+	}
 
 	@Test
-	public void testDoPostHttpServletRequestHttpServletResponse() throws IOException, ServletException {
+	public void testDoPost() throws IOException, ServletException {
 		servlet.doPost(request, response);
 		assertTrue(true);
 	}
