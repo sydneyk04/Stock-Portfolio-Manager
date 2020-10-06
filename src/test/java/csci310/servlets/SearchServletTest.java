@@ -41,11 +41,11 @@ public class SearchServletTest extends Mockito {
 	 */
 	@Test
 	public void testDoGetHttpServletRequestHttpServletResponse() throws IOException {
-		when(request.getAttribute("stockName")).thenReturn("GOOG");
+		when(request.getParameter("stockName")).thenReturn("GOOG");
 		ss.doGet(request, response);
 		verify(response, times(0)).sendRedirect(anyString());
 		
-		when(request.getAttribute("stockName")).thenReturn("1234");
+		when(request.getParameter("stockName")).thenReturn("1234");
 		ss.doGet(request, response);
 		verify(response, times(1)).sendRedirect("notfound.jsp");
 	}
