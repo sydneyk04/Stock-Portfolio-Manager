@@ -11,7 +11,7 @@
 	      	</div>
 	    </nav>
 	    <div id="main-content" class = "mainContent">
-	     	<p>Home page content goes here</p>
+	     	<a href="/stockPerformance.jsp">stock performance page</a>
 	    </div>
 	</body>
 </html>
