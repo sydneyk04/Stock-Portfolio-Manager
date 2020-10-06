@@ -125,13 +125,18 @@
 	      <artifactId>powermock-module-junit4</artifactId>
 	      <version>${powermock.version}</version>
 	      <scope>test</scope>
-	   </dependency>
-	   <dependency>
+	    </dependency>
+	   	<dependency>
 	      <groupId>org.powermock</groupId>
 	      <artifactId>powermock-api-mockito</artifactId>
 	      <version>${powermock.version}</version>
 	      <scope>test</scope>
-	   </dependency>
+	   	</dependency>
+	   	<dependency>
+	   		<groupId>com.mashape.unirest</groupId>
+		    <artifactId>unirest-java</artifactId>
+		    <version>1.4.9</version>
+		</dependency>
 	</dependencies>
 
 	<build>

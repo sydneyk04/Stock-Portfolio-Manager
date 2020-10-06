@@ -1,5 +1,10 @@
 package csci310;
 
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
+
 public class PortfolioStock {
 	private String symbol;
 	private String name;
@@ -14,6 +19,21 @@ public class PortfolioStock {
 		
 		setPrice();
 	}
+	
+	public void setPrice() {
+		String url = "https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v2/get-summary?region=US&symbol=" + symbol;
+		HttpResponse<JsonNode> response;
+		try {			
+			response = Unirest.get(url)
+					.header("x-rapidapi-host", "apidojo-yahoo-finance-v1.p.rapidapi.com")
+					.header("x-rapidapi-key", "b649142cdemsh9271259a839a0e6p1038a7jsnd1899fcce2c0")
+					.asJson();
+			
+			price = response.getBody().getObject().getJSONObject("financialData").getJSONObject("currentPrice").getDouble("raw");
+		} catch (UnirestException e) {
+			System.out.println("Failed to fetch stock data from the server.");
+		}		
+	}
 
 	public String getSymbol() {
 		return symbol;
@@ -27,17 +47,13 @@ public class PortfolioStock {
 		return shares;
 	}
 	
+	// Get the current stock price from Yahoo Finance API
 	public Double getPrice() {
 		return price;
 	}
 	
 	public Double getTotalValue() {
 		return price * shares;
-	}
-	
-	public void setPrice() {
-		// network call to yahoo finance api
-		++price;
 	}
 	
 }
