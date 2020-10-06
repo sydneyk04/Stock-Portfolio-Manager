@@ -23,7 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 
-@WebServlet("/performance")
+@WebServlet("/stockperformance")
 public class StockPerformanceServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	static PrintWriter out;
@@ -32,6 +32,9 @@ public class StockPerformanceServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		response.setContentType("text/plain");
+		request.setAttribute("stockName", "Kendall's Stock");
+		request.setAttribute("stockCode", "KS");
+		request.setAttribute("stockPrice", "15.33");
 		check = true;
 	}
 	

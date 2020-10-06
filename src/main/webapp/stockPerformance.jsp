@@ -14,11 +14,7 @@
 				animationEnabled: true,
 				theme: "light2",
 			 	zoomEnabled: true,
-				title: {
-					text: "Stock Performance"
-				},
 				axisY: {
-					title: "Value",
 					titleFontSize: 24
 				},
 				data: [{
@@ -48,15 +44,19 @@
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 	</head>
 	<body>
+		<jsp:include page="/stockperformance" />
 		<nav id="banner" class="navbar navbar-dark bg-secondary navbar-static-top justify-content-center">
 	      	<a id="banner-content" class="navbar-brand" style="color:white" href="/home.jsp">
 	      		USC 310 Stock Portfolio Management
 	      	</a>
 	    </nav>
 	    <div id="main-content" class = "mainContent">
-	     	<jsp:include page="/performance" />
-	     	<c:out value="${stockName }"></c:out>
-	     	<div id="chartContainer" style="height: 370px; width: 100%;"></div>
+	     	
+	     	<h1 class="ml-5"><%=request.getAttribute("stockName")%> (<%=request.getAttribute("stockCode")%>)</h1>
+	     	<h2 class="ml-5">$<%=request.getAttribute("stockPrice")%></h2>
+	     	<div class="text-center">
+	     		<div id="chartContainer"></div>
+	     	</div>
 			<script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
 			<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 	    </div>

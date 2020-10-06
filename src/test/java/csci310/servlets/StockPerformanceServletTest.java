@@ -49,6 +49,9 @@ public class StockPerformanceServletTest extends Mockito {
 	
 	@Test
 	public void testDoGet() throws IOException, ServletException {	
+		when(request.getParameter("stockName")).thenReturn("Kendall's Stock");
+		when(request.getParameter("stockCode")).thenReturn("KS");
+		when(request.getParameter("stockPrice")).thenReturn("15.10");
 		servlet.doGet(request, response);
 		assertTrue(servlet.check==true);
 	}
