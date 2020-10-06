@@ -236,6 +236,37 @@ public class StepDefinitions {
 		
 		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/login.jsp"));
 	}
+	
+	@Given("I am logged in on the Portfolio Performance page")
+	public void i_am_logged_in_on_the_Portfolio_Performance_page() {
+	    // Write code here that turns the phrase above into concrete actions
+	    throw new io.cucumber.java.PendingException();
+	}
+
+	@When("I click the top banner of the Portfolio Performance page")
+	public void i_click_the_top_banner_of_the_Portfolio_Performance_page() {
+	    // Write code here that turns the phrase above into concrete actions
+	    throw new io.cucumber.java.PendingException();
+	}
+
+	@Then("I should be on the home page")
+	public void i_should_be_on_the_home_page() {
+	    // Write code here that turns the phrase above into concrete actions
+	    throw new io.cucumber.java.PendingException();
+	}
+
+
+	@When("I click the drop down list of the Portfolio Performance page.")
+	public void i_click_the_drop_down_list_of_the_Portfolio_Performance_page() {
+	    // Write code here that turns the phrase above into concrete actions
+	    throw new io.cucumber.java.PendingException();
+	}
+
+	@Then("the graph should re-adjust on the Portfolio Performance page.")
+	public void the_graph_should_re_adjust_on_the_Portfolio_Performance_page() {
+	    // Write code here that turns the phrase above into concrete actions
+	    throw new io.cucumber.java.PendingException();
+	}
 
   @After()
 	public void after() {

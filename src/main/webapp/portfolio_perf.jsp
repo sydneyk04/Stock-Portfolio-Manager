@@ -60,5 +60,10 @@ $.getJSON("https://canvasjs.com/data/gallery/jsp/total-biomass-energy-consumptio
 			<script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
 			<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 	    </div>
+	    <div id="buttons" class = "buttons">
+	    	<button type="button" id="aweek" class="btn btn-outline-primary">1 Week</button>
+	    	<button type="button" id="amonth" class="btn btn-outline-primary">1 Month</button>
+	    	<button type="button" id="ayear" class="btn btn-outline-primary">1 Year</button>
+	    </div>
 	</body>
 </html>

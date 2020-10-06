@@ -28,11 +28,14 @@ public class PortfolioServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	static PrintWriter out;
 	Boolean check = false;
-
+	private static String PORTPG= "portfolio_perf.jsp";
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		response.setContentType("text/plain");
 		check = true;
+		//Here, based on the user, I create/override 3 json files with portfolio value based on the userid 
+		//Then I pass the userid as a parameter (might not need to if already done by prev pages).
+		response.sendRedirect(PORTPG);
 	}
 
 	@Override
@@ -41,5 +44,8 @@ public class PortfolioServlet extends HttpServlet {
 		response.setStatus(HttpServletResponse.SC_OK);
 		out = response.getWriter();
 		check = true;
+		//Here, based on the user, I create/override 3 json files with portfolio value based on the userid 
+		//Then I pass the userid as a parameter (might not need to if already done by prev pages).
+		response.sendRedirect(PORTPG);
 	}
 } 
