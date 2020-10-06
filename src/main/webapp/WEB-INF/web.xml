@@ -16,16 +16,24 @@
   	<servlet-name>SignUpServlet</servlet-name>
   	<servlet-class>csci310.servlets.SignUpServlet</servlet-class>
   </servlet>
+  <servlet>
+  	<servlet-name>HomeServlet</servlet-name>
+  	<servlet-class>csci310.servlets.HomeServlet</servlet-class>
+  </servlet>
   <servlet-mapping>
   	<servlet-name>GreetingServlet</servlet-name>
   	<url-pattern>/greeting</url-pattern>
   </servlet-mapping>
-   <servlet-mapping>
+  <servlet-mapping>
   	<servlet-name>LoginServlet</servlet-name>
   	<url-pattern>/login</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
   	<servlet-name>SignUpServlet</servlet-name>
   	<url-pattern>/signup</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>HomeServlet</servlet-name>
+  	<url-pattern>/home</url-pattern>
   </servlet-mapping>
 </web-app>

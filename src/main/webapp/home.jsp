@@ -6,9 +6,10 @@
 	response.setHeader("Pragma","no-cache");
 	response.setDateHeader ("Expires", 0);
 
-	String portfolio_value = (String) session.getAttribute("portfolio_value");
-	if (portfolio_value == null) {
-		portfolio_value = "0";
+	Portfolio portfolio = (Portfolio) session.getAttribute("portfolio");
+	Double portfolio_value = 0.00;
+	if (portfolio != null) {
+		portfolio_value = portfolio.getValue();
 	}
 %>
 <html>
@@ -30,9 +31,15 @@
 	    </nav>
 	    <nav id="navbar" class="navbar navbar-dark bg-light navbar-static-top">
 			<div class="d-flex align-items-start">
-				<a id="logout-button" class="btn btn-outline-primary btn-md justify-content-start" href="login.jsp" role="button">
-					Log out
-				</a>
+				<form name="formname" action="/home" method="POST">
+					<input type="hidden" name="action" value="logout">
+					<button id="logout-button" type="submit" class="btn btn-outline-primary btn-md justify-content-start">
+						Logout <i class="icon-signout"></i>
+					</button>	       
+				</form>
+<!-- 				<a id="logout-button" class="btn btn-outline-primary btn-md justify-content-start" href="login.jsp" role="button">
+					Log out <i class="icon-signout"></i>
+				</a> -->
 			</div>
 		  	<div id="search-container" class="align-self-end">
 		  		<form id="search-form" action="/search" method="post">
@@ -56,30 +63,27 @@
 	     		<a id="portfolio-prediction" class="btn btn-primary" href="/predict" role="button">Predict</a>
 	     	</div>
 	     	<div id="portfolio" style="margin-top:24px">
-	     		<h3>Portfolio</h3>
-	     		<table id="portfolio-table" width="100%" border="1">
-				    <tr>
-				        <th>Stock</th>
-				        <th>Price</th>
-				        <th>Shares</th>
-				        <th>Total</th>
-				    </tr>
-				    <tr>
-				    	<td>${stock.symbol}</td>
-			            <td>${stock.price}</td>
-			            <td>${stock.shares}</td>
-			            <td>${stock.total}</td>
-				    </tr>
-<!--  				    <c:forEach items="${stockList}" var="stock" varStatus="status">
-				        <tr>
-				            <td>${stock.symbol}</td>
-				            <td>${stock.price}</td>
-				            <td>${stock.shares}</td>
-				            <td>${stock.total}</td>
-				        </tr>
-				    </c:forEach>
--->
-				</table>
+	     		<h3><strong>Portfolio</strong></h3>	     		
+     			<%if (portfolio == null) { %>
+			    	<p>Your portfolio is empty.</p>
+			    <%} else {%>
+				    <table id="portfolio-table">
+				    	<tr>
+					        <th style="background-color: #007bff;color: white;">Stock</th>
+					        <th style="background-color: #007bff;color: white;">Price</th>
+					        <th style="background-color: #007bff;color: white;">Shares</th>
+					        <th style="background-color: #007bff;color: white;">Total</th>
+					    </tr>
+					    <%for (PortfolioStock stock : portfolio.getStocks()) { %>
+					    	<tr>
+					            <td><%=stock.getSymbol() %></td>
+				                <td><%=stock.getPrice() %></td>
+				                <td><%=stock.getShares() %></td>
+				                <td><%=stock.getTotalValue() %></td>
+					        </tr>
+					    <%} %>
+				    </table>
+			    <%} %>
 	     	</div>
 	    </div>
 	</body>
