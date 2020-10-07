@@ -10,29 +10,21 @@ Feature: Home
     Then I should be on the Portfolio Performance page
 
   Scenario: Navigate to Portfolio Prediction from home page
-    Given I am on the home page
-    When I enter my username
-    And I click the login button
-    Then I should see the alert "Please fill out this field."
+    Given I am logged in on the home page
+    When I click the Portfolio Prediction button
+    Then I should be on the Portfolio Prediction page
 
   Scenario: Portfolio value on the home page
-    Given I am on the home page
+    Given I am logged in on the home page
     When I go to the Portfolio Value section
-    Then I should see the total value of my stock portfolio.
+    Then I should see the total value of my stock portfolio
 
   Scenario: Nonempty portfolio on the home page
-    Given I am on the home page
-    When I have stocks in the portfolio
-    And I go to the Portfolio section
+    Given I am logged in on the home page
+    When I go to the Portfolio section
     Then I should see a table of stocks in my portfolio.
 
   Scenario: Empty portfolio on the home page
-    Given I am on the home page
-    When I have no stocks in the portfolio
-    And I go to the Portfolio section
-    Then I should see the message "Your stock portfolio is empty."
-
-  Scenario: Navigate to a stock in user portfolio from home page
-    Given I am on the home page
-    When I click a stock in the user portfolio table
-    Then I should be on the stock page
+    Given I am logged in with an empty portfolio on the home page
+    When I go to the Portfolio section
+    Then I should see the portfolio message "Your portfolio is empty."

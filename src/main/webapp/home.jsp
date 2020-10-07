@@ -37,9 +37,6 @@
 						Logout <i class="icon-signout"></i>
 					</button>	       
 				</form>
-<!-- 				<a id="logout-button" class="btn btn-outline-primary btn-md justify-content-start" href="login.jsp" role="button">
-					Log out <i class="icon-signout"></i>
-				</a> -->
 			</div>
 		  	<div id="search-container" class="align-self-end">
 		  		<form id="search-form" action="/search" method="post">
@@ -57,15 +54,15 @@
 			</div>
 	    </nav>
 	    <div id="main-content" class="mainContent" style="padding:14px">
-	     	<h2><strong>Portfolio Value:</strong> <%= portfolio_value%></h2>
+	     	<h2 id="portfolio-value"><strong>Portfolio Value:</strong> <%= portfolio_value%></h2>
 	     	<div id="portfolio-buttons">
 	     		<a id="portfolio-performance" class="btn btn-primary" href="/portfolio" role="button">Performance</a>
 	     		<a id="portfolio-prediction" class="btn btn-primary" href="/predict" role="button">Predict</a>
 	     	</div>
 	     	<div id="portfolio" style="margin-top:24px">
-	     		<h3><strong>Portfolio</strong></h3>	     		
-     			<%if (portfolio == null) { %>
-			    	<p>Your portfolio is empty.</p>
+	     		<h3 id="portfolio-header"><strong>Portfolio</strong></h3>	     		
+     			<%if (portfolio.getStocks().isEmpty()) { %>
+			    	<p id="empty-portfolio-mssg">Your portfolio is empty.</p>
 			    <%} else {%>
 				    <table id="portfolio-table">
 				    	<tr>

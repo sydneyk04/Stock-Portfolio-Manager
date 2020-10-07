@@ -1,17 +1,21 @@
 package cucumber;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Random;
+
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 import io.cucumber.java.After;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-
-import java.util.Random;
 
 /**
  * Step definitions for Cucumber tests.
@@ -236,8 +240,123 @@ public class StepDefinitions {
 		
 		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/login.jsp"));
 	}
+	
+	/**************************
+	 * HOME FEATURE
+	 **************************/
+	@Given("I am logged in on the home page")
+	public void i_am_logged_in_on_the_home_page() {
+		String usr = "johnDoe";
+		String pw = "test123";
+		
+		driver.get(Login_URL);		
+		driver.findElement(By.xpath("//*[@id=\"usrname\"]")).sendKeys(usr);
+		driver.findElement(By.xpath("//*[@id=\"password\"]")).sendKeys(pw);
+		driver.findElement(By.xpath("//*[@id=\"login-form-submit\"]")).click();
+		
+		// Wait time for tester to see the home page before cucumber exits
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 
-  @After()
+	@When("I click the logout button")
+	public void i_click_the_logout_button() {
+		driver.findElement(By.id("logout-button")).click();
+	}
+
+	@Then("I should be on the login page")
+	public void i_should_be_on_the_login_page() {
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/login.jsp"));
+	}
+
+	@When("I click the Portfolio Performance button")
+	public void i_click_the_Portfolio_Performance_button() {
+		driver.findElement(By.id("portfolio-performance")).click();
+	}
+
+	@Then("I should be on the Portfolio Performance page")
+	public void i_should_be_on_the_Portfolio_Performance_page() {
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		assertFalse(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/home.jsp"));
+	}
+
+	@When("I click the Portfolio Prediction button")
+	public void i_click_the_Portfolio_Prediction_button() {
+		driver.findElement(By.id("portfolio-prediction")).click();
+	}
+
+	@Then("I should be on the Portfolio Prediction page")
+	public void i_should_be_on_the_Portfolio_Prediction_page() {
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		assertFalse(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/home.jsp"));
+	}
+
+	@When("I go to the Portfolio Value section")
+	public void i_go_to_the_Portfolio_Value_section() {
+		WebElement element = driver.findElement(By.id("main-content"));
+		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
+	}
+
+	@Then("I should see the total value of my stock portfolio")
+	public void i_should_see_the_total_value_of_my_stock_portfolio() {
+		WebElement element = driver.findElement(By.id("portfolio-value"));
+	    assertTrue(element.getText().length() > 16);
+	}
+
+	@When("I go to the Portfolio section")
+	public void i_go_to_the_Portfolio_section() {
+		WebElement element = driver.findElement(By.id("portfolio"));
+		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
+	}
+
+	@Then("I should see a table of stocks in my portfolio.")
+	public void i_should_see_a_table_of_stocks_in_my_portfolio() {		
+		assertNotNull(driver.findElement(By.id("portfolio-table")));
+	}
+	
+	@Given("I am logged in with an empty portfolio on the home page")
+	public void i_am_logged_in_with_an_empty_portfolio_on_the_home_page() {
+		String usr = "emptyPortfolio";
+		String pw = "test123";
+		
+		driver.get(Login_URL);		
+		driver.findElement(By.xpath("//*[@id=\"usrname\"]")).sendKeys(usr);
+		driver.findElement(By.xpath("//*[@id=\"password\"]")).sendKeys(pw);
+		driver.findElement(By.xpath("//*[@id=\"login-form-submit\"]")).click();
+	}
+
+	@Then("I should see the portfolio message {string}")
+	public void i_should_see_the_portfolio_message(String string) {
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+	    String mssg = driver.findElement(By.id("empty-portfolio-mssg")).getText();
+	    assertTrue(mssg.equals(string));
+	}
+	
+	@After()
 	public void after() {
 		driver.quit();
 	}

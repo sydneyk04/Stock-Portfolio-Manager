@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.concurrent.TimeUnit;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +23,6 @@ public class HomeServlet extends HttpServlet {
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException  {
-		System.out.println("In home servlet get()");
 		session = request.getSession();
 		this.response = response;
 		out = response.getWriter();
@@ -41,7 +39,6 @@ public class HomeServlet extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		System.out.println("In home servlet post()");
 		session = request.getSession();
 		this.response = response;
 		out = response.getWriter();
@@ -93,7 +90,7 @@ public class HomeServlet extends HttpServlet {
 	public void logout() throws IOException {
 		session.setAttribute("username", null);
 		session.setAttribute("login_error_message", null);
-		out.print("signout successful");	
+		out.print("logout success");	
 		response.sendRedirect("login.jsp");
 		out.flush();
 	}

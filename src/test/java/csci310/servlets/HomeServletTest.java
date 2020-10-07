@@ -1,9 +1,10 @@
 package csci310.servlets;
 
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -44,7 +46,7 @@ public class HomeServletTest extends Mockito {
 		session.setAttribute("username", "johnDoe");
 		
 		when(request.getSession()).thenReturn(session);
-		when(session.getAttribute("username")).thenReturn("johnDoe");
+		when(request.getSession().getAttribute("username")).thenReturn("johnDoe");
 		when(request.getParameter("username")).thenReturn("johnDoe");
 	}
 	
@@ -68,17 +70,26 @@ public class HomeServletTest extends Mockito {
 	
 	@Test
 	public void testDisplayPortfolio() throws IOException {
+		servlet.doPost(request, response);
+		
 		Portfolio portfolio = servlet.getPortfolio("johnDoe");
 		servlet.displayPortfolio(portfolio);
-		Portfolio sessPortfolio = (Portfolio) session.getAttribute("portfolio");
-		assertTrue(sessPortfolio.getStocks().size() == portfolio.getStocks().size());
+		
+		verify(session).setAttribute("portfolio", portfolio);
 	}
 
 	@Test
-	public void testLogout() throws IOException {
-		servlet.logout();
-		assertNull(session.getAttribute("username"));
-		assertNull(session.getAttribute("login_error_message"));
+	public void testLogout() throws IOException {		
+		StringWriter writer = new StringWriter();
+		PrintWriter out = new PrintWriter(writer);
+  
+		when(request.getParameter("action")).thenReturn("logout");
+		when(response.getWriter()).thenReturn(out);
+		
+		servlet.doPost(request, response);
+		String result = writer.getBuffer().toString();
+        
+		Assert.assertEquals("logout success", result);
 	}
 
 }
