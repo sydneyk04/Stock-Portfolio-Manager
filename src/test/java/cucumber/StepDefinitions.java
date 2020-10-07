@@ -325,8 +325,11 @@ public class StepDefinitions {
 	public void the_graph_should_re_adjust_on_the_Portfolio_Performance_page() {
 	    // Write code here that turns the phrase above into concrete actions
 		
-		// not yet implemented so throw exception for now
-	    throw new io.cucumber.java.PendingException();
+		// not yet implemented 
+		
+		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/portfolio_perf.jsp"));
+		
+	    //throw new io.cucumber.java.PendingException();
 	}
 
   @After()
