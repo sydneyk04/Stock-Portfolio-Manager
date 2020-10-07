@@ -238,7 +238,7 @@ public class StepDefinitions {
 		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/login.jsp"));
 	}
 	
-	
+
 	@When("I click the cancel button")
 	public void i_click_cancel() {
 		driver.findElement(By.xpath("/html/body/div/form/button[2]")).click();
@@ -261,71 +261,6 @@ public class StepDefinitions {
 		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/signup.jsp"));
 	}
 	
-	
-	@Given("I am logged in on the Portfolio Performance page")
-	public void i_am_logged_in_on_the_Portfolio_Performance_page() {
-	    // Write code here that turns the phrase above into concrete actions
-		
-		driver.get(Portfolio_URL);
-		
-	    //throw new io.cucumber.java.PendingException();
-	}
-
-	@When("I click the top banner of the Portfolio Performance page")
-	public void i_click_the_top_banner_of_the_Portfolio_Performance_page() {
-	    // Write code here that turns the phrase above into concrete actions
-	    
-		driver.findElement(By.xpath("//*[@id=\"banner-content\"]/a")).click();
-		
-		
-		
-		//throw new io.cucumber.java.PendingException();
-	}
-
-	@Then("I should be on the home page")
-	public void i_should_be_on_the_home_page() {
-	    // Write code here that turns the phrase above into concrete actions
-	    
-		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/home.jsp"));
-		
-		//throw new io.cucumber.java.PendingException();
-	}
-
-
-	@When("I click the 1 week button of the Portfolio Performance page.")
-	public void i_click_the_drop_down_list_of_the_Portfolio_Performance_page() {
-	    // Write code here that turns the phrase above into concrete actions
-		
-		driver.findElement(By.xpath("//*[@id=\"aweek\"]")).click();
-		
-	    //throw new io.cucumber.java.PendingException();
-	}
-	
-	@When("I click the 1 month button of the Portfolio Performance page.")
-	public void i_click_the_1m() {
-	    // Write code here that turns the phrase above into concrete actions
-		
-		driver.findElement(By.xpath("//*[@id=\"amonth\"]")).click();
-		
-	    //throw new io.cucumber.java.PendingException();
-	}
-	
-	@When("I click the 1 year button of the Portfolio Performance page.")
-	public void i_click_the_1y() {
-	    // Write code here that turns the phrase above into concrete actions
-		
-		driver.findElement(By.xpath("//*[@id=\"ayear\"]")).click();
-		
-	    //throw new io.cucumber.java.PendingException();
-	}
-
-	@Then("the graph should re-adjust on the Portfolio Performance page.")
-	public void the_graph_should_re_adjust_on_the_Portfolio_Performance_page() {
-	    // Write code here that turns the phrase above into concrete actions
-		
-		// not yet implemented so throw exception for now
-	    throw new io.cucumber.java.PendingException();
-	}
 
   @After()
 	public void after() {
