@@ -43,7 +43,7 @@ public class SearchServletTest extends Mockito {
 	public void testDoGetHttpServletRequestHttpServletResponse() throws IOException {
 		when(request.getParameter("stockName")).thenReturn("GOOG");
 		ss.doGet(request, response);
-		verify(response, times(0)).sendRedirect(anyString());
+		verify(response, times(1)).sendRedirect(anyString());
 		
 		when(request.getParameter("stockName")).thenReturn("1234");
 		ss.doGet(request, response);
