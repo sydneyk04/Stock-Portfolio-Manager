@@ -1,0 +1,31 @@
+body {
+	font-family: 'Raleway', sans-serif;
+}
+
+form {
+	margin: 0;
+	padding: 0;
+}
+
+th {
+  	background-color: #007bff; /* hex code for bootstrap's primary color */
+  	color: white;
+}
+
+#search-container {
+	margin: 0;
+	padding: 0;
+}
+
+#portfolio-table {
+	width: 100%;
+	border: 1px solid black;
+}
+
+#portfolio-buttons {
+	margin: 20px 0px 40px 0px;
+}
+
+tr, td {
+	border: 1px dotted lightgray;
+}
