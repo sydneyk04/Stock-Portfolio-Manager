@@ -20,6 +20,7 @@ public class StepDefinitions {
 	private static final String ROOT_URL = "http://localhost:8080/";
 	private static final String Signup_URL = "http://localhost:8080/signup.jsp";
 	private static final String Login_URL = "http://localhost:8080/login.jsp";
+	private static final String Portfolio_URL = "http://localhost:8080/portfolio_perf.jsp";
 
 	private final WebDriver driver = new ChromeDriver();
 	private static String entered_pass;
@@ -237,6 +238,7 @@ public class StepDefinitions {
 		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/login.jsp"));
 	}
 	
+
 	@When("I click the cancel button")
 	public void i_click_cancel() {
 		driver.findElement(By.xpath("/html/body/div/form/button[2]")).click();
@@ -259,6 +261,7 @@ public class StepDefinitions {
 		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/signup.jsp"));
 	}
 	
+
   @After()
 	public void after() {
 		driver.quit();
