@@ -107,8 +107,6 @@ public class StockPerformanceServlet extends HttpServlet {
 		}
 		
 		String stockHistory = new Gson().toJson(list);
-		System.out.println("JSON");
-		System.out.println(stockHistory);
 		
 		out.println("<script type=\"text/javascript\">\n" + 
 				"			window.onload = function() { \n" + 

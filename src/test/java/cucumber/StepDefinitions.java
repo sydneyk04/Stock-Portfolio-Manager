@@ -247,18 +247,6 @@ public class StepDefinitions {
 		driver.findElement(By.xpath("//*[@id=\"stockPerformance\"]")).click();
 	}
 	
-	@When("I click the drop down list")
-	public void i_click_the_drop_down_list() {
-	    
-		
-		
-	}
-	@Then("the graph should re-adjust")
-	public void the_graph_should_re_adjust() {
-	  
-		
-	}
-	
 	@When("I click the top banner")
 	public void i_click_the_top_banner() {
 		driver.findElement(By.xpath("//*[@id=\"banner-content\"]")).click();

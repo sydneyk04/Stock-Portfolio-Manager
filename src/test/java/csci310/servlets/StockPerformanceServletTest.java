@@ -52,6 +52,7 @@ public class StockPerformanceServletTest extends Mockito {
 		when(request.getParameter("stockName")).thenReturn("Kendall's Stock");
 		when(request.getParameter("stockCode")).thenReturn("KS");
 		when(request.getParameter("stockPrice")).thenReturn("15.10");
+		when(response.getWriter()).thenReturn(printWriter);
 		servlet.doGet(request, response);
 		assertTrue(servlet.check==true);
 	}
