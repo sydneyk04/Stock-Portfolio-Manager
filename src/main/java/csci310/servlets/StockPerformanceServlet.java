@@ -56,18 +56,8 @@ public class StockPerformanceServlet extends HttpServlet {
 		String symbol = request.getQueryString();
 		symbol = symbol.substring(symbol.lastIndexOf("=") + 1);
 		
-		//if not there just make it Tesla hahah
-		if(symbol == "") {
-			symbol = "TSLA";
-		}
-
 		//grab stock and set all the variables based on what stock we have
 		stock = getStock(symbol);
-		
-		//if stock doesnt exist
-		if(stock==null) {
-			response.sendRedirect("notfound.jsp");
-		}
 		
 		buildGraph(timePeriod);
 		
@@ -89,7 +79,6 @@ public class StockPerformanceServlet extends HttpServlet {
 		
 		//rebuild the graph
 		buildGraph(timePeriod);
-		
 		
 		response.sendRedirect(jsp);
 		check = true;
