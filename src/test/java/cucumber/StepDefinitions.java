@@ -24,6 +24,7 @@ public class StepDefinitions {
 	private static final String ROOT_URL = "http://localhost:8080/";
 	private static final String Signup_URL = "http://localhost:8080/signup.jsp";
 	private static final String Login_URL = "http://localhost:8080/login.jsp";
+	private static final String Portfolio_URL = "http://localhost:8080/portfolio_perf.jsp";
 
 	private final WebDriver driver = new ChromeDriver();
 	private static String entered_pass;
@@ -240,8 +241,30 @@ public class StepDefinitions {
 		
 		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/login.jsp"));
 	}
+
+	@When("I click the cancel button")
+	public void i_click_cancel() {
+		driver.findElement(By.xpath("/html/body/div/form/button[2]")).click();
+	}
 	
-	/**************************
+	@Then("I should be redirected to the login page")
+	public void redirect_login()
+	{
+		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/login.jsp"));
+	}
+	
+	@When("I click the Signup here hyperlink")
+	public void i_click_signup_here() {
+		driver.findElement(By.xpath("//*[@id=\"login-form\"]/p/a")).click();
+	}
+	
+	@Then("I should be redirected to the signup page")
+	public void redirect_signup()
+	{
+		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/signup.jsp"));
+	}
+	
+  /**************************
 	 * HOME FEATURE
 	 **************************/
 	@Given("I am logged in on the home page")
