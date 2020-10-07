@@ -11,7 +11,7 @@
 	      	</div>
 	    </nav>
 	    <div id="main-content" class = "mainContent">
-	     	<a href="/stockPerformance.jsp">stock performance page</a>
+	     	<a id="stockPerformance" href="/stockPerformance.jsp">stock performance page</a>
 	    </div>
 	</body>
 </html>

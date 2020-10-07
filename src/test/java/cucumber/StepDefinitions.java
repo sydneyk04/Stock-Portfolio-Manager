@@ -20,7 +20,7 @@ public class StepDefinitions {
 	private static final String ROOT_URL = "http://localhost:8080/";
 	private static final String Signup_URL = "http://localhost:8080/signup.jsp";
 	private static final String Login_URL = "http://localhost:8080/login.jsp";
-
+	
 	private final WebDriver driver = new ChromeDriver();
 	private static String entered_pass;
 	
@@ -235,6 +235,37 @@ public class StepDefinitions {
 		}
 		
 		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/login.jsp"));
+	}
+	
+	//Stock Performance Feature
+	@Given("I am logged in on the stock performance page")
+	public void i_am_logged_in_on_the_stock_performance_page() {
+		i_am_on_the_login_page();
+		i_enter_my_username();
+		i_enter_my_password();
+		i_click_the_login_button();
+		driver.findElement(By.xpath("//*[@id=\"stockPerformance\"]")).click();
+	}
+	
+	@When("I click the drop down list")
+	public void i_click_the_drop_down_list() {
+	    
+		
+		
+	}
+	@Then("the graph should re-adjust")
+	public void the_graph_should_re_adjust() {
+	  
+		
+	}
+	
+	@When("I click the top banner")
+	public void i_click_the_top_banner() {
+		driver.findElement(By.xpath("//*[@id=\"banner-content\"]")).click();
+	}
+	@Then("I should be on the home page")
+	public void i_should_be_on_the_home_page() {
+		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/home.jsp"));
 	}
 
   @After()
