@@ -366,7 +366,7 @@ public class StepDefinitions {
 		driver.findElement(By.xpath("//*[@id=\"password\"]")).sendKeys(pw);
 		driver.findElement(By.xpath("//*[@id=\"login-form-submit\"]")).click();
 	}
-
+	
 	@Then("I should see the portfolio message {string}")
 	public void i_should_see_the_portfolio_message(String string) {
 		try {
@@ -377,6 +377,80 @@ public class StepDefinitions {
 		
 	    String mssg = driver.findElement(By.id("empty-portfolio-mssg")).getText();
 	    assertTrue(mssg.equals(string));
+	}
+
+	/**************************
+	 * PORTFOLIO PERFORMANCE FEATURE
+	 **************************/
+	@Given("I am logged in on the Portfolio Performance page")
+	public void i_am_logged_in_on_the_Portfolio_Performance_page() {
+	    // Write code here that turns the phrase above into concrete actions
+		i_am_on_the_login_page();
+		i_enter_my_username();
+		i_enter_my_password();
+		i_click_the_login_button();
+		driver.get(Portfolio_URL);
+		
+	    //throw new io.cucumber.java.PendingException();
+	}
+
+	@When("I click the top banner of the Portfolio Performance page")
+	public void i_click_the_top_banner_of_the_Portfolio_Performance_page() {
+	    // Write code here that turns the phrase above into concrete actions
+	    
+		driver.findElement(By.xpath("//*[@id=\"banner-content\"]/a")).click();
+		
+		
+		
+		//throw new io.cucumber.java.PendingException();
+	}
+
+	@Then("I should be on the home page")
+	public void i_should_be_on_the_home_page() {
+	    // Write code here that turns the phrase above into concrete actions
+	    
+		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/home.jsp"));
+		
+		//throw new io.cucumber.java.PendingException();
+	}
+
+
+	@When("I click the 1 week button of the Portfolio Performance page.")
+	public void i_click_the_drop_down_list_of_the_Portfolio_Performance_page() {
+	    // Write code here that turns the phrase above into concrete actions
+		
+		driver.findElement(By.xpath("//*[@id=\"aweek\"]")).click();
+		
+	    //throw new io.cucumber.java.PendingException();
+	}
+	
+	@When("I click the 1 month button of the Portfolio Performance page.")
+	public void i_click_the_1m() {
+	    // Write code here that turns the phrase above into concrete actions
+		
+		driver.findElement(By.xpath("//*[@id=\"amonth\"]")).click();
+		
+	    //throw new io.cucumber.java.PendingException();
+	}
+	
+	@When("I click the 1 year button of the Portfolio Performance page.")
+	public void i_click_the_1y() {
+	    // Write code here that turns the phrase above into concrete actions
+		
+		driver.findElement(By.xpath("//*[@id=\"ayear\"]")).click();
+		
+	    //throw new io.cucumber.java.PendingException();
+	}
+
+	@Then("the graph should re-adjust on the Portfolio Performance page.")
+	public void the_graph_should_re_adjust_on_the_Portfolio_Performance_page() {
+	    // Write code here that turns the phrase above into concrete actions
+		
+		// not yet implemented 
+		
+		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/portfolio_perf.jsp"));
+		
+	    //throw new io.cucumber.java.PendingException();
 	}
 	
 	@After()
