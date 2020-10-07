@@ -20,6 +20,10 @@
   	<servlet-name>HomeServlet</servlet-name>
   	<servlet-class>csci310.servlets.HomeServlet</servlet-class>
   </servlet>
+  <servlet>
+  	<servlet-name>PortfolioServlet</servlet-name>
+  	<servlet-class>csci310.servlets.PortfolioServlet</servlet-class>
+  </servlet>
   <servlet-mapping>
   	<servlet-name>GreetingServlet</servlet-name>
   	<url-pattern>/greeting</url-pattern>
@@ -35,5 +39,9 @@
   <servlet-mapping>
   	<servlet-name>HomeServlet</servlet-name>
   	<url-pattern>/home</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>PortfolioServlet</servlet-name>
+  	<url-pattern>/portfolio</url-pattern>
   </servlet-mapping>
 </web-app>
