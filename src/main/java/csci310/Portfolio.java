@@ -55,6 +55,7 @@ public class Portfolio {
 	 * where the class PortfolioStock contains (stockSymbol, stockName, stockShares).
 	 */
 	public void fetchData() throws InterruptedException {
+		System.out.println("fetching portfolio data");
 		dataFetched = false;
 		initializeFirebase("stock16-service-account.json");
 		final ArrayList<PortfolioStock> data = new ArrayList<>();
@@ -68,11 +69,14 @@ public class Portfolio {
 		portfolioRef.addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot snapshot) {
-				if (snapshot.exists()) {					
+				if (snapshot.exists()) {				
+					System.out.println("Number of stocks in portfolio: " + snapshot.getChildrenCount());
 					for (DataSnapshot ds : snapshot.getChildren()) {                    
 						String stockSymbol = ds.getKey();
                         String stockName = (String) ds.child("name").getValue();
                         Double stockShares = (Double) ds.child("shares").getValue();
+                        
+                        System.out.println(stockSymbol + " | " + stockName + " | " + stockShares);
                         data.add(new PortfolioStock(stockSymbol, stockName, stockShares));
                     }
 					
@@ -91,6 +95,7 @@ public class Portfolio {
 		for (int i = 0; i < 20; ++i) {
 			TimeUnit.SECONDS.sleep(1);
 			if (dataFetched) {
+				System.out.println("Data fetched at: " + i);
 				break;
 			}
 		}	

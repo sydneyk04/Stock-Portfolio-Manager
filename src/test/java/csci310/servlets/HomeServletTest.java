@@ -1,5 +1,6 @@
 package csci310.servlets;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -32,6 +33,9 @@ public class HomeServletTest extends Mockito {
 
 	@Mock
 	RequestDispatcher rd;
+	
+	@Mock
+	Portfolio p;
 
 	HomeServlet servlet;
 
@@ -41,6 +45,7 @@ public class HomeServletTest extends Mockito {
     	response = Mockito.mock(HttpServletResponse.class);
     	session = Mockito.mock(HttpSession.class);
     	rd = Mockito.mock(RequestDispatcher.class);
+    	p = Mockito.mock(Portfolio.class);
 		servlet = new HomeServlet();
 		
 		session.setAttribute("username", "johnDoe");
@@ -52,20 +57,39 @@ public class HomeServletTest extends Mockito {
 	
 	@Test
 	public void testDoGet() throws IOException, ServletException {
+		StringWriter writer = new StringWriter();
+		PrintWriter out = new PrintWriter(writer);
+  
+		when(request.getParameter("action")).thenReturn(null);
+		when(response.getWriter()).thenReturn(out);
+		
 		servlet.doGet(request, response);
-		assertTrue(true);
+		String result = writer.getBuffer().toString();
+        
+		assertTrue(result.isEmpty());
 	}
 
 	@Test
 	public void testDoPost() throws IOException, ServletException {
+		StringWriter writer = new StringWriter();
+		PrintWriter out = new PrintWriter(writer);
+  
+		when(request.getParameter("action")).thenReturn(null);
+		when(response.getWriter()).thenReturn(out);
+		
 		servlet.doPost(request, response);
-		assertTrue(true);
+		String result = writer.getBuffer().toString();
+        
+		assertTrue(result.isEmpty());
 	}
 
 	@Test
 	public void testGetPortfolio() {
 		Portfolio portfolio = servlet.getPortfolio("johnDoe");
-		assertTrue(portfolio.getStocks().size() == 2);
+		assertTrue(portfolio.getStocks().size() >= 0);
+		
+		Portfolio nullPortfolio = servlet.getPortfolio(null);
+		assertNull(nullPortfolio);
 	}
 	
 	@Test
@@ -79,7 +103,7 @@ public class HomeServletTest extends Mockito {
 	}
 
 	@Test
-	public void testLogout() throws IOException {		
+	public void testLogoutPost() throws IOException {		
 		StringWriter writer = new StringWriter();
 		PrintWriter out = new PrintWriter(writer);
   
@@ -87,9 +111,23 @@ public class HomeServletTest extends Mockito {
 		when(response.getWriter()).thenReturn(out);
 		
 		servlet.doPost(request, response);
-		String result = writer.getBuffer().toString();
+		String postResult = writer.getBuffer().toString();
         
-		Assert.assertEquals("logout success", result);
+		Assert.assertEquals("logout success", postResult);
 	}
-
+	
+	@Test
+	public void testLogoutGet() throws IOException {		
+		StringWriter writer = new StringWriter();
+		PrintWriter out = new PrintWriter(writer);
+  
+		when(request.getParameter("action")).thenReturn("logout");
+		when(response.getWriter()).thenReturn(out);
+		
+		servlet.doGet(request, response);
+		String getResult = writer.getBuffer().toString();
+        
+		Assert.assertEquals("logout success", getResult);
+	}
+	
 }

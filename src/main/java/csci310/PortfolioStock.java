@@ -1,5 +1,8 @@
 package csci310;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
@@ -24,9 +27,15 @@ public class PortfolioStock {
 		String url = "https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v2/get-summary?region=US&symbol=" + symbol;
 		HttpResponse<JsonNode> response;
 		try {			
+//			response = Unirest.get(url)
+//					.header("x-rapidapi-host", "apidojo-yahoo-finance-v1.p.rapidapi.com")
+//					.header("x-rapidapi-key", "b649142cdemsh9271259a839a0e6p1038a7jsnd1899fcce2c0")
+//					.asJson();
+			
+			// ^ accidentally exceeded monthly quota
 			response = Unirest.get(url)
 					.header("x-rapidapi-host", "apidojo-yahoo-finance-v1.p.rapidapi.com")
-					.header("x-rapidapi-key", "b649142cdemsh9271259a839a0e6p1038a7jsnd1899fcce2c0")
+					.header("x-rapidapi-key", "c25e8b7584msh91885dcbf1784bfp11c4dcjsndc3e19ab4fea")
 					.asJson();
 			
 			price = response.getBody().getObject().getJSONObject("financialData").getJSONObject("currentPrice").getDouble("raw");
@@ -53,7 +62,8 @@ public class PortfolioStock {
 	}
 	
 	public Double getTotalValue() {
-		return price * shares;
+		BigDecimal bd = new BigDecimal(price * shares).setScale(2, RoundingMode.HALF_EVEN);
+		return bd.doubleValue();
 	}
 	
 }
