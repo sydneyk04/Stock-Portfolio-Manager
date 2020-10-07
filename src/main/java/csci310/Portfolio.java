@@ -82,6 +82,12 @@ public class Portfolio {
 					
 					dataFetched = true;
 				}
+				else {
+					// user doesn't have a "portfolio" node
+					System.out.println("Creating portfolio node for user");
+					portfolioRef.setValueAsync("none");
+					dataFetched = true;
+				}
 			}
 	
 			@Override
