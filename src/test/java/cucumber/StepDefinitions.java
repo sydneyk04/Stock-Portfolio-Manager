@@ -238,6 +238,30 @@ public class StepDefinitions {
 		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/login.jsp"));
 	}
 	
+	
+	@When("I click the cancel button")
+	public void i_click_cancel() {
+		driver.findElement(By.xpath("/html/body/div/form/button[2]")).click();
+	}
+	
+	@Then("I should be redirected to the login page")
+	public void redirect_login()
+	{
+		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/login.jsp"));
+	}
+	
+	@When("I click the Signup here hyperlink")
+	public void i_click_signup_here() {
+		driver.findElement(By.xpath("//*[@id=\"login-form\"]/p/a")).click();
+	}
+	
+	@Then("I should be redirected to the signup page")
+	public void redirect_signup()
+	{
+		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/signup.jsp"));
+	}
+	
+	
 	@Given("I am logged in on the Portfolio Performance page")
 	public void i_am_logged_in_on_the_Portfolio_Performance_page() {
 	    // Write code here that turns the phrase above into concrete actions
