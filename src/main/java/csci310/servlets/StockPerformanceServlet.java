@@ -51,12 +51,23 @@ public class StockPerformanceServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		response.setContentType("text/plain");
 		out = response.getWriter();
+
+		//pass stock symbol through URL,
+		String symbol = request.getQueryString();
+		symbol = symbol.substring(symbol.lastIndexOf("=") + 1);
 		
-		//variable that i need to take in
-		String symbol = "TSLA";
-		
+		//if not there just make it Tesla hahah
+		if(symbol == "") {
+			symbol = "TSLA";
+		}
+
 		//grab stock and set all the variables based on what stock we have
-		stock = YahooFinance.get(symbol);
+		stock = getStock(symbol);
+		
+		//if stock doesnt exist
+		if(stock==null) {
+			response.sendRedirect("notfound.jsp");
+		}
 		
 		buildGraph(timePeriod);
 		
@@ -84,6 +95,9 @@ public class StockPerformanceServlet extends HttpServlet {
 		check = true;
 	}
 	
+	public Stock getStock(String symbol) throws IOException {
+		return YahooFinance.get(symbol);
+	}
 	
 	void buildGraph(String timePeriod) throws IOException {
 		List<HistoricalQuote> history = stock.getHistory();
