@@ -264,7 +264,10 @@ public class StepDefinitions {
 	@Given("I am logged in on the Portfolio Performance page")
 	public void i_am_logged_in_on_the_Portfolio_Performance_page() {
 	    // Write code here that turns the phrase above into concrete actions
-		
+		i_am_on_the_login_page();
+		i_enter_my_username();
+		i_enter_my_password();
+		i_click_the_login_button();
 		driver.get(Portfolio_URL);
 		
 	    //throw new io.cucumber.java.PendingException();
