@@ -104,13 +104,13 @@ public class StepDefinitions {
 	@When("I enter my username")
 	public void i_enter_my_username() {
 		String usr = "johnDoe";
-		driver.findElement(By.xpath("//*[@id=\"login-form\"]/div[2]/input")).sendKeys(usr);
+		driver.findElement(By.xpath("//*[@id=\"usrname\"]")).sendKeys(usr);
 	}
 	
 	@When("I enter my password")
 	public void i_enter_my_password() {
 	    String usr = "test123";
-		driver.findElement(By.xpath("//*[@id=\"login-form\"]/div[3]/input")).sendKeys(usr);
+		driver.findElement(By.xpath("//*[@id=\"password\"]")).sendKeys(usr);
 	}
 	
 	@When("I click the login button")
