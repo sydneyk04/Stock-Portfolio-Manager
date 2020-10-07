@@ -18,3 +18,8 @@ Feature: Login
     When I enter my username
     And I click the login button
     Then I should see the alert "Please fill out this field."
+
+  Scenario: Click the signup-here hyperlink
+    Given I am on the login page
+    When I click the Signup here hyperlink
+    Then I should be redirected to the signup page

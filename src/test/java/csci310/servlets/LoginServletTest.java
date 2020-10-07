@@ -20,99 +20,99 @@ import org.mockito.Mockito;
 
 import com.google.firebase.FirebaseApp;
 
-public class LoginServletTest extends Mockito{
+public class LoginServletTest extends Mockito {
 	@Mock
 	HttpServletRequest request;
 
-    	@Mock
-    	HttpServletResponse response;
-    
-    	@Mock
-    	HttpSession session;
-    
-    	@Mock
-    	RequestDispatcher rd;
-    
-    	LoginServlet servlet;
+	@Mock
+	HttpServletResponse response;
 
-    	@Before
-    	public void setUp() throws Exception {
-        	request = Mockito.mock(HttpServletRequest.class);
-        	response = Mockito.mock(HttpServletResponse.class);
-        	session = Mockito.mock(HttpSession.class);
-        	rd = Mockito.mock(RequestDispatcher.class);
-        	servlet = new LoginServlet();
-         
-        	when(request.getSession()).thenReturn(session);        
-    	}
+	@Mock
+	HttpSession session;
+
+	@Mock
+	RequestDispatcher rd;
+
+	LoginServlet servlet;
+
+	@Before
+	public void setUp() throws Exception {
+    	request = Mockito.mock(HttpServletRequest.class);
+    	response = Mockito.mock(HttpServletResponse.class);
+    	session = Mockito.mock(HttpSession.class);
+    	rd = Mockito.mock(RequestDispatcher.class);
+    	servlet = new LoginServlet();
+     
+    	when(request.getSession()).thenReturn(session);        
+	}
     
-    	@Test
-    	public void testInitializeFirebaseNotNull() throws IOException {
-    		for (FirebaseApp app : FirebaseApp.getApps()) {
+    @Test
+    public void testInitializeFirebaseNotNull() throws IOException {
+    	for (FirebaseApp app : FirebaseApp.getApps()) {
 			app.delete();
 		}
 		assertNotNull(servlet.initializeFirebase("stock16-service-account.json"));
    	 }
  
-    	@Test
-    	public void testInitializeFirebaseNull() { 
+	@Test
+	public void testInitializeFirebaseNull() { 
 		assertNull(servlet.initializeFirebase("stock16-service-account.json"));
 	}
 	 
-    	@Test
+    @Test
 	public void testInitializeFirebaseThrowIOException() { 
-    		for (FirebaseApp app : FirebaseApp.getApps()) {
-    			app.delete();
-    		}
-    		servlet.initializeFirebase("test-google-credentials.json");
-    	}
+		for (FirebaseApp app : FirebaseApp.getApps()) {
+			app.delete();
+		}
+		servlet.initializeFirebase("test-google-credentials.json");
+	}
 	 
-    	@Test
-    	public void testDoPostSuccess() throws Exception {
-    		StringWriter writer = new StringWriter();
-    		PrintWriter out = new PrintWriter(writer);
-	  
-    		when(response.getWriter()).thenReturn(out);
-    		when(request.getParameter("username")).thenReturn("johnDoe");
+	@Test
+	public void testDoPostSuccess() throws Exception {
+		StringWriter writer = new StringWriter();
+		PrintWriter out = new PrintWriter(writer);
+  
+		when(response.getWriter()).thenReturn(out);
+		when(request.getParameter("username")).thenReturn("johnDoe");
 		when(request.getParameter("password")).thenReturn("test123");     
 
-    		servlet.doPost(request, response);  
-    		String result = writer.getBuffer().toString();
-	        
-    		Assert.assertEquals("login success", result);
-	     
-    		doThrow(IOException.class)
-    			.when(response)
-    			.sendRedirect(anyString());
-	     
-    		servlet.doPost(request, response);  
-    	}
-	    
-    	@Test
-    	public void testDoPostFail() throws Exception {
-    		StringWriter writer = new StringWriter();
-    		PrintWriter out = new PrintWriter(writer);
-	        
-    		when(response.getWriter()).thenReturn(out);
-    		when(request.getParameter("username")).thenReturn("johnDoe");
-    		when(request.getParameter("password")).thenReturn("pw");   
-	
-    		servlet.doPost(request, response);
-    		String result = writer.getBuffer().toString();
-	        
-    		Assert.assertEquals("login fail", result);
-	     
-    		when(request.getParameter("username")).thenReturn("fake");
-    		servlet.doPost(request, response);
-    		result = writer.getBuffer().toString();
-	     
-    		Assert.assertEquals("login fail", result);
+		servlet.doPost(request, response);  
+		String result = writer.getBuffer().toString();
+        
+		Assert.assertEquals("login success", result);
+     
+		doThrow(IOException.class)
+			.when(response)
+			.sendRedirect(anyString());
+     
+		servlet.doPost(request, response);  
+	}
+    
+	@Test
+	public void testDoPostFail() throws Exception {
+		StringWriter writer = new StringWriter();
+		PrintWriter out = new PrintWriter(writer);
+        
+		when(response.getWriter()).thenReturn(out);
+		when(request.getParameter("username")).thenReturn("johnDoe");
+		when(request.getParameter("password")).thenReturn("pw");   
+
+		servlet.doPost(request, response);
+		String result = writer.getBuffer().toString();
+        
+		Assert.assertEquals("login fail", result);
+     
+		when(request.getParameter("username")).thenReturn("fake");
+		servlet.doPost(request, response);
+		result = writer.getBuffer().toString();
+     
+		Assert.assertEquals("login fail", result);
 	}
 
-    	@SuppressWarnings("unchecked")
-    	@Test
-    	public void testAuthenticateThrowInterruptedException() throws Exception {
-    		when(response.getWriter()).thenThrow(InterruptedException.class);
-    		servlet.doPost(request, response);
-    	}
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testAuthenticateThrowInterruptedException() throws Exception {
+		when(response.getWriter()).thenThrow(InterruptedException.class);
+		servlet.doPost(request, response);
+	}
 }

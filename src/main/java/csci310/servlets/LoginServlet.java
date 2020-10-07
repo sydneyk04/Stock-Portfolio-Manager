@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.concurrent.TimeUnit;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -24,9 +27,10 @@ import com.google.firebase.database.ValueEventListener;
 public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static String LOGINPG= "login.jsp";
-	private static String HOMEPG= "home.jsp";
+	private static String HOMESERVLET= "/home";
 	
 	private HttpSession session = null;
+	private HttpServletRequest request = null;
 	private HttpServletResponse response = null;
 	private boolean dataFetched = false;
 	private PrintWriter out = null;
@@ -35,6 +39,7 @@ public class LoginServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		try {
 			session = request.getSession();
+			this.request = request;
 			this.response = response;
 			out = response.getWriter();
 			dataFetched = false;
@@ -108,7 +113,9 @@ public class LoginServlet extends HttpServlet {
 			
 			if (username != null) {
 				out.print("login success");
-				response.sendRedirect(HOMEPG);
+				System.out.println("Redirecting to home servlet from login");
+				session.setAttribute("username", username);
+				response.sendRedirect(HOMESERVLET);
 			} else {
 				out.print("login fail");
 				session.setAttribute("login_error_message", "Invalid login and/or password");

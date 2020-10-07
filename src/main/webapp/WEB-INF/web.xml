@@ -16,6 +16,7 @@
   	<servlet-name>SignUpServlet</servlet-name>
   	<servlet-class>csci310.servlets.SignUpServlet</servlet-class>
   </servlet>
+<<<<<<< HEAD
    <servlet>
   	<servlet-name>StockPerformanceServlet</servlet-name>
   	<servlet-class>csci310.servlets.StockPerformanceServlet</servlet-class>
@@ -35,5 +36,34 @@
   <servlet-mapping>
   	<servlet-name>StockPerformanceServlet</servlet-name>
   	<url-pattern>/stockperformance</url-pattern>
+=======
+  <servlet>
+  	<servlet-name>HomeServlet</servlet-name>
+  	<servlet-class>csci310.servlets.HomeServlet</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>PortfolioServlet</servlet-name>
+  	<servlet-class>csci310.servlets.PortfolioServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>GreetingServlet</servlet-name>
+  	<url-pattern>/greeting</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>LoginServlet</servlet-name>
+  	<url-pattern>/login</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>SignUpServlet</servlet-name>
+  	<url-pattern>/signup</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>HomeServlet</servlet-name>
+  	<url-pattern>/home</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>PortfolioServlet</servlet-name>
+  	<url-pattern>/portfolio</url-pattern>
+>>>>>>> refs/remotes/origin/develop
   </servlet-mapping>
 </web-app>
