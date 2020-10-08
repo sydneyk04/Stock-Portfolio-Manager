@@ -57,7 +57,7 @@
 	     	<h2 id="portfolio-value"><strong>Portfolio Value:</strong> <%= portfolio_value%></h2>
 	     	<div id="portfolio-buttons">
 	     		<a id="portfolio-performance" class="btn btn-primary" href="/portfolio" role="button">Performance</a>
-	     		<a id="portfolio-prediction" class="btn btn-primary" href="/predict.jsp" role="button">Predict</a>
+ 	     		<a id="portfolio-prediction" class="btn btn-primary" href="/predict.jsp" role="button">Predict</a>
 	     	</div>
 	     	<div id="portfolio" style="margin-top:24px">
 	     		<h3 id="portfolio-header"><strong>Portfolio</strong></h3>	     		
