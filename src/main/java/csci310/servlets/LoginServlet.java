@@ -113,7 +113,6 @@ public class LoginServlet extends HttpServlet {
 			
 			if (username != null) {
 				out.print("login success");
-				System.out.println("Redirecting to home servlet from login");
 				session.setAttribute("username", username);
 				response.sendRedirect(HOMESERVLET);
 			} else {
