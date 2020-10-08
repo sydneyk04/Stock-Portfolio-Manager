@@ -42,7 +42,7 @@
 		  		<form id="search-form" action="/search" method="post">
 					<div id="search-bar" class="p-1 bg-white rounded rounded-pill shadow-sm">
 						<div class="input-group">
-							<input id="search-input" type="search" placeholder="Search for stocks..." class="form-control border-0 bg-white">
+							<input id="search-input" type="search" name="stockName" placeholder="Search for stocks..." class="form-control border-0 bg-white">
 							<div class="input-group-append">
 	                			<button id="search-button" type="submit" class="btn btn-link text-primary">
 	                				<i class="icon-search"></i>
@@ -57,7 +57,7 @@
 	     	<h2 id="portfolio-value"><strong>Portfolio Value:</strong> <%= portfolio_value%></h2>
 	     	<div id="portfolio-buttons">
 	     		<a id="portfolio-performance" class="btn btn-primary" href="/portfolio" role="button">Performance</a>
-	     		<a id="portfolio-prediction" class="btn btn-primary" href="/predict" role="button">Predict</a>
+	     		<a id="portfolio-prediction" class="btn btn-primary" href="/predict.jsp" role="button">Predict</a>
 	     	</div>
 	     	<div id="portfolio" style="margin-top:24px">
 	     		<h3 id="portfolio-header"><strong>Portfolio</strong></h3>	     		

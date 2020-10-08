@@ -2,6 +2,7 @@ package csci310.servlets;
 
 import java.io.IOException;
 
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +18,7 @@ public class SearchServlet extends HttpServlet{
 	private HttpServletResponse response = null;
 	
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		this.response = response;
 		
 		String stockName = request.getParameter("stockName");
@@ -28,7 +29,8 @@ public class SearchServlet extends HttpServlet{
 			
 		}
 		else {
-			this.response.sendRedirect("/stock.jsp?stockName=" + stockName);
+			request.setAttribute("stockName", stockName);
+			request.getRequestDispatcher("/stock.jsp").forward(request, response);
 		}
 	}
 	

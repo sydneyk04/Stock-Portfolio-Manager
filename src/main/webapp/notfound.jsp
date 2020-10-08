@@ -22,7 +22,7 @@
 					Sorry, we didn't found any result.
 				</h1>
 			</div>
-			<form class="w-50 mt-3 mx-auto" action="/search" method="GET">
+			<form class="w-50 mt-3 mx-auto" action="/search" method="post">
 				<div class="form-group w-100">
 					<div class="active-cyan-4 mb-4">
 						<input type="text" class="form-control" name="stockName" placeholder="Search" aria-label="Search">

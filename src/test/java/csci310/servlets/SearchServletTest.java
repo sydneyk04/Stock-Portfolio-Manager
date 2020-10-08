@@ -7,6 +7,8 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -26,27 +28,34 @@ public class SearchServletTest extends Mockito {
 	@Mock
 	HttpServletResponse response;
 	
+	@Mock
+	RequestDispatcher rs;
+	
 	SearchServlet ss;
 	
 	@Before
 	public void setup() {
 		request = Mockito.mock(HttpServletRequest.class);
 		response = Mockito.mock(HttpServletResponse.class);
+		rs = Mockito.mock(RequestDispatcher.class);
 		ss = new SearchServlet();
 	}
 	
 	/**
 	 * Test method for {@link csci310.servlets.SearchServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)}.
 	 * @throws IOException 
+	 * @throws ServletException 
 	 */
 	@Test
-	public void testDoGetHttpServletRequestHttpServletResponse() throws IOException {
+	public void testDoPostHttpServletRequestHttpServletResponse() throws IOException, ServletException {
 		when(request.getParameter("stockName")).thenReturn("GOOG");
-		ss.doGet(request, response);
-		verify(response, times(1)).sendRedirect(anyString());
+		when(request.getRequestDispatcher(anyString())).thenReturn(rs);
+		doNothing().when(rs).forward(request, response);
+		ss.doPost(request, response);
+		verify(request, times(1)).getRequestDispatcher("/stock.jsp");
 		
 		when(request.getParameter("stockName")).thenReturn("1234");
-		ss.doGet(request, response);
+		ss.doPost(request, response);
 		verify(response, times(1)).sendRedirect("notfound.jsp");
 	}
 
