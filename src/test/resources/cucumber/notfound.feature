@@ -2,7 +2,7 @@ Feature: notfound page functionality
   
   Scenario: Go to homepage
     Given I am on the notfound page
-    When I click the top banner
+    When I click the top banner in notfound page
     Then I should be on the home page
 
   Scenario: Search a valid symbol

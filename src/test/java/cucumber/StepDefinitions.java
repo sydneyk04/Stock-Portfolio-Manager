@@ -474,15 +474,10 @@ public class StepDefinitions {
 		driver.get(Notfound_URL);
 	}
 	
-	@When("I click the top banner")
-	public void i_click_the_top_banner() {
+	@When("I click the top banner in notfound page")
+	public void i_click_the_top_banner_in_notfound_page() {
 		WebElement topBanner = driver.findElement(By.xpath("//*[@id=\"banner-content\"]/a"));
 		topBanner.click();
-	}
-	
-	@Then("I should be on the home page")
-	public void i_should_be_on_the_home_page() {
-		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/home.jsp"));
 	}
 	
 	@When("I enter {string} in the search bar")
@@ -499,6 +494,11 @@ public class StepDefinitions {
 	
 	@Then("I should be on the notfound page")
 	public void i_should_be_on_the_notfound_page() {
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/notfound.jsp"));
 	}
 	
@@ -522,8 +522,15 @@ public class StepDefinitions {
 		assertNotNull(value.getText());
 	}
   
+	@When("I click the top banner in predict page")
+	public void i_click_the_top_banner_in_predict_page() {
+		WebElement topBanner = driver.findElement(By.xpath("//*[@id=\"banner-content\"]/a"));
+		topBanner.click();
+	}
+	
 	@After()
 	public void after() {
 		driver.quit();
 	}
+	
 }

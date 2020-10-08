@@ -28,6 +28,10 @@
   	<servlet-name>StockPerformanceServlet</servlet-name>
   	<servlet-class>csci310.servlets.StockPerformanceServlet</servlet-class>
   </servlet>
+  <servlet>
+  	<servlet-name>SearchServlet</servlet-name>
+  	<servlet-class>csci310.servlets.SearchServlet</servlet-class>
+  	</servlet>
   <servlet-mapping>
   	<servlet-name>GreetingServlet</servlet-name>
   	<url-pattern>/greeting</url-pattern>
@@ -52,4 +56,6 @@
   	<servlet-name>StockPerformanceServlet</servlet-name>
   	<url-pattern>/stockperformance</url-pattern>
   </servlet-mapping>
-</web-app>
+  <servlet-mapping>
+  	<servlet-name>SearchServlet</servlet-name>
+  	<url-pattern>/search</url-pattern></servlet-mapping></web-app>

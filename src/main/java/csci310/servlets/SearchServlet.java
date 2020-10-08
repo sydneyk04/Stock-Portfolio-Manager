@@ -25,6 +25,7 @@ public class SearchServlet extends HttpServlet{
 		
 		if(s == null) {
 			this.response.sendRedirect("notfound.jsp");
+			
 		}
 		else {
 			this.response.sendRedirect("/stock.jsp?stockName=" + stockName);
