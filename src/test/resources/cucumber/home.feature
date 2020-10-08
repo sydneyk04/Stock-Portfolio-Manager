@@ -28,3 +28,8 @@ Feature: Home
     Given I am logged in with an empty portfolio on the home page
     When I go to the Portfolio section
     Then I should see the portfolio message "Your portfolio is empty."
+    
+  Scenario: Navigate to Home Page
+    Given I am logged in on the home page
+    When I click the top banner of the home page
+    Then I should be on the home page

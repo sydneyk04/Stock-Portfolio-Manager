@@ -398,6 +398,13 @@ public class StepDefinitions {
 	    String mssg = driver.findElement(By.id("empty-portfolio-mssg")).getText();
 	    assertTrue(mssg.equals(string));
 	}
+	
+	@When("I click the top banner of the home page")
+	public void i_click_the_top_banner_of_the_home_page() {
+	    // Write code here that turns the phrase above into concrete actions
+		
+		driver.findElement(By.xpath("//*[@id=\"banner-content\"]/a")).click();
+	}
 
 	/**************************
 	 * PORTFOLIO PERFORMANCE FEATURE
@@ -462,6 +469,8 @@ public class StepDefinitions {
 		
 	    //throw new io.cucumber.java.PendingException();
 	}
+	
+	
 	
 	@After()
 	public void after() {
