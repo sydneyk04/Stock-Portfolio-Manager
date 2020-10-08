@@ -8,6 +8,7 @@ import java.util.Random;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -249,7 +250,7 @@ public class StepDefinitions {
 		i_enter_my_username();
 		i_enter_my_password();
 		i_click_the_login_button();
-		driver.findElement(By.xpath("//*[@id=\"stockPerformance\"]")).click();
+		//driver.findElement(By.xpath("//*[@id=\"stockPerformance\"]")).click();
 	}
 	
 	@When("I click the top banner")
@@ -307,7 +308,14 @@ public class StepDefinitions {
 
 	@When("I click the logout button")
 	public void i_click_the_logout_button() {
-		driver.findElement(By.id("logout-button")).click();
+		WebElement element;
+		try {
+			element = driver.findElement(By.id("logout-button"));
+		} catch (NoSuchElementException e) {
+			element = driver.findElement(By.xpath("//*[@id=\"logout-button\"]"));
+		}
+		
+		element.click();
 	}
 
 	@Then("I should be on the login page")
