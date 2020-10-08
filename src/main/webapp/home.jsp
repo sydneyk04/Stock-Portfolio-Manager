@@ -29,10 +29,6 @@
 	      		USC 310 Stock Portfolio Management
 	      	</div>
 	    </nav>
-<<<<<<< HEAD
-	    <div id="main-content" class = "mainContent">
-	     	<a id="stockPerformance" href="/stockPerformance.jsp">stock performance page</a>
-=======
 	    <nav id="navbar" class="navbar navbar-dark bg-light navbar-static-top">
 			<div class="d-flex align-items-start">
 				<form name="formname" action="/home" method="POST">
@@ -86,7 +82,6 @@
 				    </table>
 			    <%} %>
 	     	</div>
->>>>>>> refs/remotes/origin/develop
 	    </div>
 	</body>
 </html>

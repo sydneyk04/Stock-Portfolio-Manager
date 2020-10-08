@@ -256,6 +256,7 @@ public class StepDefinitions {
 	public void i_click_the_top_banner() {
 		driver.findElement(By.xpath("//*[@id=\"banner-content\"]")).click();
 	}
+	
 	@Then("I should be on the home page")
 	public void i_should_be_on_the_home_page() {
 		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/home.jsp"));
