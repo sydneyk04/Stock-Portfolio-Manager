@@ -26,7 +26,9 @@
 	<body style="font-family: 'Raleway', sans-serif;">
 		<nav id="banner" class="navbar navbar-dark bg-secondary navbar-static-top justify-content-center">
 	      	<div id="banner-content" class="navbar-brand" style="color:white">
-	      		USC 310 Stock Portfolio Management
+	      		<a href="home.jsp" style="text-decoration: none; color:white;" >
+			    USC 310 Stock Portfolio Management 
+			</a>
 	      	</div>
 	    </nav>
 	    <nav id="navbar" class="navbar navbar-dark bg-light navbar-static-top">
