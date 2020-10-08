@@ -23,7 +23,7 @@
   		<link rel="stylesheet" href="styles/home.css">
   		<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap" rel="stylesheet">
 	</head>
-	<body>
+	<body style="font-family: 'Raleway', sans-serif;">
 		<nav id="banner" class="navbar navbar-dark bg-secondary navbar-static-top justify-content-center">
 	      	<div id="banner-content" class="navbar-brand" style="color:white">
 	      		USC 310 Stock Portfolio Management
@@ -61,7 +61,7 @@
 	     	</div>
 	     	<div id="portfolio" style="margin-top:24px">
 	     		<h3 id="portfolio-header"><strong>Portfolio</strong></h3>	     		
-     			<%if (portfolio.getStocks().isEmpty()) { %>
+     			<%if (portfolio == null || portfolio.getStocks().isEmpty()) { %>
 			    	<p id="empty-portfolio-mssg">Your portfolio is empty.</p>
 			    <%} else {%>
 				    <table id="portfolio-table">

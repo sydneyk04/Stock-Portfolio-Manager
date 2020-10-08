@@ -48,11 +48,15 @@ $.getJSON("https://canvasjs.com/data/gallery/jsp/total-biomass-energy-consumptio
 		<meta charset="ISO-8859-1">
 		<title>Home</title>
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+		<link rel="stylesheet" href="styles/main.css">
+		<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap" rel="stylesheet">
 	</head>
 	<body>
 		<nav id="banner" class="navbar navbar-dark bg-secondary navbar-static-top justify-content-center">
 	      	<div id="banner-content" class="navbar-brand"  style="color:white">
-	      		<a href="home.jsp" style="text-decoration: none" >	USC 310 Stock Portfolio Management </a>
+	      		<a href="home.jsp" style="text-decoration: none; color:white;" >
+					USC 310 Stock Portfolio Management 
+				</a>
 	      	</div>
 	    </nav>
 	    <div id="main-content" class = "mainContent">
