@@ -1,9 +1,12 @@
 package cucumber;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 import io.cucumber.java.After;
@@ -20,7 +23,8 @@ public class StepDefinitions {
 	private static final String ROOT_URL = "http://localhost:8080/";
 	private static final String Signup_URL = "http://localhost:8080/signup.jsp";
 	private static final String Login_URL = "http://localhost:8080/login.jsp";
-
+	private static final String Notfound_URL = "http://localhost:8080/notfound.jsp";
+	private static final String Predict_URL = "http://localhost:8080/predict.jsp";
 	private final WebDriver driver = new ChromeDriver();
 	private static String entered_pass;
 	
@@ -237,6 +241,55 @@ public class StepDefinitions {
 		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/login.jsp"));
 	}
 
+	@Given("I am on the notfound page") 
+	public void i_am_on_the_notfound_page() {
+		driver.get(Notfound_URL);
+	}
+	
+	@When("I click the top banner")
+	public void i_click_the_top_banner() {
+		WebElement topBanner = driver.findElement(By.xpath("//*[@id=\"banner-content\"]/a"));
+		topBanner.click();
+	}
+	
+	@Then("I should be on the home page")
+	public void i_should_be_on_the_home_page() {
+		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/home.jsp"));
+	}
+	
+	@When("I enter {string} in the search bar")
+	public void i_enter_in_the_search_bar(String string) {
+		WebElement searchBar = driver.findElement(By.xpath("/html/body/div/form/div/div/input"));
+		searchBar.sendKeys(string);
+		searchBar.sendKeys(Keys.ENTER);
+	}
+	
+	@Then("I should be on the goog stock page")
+	public void i_should_be_on_the_goog_stock_page() {
+		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/stock.jsp"));
+	}
+	
+	@Then("I should be on the notfound page")
+	public void i_should_be_on_the_notfound_page() {
+		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/notfound.jsp"));
+	}
+	
+	@Given("I am on the predict page")
+	public void i_am_on_the_predict_page() {
+		driver.get(Predict_URL);
+	}
+	
+	@When("I choose a future date")
+	public void i_choose_a_future_date() {
+		WebElement date = driver.findElement(By.xpath("//*[@id=\"datepicker\"]/div/table/tbody/tr[4]/td[4]/a"));
+		date.click();
+	}
+	
+	@Then("I will see the predicted portfolio value")
+	public void i_will_see_the_predicted_portfolio_value() {
+		WebElement value = driver.findElement(By.xpath("//*[@id=\"portfolioValue\"]"));
+		assertNotNull(value.getText());
+	}
   @After()
 	public void after() {
 		driver.quit();
