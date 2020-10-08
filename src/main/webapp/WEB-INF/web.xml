@@ -31,7 +31,7 @@
   <servlet>
   	<servlet-name>SearchServlet</servlet-name>
   	<servlet-class>csci310.servlets.SearchServlet</servlet-class>
-  	</servlet>
+  </servlet>
   <servlet-mapping>
   	<servlet-name>GreetingServlet</servlet-name>
   	<url-pattern>/greeting</url-pattern>
@@ -58,4 +58,6 @@
   </servlet-mapping>
   <servlet-mapping>
   	<servlet-name>SearchServlet</servlet-name>
-  	<url-pattern>/search</url-pattern></servlet-mapping></web-app>
+  	<url-pattern>/search</url-pattern>
+  </servlet-mapping>
+</web-app>
