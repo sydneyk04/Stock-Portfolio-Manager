@@ -52,7 +52,7 @@ public class SearchServletTest extends Mockito {
 		when(request.getRequestDispatcher(anyString())).thenReturn(rs);
 		doNothing().when(rs).forward(request, response);
 		ss.doPost(request, response);
-		verify(request, times(1)).getRequestDispatcher("/stock.jsp");
+		verify(request, times(1)).getRequestDispatcher("/stockperformance");
 		
 		when(request.getParameter("stockName")).thenReturn("1234");
 		ss.doPost(request, response);
