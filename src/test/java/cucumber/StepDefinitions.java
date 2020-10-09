@@ -504,7 +504,7 @@ public class StepDefinitions {
 	
 	@Then("I should be on the goog stock page")
 	public void i_should_be_on_the_goog_stock_page() {
-		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/stock.jsp"));
+		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/stockPerformance.jsp"));
 	}
 	
 	@Then("I should be on the notfound page")
