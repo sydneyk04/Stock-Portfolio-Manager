@@ -35,7 +35,7 @@ public class PortfolioStock {
 			// ^ accidentally exceeded monthly quota
 			response = Unirest.get(url)
 					.header("x-rapidapi-host", "apidojo-yahoo-finance-v1.p.rapidapi.com")
-					.header("x-rapidapi-key", "b10d8afd88msh889e1e6cc42b810p1a2d5cjsn4b9330895aa2")
+					.header("x-rapidapi-key", "d61ecfee64msh5bf4350ddab386dp1ebccbjsnd288af7e2d7d")
 					.asJson();
 			
 			price = response.getBody().getObject().getJSONObject("financialData").getJSONObject("currentPrice").getDouble("raw");
