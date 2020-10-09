@@ -22,11 +22,11 @@
 	     	<div class="text-center">
 	     		<form name="getdata" action="/stockperformance" method="post">
 	     		<div class="btn-group" role="group" aria-label="Basic example">
-				  <input type="submit"class="btn btn-secondary" name="timePeriod" value="1D"/>
-				  <input type="submit"class="btn btn-secondary" name="timePeriod" value="1W"/>
-				  <input type="submit"class="btn btn-secondary" name="timePeriod" value="1M"/>
-				  <input type="submit"class="btn btn-secondary" name="timePeriod" value="1Y"/>
-				  <input type="submit"class="btn btn-secondary" name="timePeriod" value="5Y"/>
+				  <input type="submit" id="1day-button" class="btn btn-secondary" name="timePeriod" value="1D"/>
+				  <input type="submit" id="1week-button" class="btn btn-secondary" name="timePeriod" value="1W"/>
+				  <input type="submit" id="1month-button" class="btn btn-secondary" name="timePeriod" value="1M"/>
+				  <input type="submit" id="1year-button" class="btn btn-secondary" name="timePeriod" value="1Y"/>
+				  <input type="submit" id="5year-button" class="btn btn-secondary" name="timePeriod" value="5Y"/>
 				</div>
 				</form>
 	     		<div id="chartContainer"></div>
