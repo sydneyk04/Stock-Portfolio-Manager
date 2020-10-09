@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Random;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -25,6 +26,8 @@ public class StepDefinitions {
 	private static final String ROOT_URL = "http://localhost:8080/";
 	private static final String Signup_URL = "http://localhost:8080/signup.jsp";
 	private static final String Login_URL = "http://localhost:8080/login.jsp";
+	private static final String Notfound_URL = "http://localhost:8080/notfound.jsp";
+	private static final String Predict_URL = "http://localhost:8080/predict.jsp";
 	private static final String Portfolio_URL = "http://localhost:8080/portfolio_perf.jsp";
 
 	private final WebDriver driver = new ChromeDriver();
@@ -332,9 +335,9 @@ public class StepDefinitions {
 	@When("I click the Portfolio Performance button")
 	public void i_click_the_Portfolio_Performance_button() {
 		driver.findElement(By.id("portfolio-performance")).click();
-	}
+	}	
 
-	@Then("I should be on the Portfolio Performance page")
+  @Then("I should be on the Portfolio Performance page")
 	public void i_should_be_on_the_Portfolio_Performance_page() {
 		try {
 			Thread.sleep(1000);
@@ -478,10 +481,71 @@ public class StepDefinitions {
 	    //throw new io.cucumber.java.PendingException();
 	}
 	
+  /**************************
+	 * NOTFOUND FEATURE
+	 **************************/
+  @Given("I am on the notfound page") 
+	public void i_am_on_the_notfound_page() {
+		driver.get(Notfound_URL);
+	}
 	
+	@When("I click the top banner in notfound page")
+	public void i_click_the_top_banner_in_notfound_page() {
+		WebElement topBanner = driver.findElement(By.xpath("//*[@id=\"banner-content\"]/a"));
+		topBanner.click();
+	}
+	
+	@When("I enter {string} in the search bar")
+	public void i_enter_in_the_search_bar(String string) {
+		WebElement searchBar = driver.findElement(By.xpath("/html/body/div/form/div/div/input"));
+		searchBar.sendKeys(string);
+		searchBar.sendKeys(Keys.ENTER);
+	}
+	
+	@Then("I should be on the goog stock page")
+	public void i_should_be_on_the_goog_stock_page() {
+		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/stock.jsp"));
+	}
+	
+	@Then("I should be on the notfound page")
+	public void i_should_be_on_the_notfound_page() {
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/notfound.jsp"));
+	}
+	
+  /**************************
+	 * PREDICT FEATURE
+	 **************************/
+	@Given("I am on the predict page")
+	public void i_am_on_the_predict_page() {
+		driver.get(Predict_URL);
+	}
+	
+	@When("I choose a future date")
+	public void i_choose_a_future_date() {
+		WebElement date = driver.findElement(By.xpath("//*[@id=\"datepicker\"]/div/table/tbody/tr[4]/td[4]/a"));
+		date.click();
+	}
+	
+	@Then("I will see the predicted portfolio value")
+	public void i_will_see_the_predicted_portfolio_value() {
+		WebElement value = driver.findElement(By.xpath("//*[@id=\"portfolioValue\"]"));
+		assertNotNull(value.getText());
+	}
+  
+	@When("I click the top banner in predict page")
+	public void i_click_the_top_banner_in_predict_page() {
+		WebElement topBanner = driver.findElement(By.xpath("//*[@id=\"banner-content\"]/a"));
+		topBanner.click();
+	}
 	
 	@After()
 	public void after() {
 		driver.quit();
 	}
+	
 }
