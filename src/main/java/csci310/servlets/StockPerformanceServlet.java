@@ -80,7 +80,7 @@ public class StockPerformanceServlet extends HttpServlet {
 		session = request.getSession();
 		
 		//when user selects new time period
-//		timePeriod = request.getParameter(“timePeriod”);
+		//timePeriod = request.getParameter(“timePeriod”);
 		String symbol = request.getParameter("stockName");
 		
 		//grab stock and set all the variables based on what stock we have
