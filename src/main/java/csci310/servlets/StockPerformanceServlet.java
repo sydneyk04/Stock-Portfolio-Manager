@@ -19,6 +19,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import java.net.*;
 import java.io.*;
@@ -43,12 +44,14 @@ public class StockPerformanceServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static String jsp= "stockPerformance.jsp";
 	static PrintWriter out;
+	private HttpSession session = null;
 	Stock stock;
 	String timePeriod = "1M";
 	Boolean check = false;
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		session = request.getSession();
 		response.setContentType("text/plain");
 		out = response.getWriter();
 
@@ -72,13 +75,25 @@ public class StockPerformanceServlet extends HttpServlet {
 	@Override
 	protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws IOException, ServletException {
 		response.setContentType("text/html;charset=UTF-8");
+		out = response.getWriter();
 		response.setStatus(HttpServletResponse.SC_OK);
+		session = request.getSession();
 		
 		//when user selects new time period
 //		timePeriod = request.getParameter(“timePeriod”);
+		String symbol = request.getParameter("stockName");
+		
+		//grab stock and set all the variables based on what stock we have
+		System.out.println("stock symbol is: " + symbol);
+		stock = getStock(symbol);
+		System.out.println(stock);
 		
 		//rebuild the graph
 		buildGraph(timePeriod);
+		
+		session.setAttribute("stockName", stock.getName());
+		session.setAttribute("stockCode", stock.getSymbol());
+		session.setAttribute("stockPrice", stock.getQuote().getPrice());
 		
 		response.sendRedirect(jsp);
 		check = true;

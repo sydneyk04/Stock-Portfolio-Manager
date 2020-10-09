@@ -9,7 +9,6 @@
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 	</head>
 	<body>
-		<jsp:include page="/stockperformance" />
 		<nav id="banner" class="navbar navbar-dark bg-secondary navbar-static-top justify-content-center">
 	      	<a id="banner-content" class="navbar-brand" style="color:white" href="/home.jsp">
 	      		USC 310 Stock Portfolio Management
@@ -17,8 +16,8 @@
 	    </nav>
 	    <div id="main-content" class = "mainContent">
 	     	
-	     	<h1 class="ml-5"><%=request.getAttribute("stockName")%> (<%=request.getAttribute("stockCode")%>)</h1>
-	     	<h2 class="ml-5">$<%=request.getAttribute("stockPrice")%></h2>	
+	     	<h1 class="ml-5"><%=session.getAttribute("stockName")%> (<%=session.getAttribute("stockCode")%>)</h1>
+	     	<h2 class="ml-5">$<%=session.getAttribute("stockPrice")%></h2>	
 	     	<div class="text-center">
 	     		<form name="getdata" action="/stockperformance" method="post">
 	     		<div class="btn-group" role="group" aria-label="Basic example">

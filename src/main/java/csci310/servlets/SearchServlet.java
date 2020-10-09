@@ -30,7 +30,10 @@ public class SearchServlet extends HttpServlet{
 		}
 		else {
 			request.setAttribute("stockName", stockName);
-			request.getRequestDispatcher("/stock.jsp").forward(request, response);
+			//request.getRequestDispatcher("/stock.jsp").forward(request, response);
+			
+			// temp redirect until stock.jsp is implemented
+			request.getRequestDispatcher("/stockperformance").forward(request, response);
 		}
 	}
 	
