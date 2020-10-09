@@ -126,6 +126,32 @@ public class StockPerformanceServlet extends HttpServlet {
 		
 		String stockHistory = new Gson().toJson(list);
 		
+		System.out.println(stockHistory);
+		
+		session.setAttribute("chart", "<script type=\"text/javascript\">\n" + 
+				"			window.onload = function() { \n" + 
+				"				var chart = new CanvasJS.Chart(\"chartContainer\", {\n" + 
+				"					theme: \"light2\",\n" + 
+				"					title: {\n" + 
+				"						text: \"\"\n" + 
+				"					},\n" + 
+				"					axisX: {\n" + 
+				"						title: \"Time\"\n" + 
+				"					},\n" + 
+				"					axisY: {\n" + 
+				"						title: \"Closing Price\",\n" + 
+				"						includeZero: true\n" + 
+				"					},\n" + 
+				"					data: [{\n" + 
+				"						type: \"line\",\n" + 
+				"						yValueFormatString: \"#,$##0\",\n" + 
+				"						dataPoints :" + stockHistory +
+				"					}]\n" + 
+				"				});\n" + 
+				"				chart.render();\n" + 
+				"			}\n" + 
+				"		</script>"
+				);
 		out.println("<script type=\"text/javascript\">\n" + 
 				"			window.onload = function() { \n" + 
 				"				var chart = new CanvasJS.Chart(\"chartContainer\", {\n" + 
