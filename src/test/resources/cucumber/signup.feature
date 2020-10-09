@@ -21,3 +21,8 @@ Feature: Sign Up
     And I enter the second hidden password field incorrectly
     And I click the sign up button
     Then I should the alert "Please ensure that your passwords match."
+
+ Scenario: Click the cancel button
+    Given I am on the sign up page
+    When I click the cancel button
+    Then I should be redirected to the login page
