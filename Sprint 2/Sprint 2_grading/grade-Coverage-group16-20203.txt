@@ -1,0 +1,8 @@
+Best Practice Coverage Report
+Owner: group16-20203
+Grade: 7.5/10
+Comments: 
+Using commit: https://github.com/CSCI310/project-20203-group16-20203/commit/c20a5887ec69cc6fe549abd9e636d09778e2a9fc
+Reported statement coverage: 76.0
+Reported branch coverage: 73.0
+Average coverage: 74.5
