@@ -1,0 +1,21 @@
+			Grading Table - Team16
+
+| Section                  | Grade               | Note                                                                                                                                                     |
+|--------------------------|---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Sprint Planning          | 8.0/9               | Sprint backlog must contain subset of features from Product backlog. Are you implementing every product feature in this sprint itself ?                  |
+| Scrums                   | 24.0/25             | Scrum 1:                                                                                                                                                 |
+|                          |                     | Scrum 2:Good job                                                                                                                                         |
+|                          |                     | Scrum 3:                                                                                                                                                 |
+|                          |                     | Scrum 4:Some discrepancies between Scrum meeting & task chart                                                                                            |
+|                          |                     | Scrum 5:Task for NandhaKumar not under "In-progress" section. Others also even though some tasks incomplete still don't have anything under In-progress. |
+| Retrospective            | TBD                 |                                                                                                                                                          |
+| TDD                      | 6/10                |                                                                                                                                                          |
+| Sustainable Pace         | 9/10                |                                                                                                                                                          |
+| GitFlow                  | 7.5/10              |                                                                                                                                                          |
+| Continuous Integration   | 9/10                |                                                                                                                                                          |
+| Refactor                 | 9.7/10              |                                                                                                                                                          |
+| Coverage                 | 7.5/10              |                                                                                                                                                          |
+| ------------------------ | ------------------- |                                                                                                                                                          |
+| Total                    | 80.7                |                                                                                                                                                          |
+| ------------------------ | ------------------- |                                                                                                                                                          |
+| Implementation Score     | 20/250              |                                                                                                                                                          |
