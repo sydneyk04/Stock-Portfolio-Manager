@@ -1,0 +1,27 @@
+Best Practice TDD Report
+Owner: group16-20203
+Grade: 6.0/10
+Comments: 
+	No test method found for: porfolio_jsons_creator.jsons_creator
+		Commit: https://github.com/CSCI310/project-20203-group16-20203/commit/7cac1afca0191c8b8dfb4921846f2f75b850741e
+	No test method found for: porfolio_jsons_creator.week_json_creator
+		Commit: https://github.com/CSCI310/project-20203-group16-20203/commit/7cac1afca0191c8b8dfb4921846f2f75b850741e
+	No test method found for: porfolio_jsons_creator.month_json_creator
+		Commit: https://github.com/CSCI310/project-20203-group16-20203/commit/7cac1afca0191c8b8dfb4921846f2f75b850741e
+	No test method found for: porfolio_jsons_creator.year_json_creator
+		Commit: https://github.com/CSCI310/project-20203-group16-20203/commit/7cac1afca0191c8b8dfb4921846f2f75b850741e
+	No test method found for: stockperformanceservlet.buildgraph
+		Commit: https://github.com/CSCI310/project-20203-group16-20203/commit/ff9be3cd4a2706a99014517dd8dea7f40dd3acb6
+	Test method was not created before method : portfolio.fetchdata
+		Method commit: https://github.com/CSCI310/project-20203-group16-20203/commit/896f31fb0c70a293045ea546fb2dc740cc767da0
+	No test method found for: portfolio.ondatachange
+		Commit: https://github.com/CSCI310/project-20203-group16-20203/commit/5bce6a309c44b4d3270c4731091c5a3924d635fe
+	No test method found for: portfolio.oncancelled
+		Commit: https://github.com/CSCI310/project-20203-group16-20203/commit/5bce6a309c44b4d3270c4731091c5a3924d635fe
+	Test method was not created before method : homeservlet.doget
+		Method commit: https://github.com/CSCI310/project-20203-group16-20203/commit/fdf4059cdb3f27f9347c04b980ab83b268c35911
+	No test method found for: signupservlet.alreadyexists
+		Commit: https://github.com/CSCI310/project-20203-group16-20203/commit/d784b51dde2939ab375af55342fd61adc45dee9b
+Correct TDD methods: 15
+Incorrect TDD methods: 10
+Total methods evaluated for TDD: 25
