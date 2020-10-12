@@ -1,0 +1,15 @@
+Best Practice Refactor Report
+Owner: group16-20203
+Grade: 9.7/10
+Comments: 
+Issue 52
+	The comment is empty
+	kendallmayo satisfied 6 of 7 requirements for this issue.
+Issue 50
+	nvdzmn satisfied 7 of 7 requirements for this issue.
+Issue 46
+	nandhakumar23 satisfied 7 of 7 requirements for this issue.
+Issue 41
+	cheungsa satisfied 7 of 7 requirements for this issue.
+Issue 32
+	NutFound satisfied 7 of 7 requirements for this issue.
