@@ -1,0 +1,12 @@
+Best Practice GitFlow Report
+Owner: group16-20203
+Grade: 7.5/10
+Comments: 
+
+	Pull did not follow base/head branch rules (-1) [develop<-hotfix-apikey]: https://github.com/CSCI310/project-20203-group16-20203/pull/54
+	Pull did not follow base/head branch rules (-1) [develop<-hotfix-apikey]: https://github.com/CSCI310/project-20203-group16-20203/pull/47
+	Pull did not follow base/head branch rules (-1) [develop<-hotfix-apikey]: https://github.com/CSCI310/project-20203-group16-20203/pull/45
+
+	Pull did not follow base/head branch rules (-1) [feature-landingpage<-refactor-add_ids_to_buttons]: https://github.com/CSCI310/project-20203-group16-20203/pull/10
+
+	Pull did not follow base/head branch rules (-1) [feature-login<-refactor-feature-login]: https://github.com/CSCI310/project-20203-group16-20203/pull/2
