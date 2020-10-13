@@ -56,21 +56,20 @@ public class StockPerformanceServlet extends HttpServlet {
 		response.setContentType("text/plain");
 		out = response.getWriter();
 
-//		//pass stock symbol through URL,
-//		String symbol = request.getQueryString();
-//		symbol = symbol.substring(symbol.lastIndexOf("=") + 1);
-//		
-//		//grab stock and set all the variables based on what stock we have
-//		stock = getStock(symbol);
-//		
-//		buildGraph(timePeriod);
-//		
-//		request.setAttribute("stockName", stock.getName());
-//		request.setAttribute("stockCode", stock.getSymbol());
-//		request.setAttribute("stockPrice", stock.getQuote().getPrice());
-//		
-//		response.sendRedirect(jsp);
-//		check = true;
+		//pass stock symbol through URL,
+		String symbol = request.getQueryString();
+		symbol = symbol.substring(symbol.lastIndexOf("=") + 1);
+		
+		//grab stock and set all the variables based on what stock we have
+		stock = getStock(symbol);
+		
+		buildGraph();
+		
+		request.setAttribute("stockName", stock.getName());
+		request.setAttribute("stockCode", stock.getSymbol());
+		request.setAttribute("stockPrice", stock.getQuote().getPrice());
+		
+		response.sendRedirect(jsp);
 	}
 	
 	@Override
@@ -80,21 +79,21 @@ public class StockPerformanceServlet extends HttpServlet {
 		response.setStatus(HttpServletResponse.SC_OK);
 		session = request.getSession();
 		
-		//when user selects new time period
-		//timePeriod = request.getParameter(“timePeriod”);
-		String symbol = request.getParameter("stockName");
+		//this code is for getting the stock from the url, we will have to change this
+		//to get from database - maybe new function getStocks()?
 		
-		//grab stock and set all the variables based on what stock we have
-		System.out.println("stock symbol is: " + symbol);
-		stock = getStock(symbol);
-		System.out.println(stock);
+			//when user selects new time period
+			//timePeriod = request.getParameter(“timePeriod”);
+			String symbol = request.getParameter("stockName");
+			//grab stock and set all the variables based on what stock we have
+			System.out.println("stock symbol is: " + symbol);
+			stock = getStock(symbol);
+			System.out.println(stock);
 		
 		//this is to get all the formatted jsons that will need to be displayed
-		buildPortfolioJSONS();
-		
+		buildPortfolioJSON();
 		buildStockJSONS();
 				
-		
 		//build the graph using the list of stocks
 		buildGraph();
 		
@@ -106,20 +105,90 @@ public class StockPerformanceServlet extends HttpServlet {
 
 	}
 	
-	public Stock getStock(String symbol) throws IOException {
-		return YahooFinance.get(symbol);
-	}
 	
-	void buildPortfolioJSONS() {
+	
+	
+	
+	void buildPortfolioJSON() {
 		//nanda built this somewhere we just need to add it in and convert to our graph
 	}
 	
-	void buildStockJSONS() {
+	void buildStockJSONS() throws IOException {
+		//Below is the code to build/format json for graph
+		//we just need to put this in a for loop and run for every stock user has added
 		
+		//get stock history - this is where time period should be passed in
+		//not sure how this is done
+		List<HistoricalQuote> history = stock.getHistory();
+	
+		
+		//this is for formatting it for the graph i am using
+		Map<Object,Object> map = null;
+		List<Map<Object,Object>> list = new ArrayList<Map<Object,Object>>();
+
+		for(int i=0; i<history.size(); i++) {
+			Calendar date = history.get(i).getDate();
+			int year = date.get(Calendar.YEAR);
+			int month = date.get(Calendar.MONTH);
+			if(month == 0) {
+				month = 12;
+			}
+			DateFormatSymbols symbols = new DateFormatSymbols();
+			String label = symbols.getShortMonths()[month] + " " + year;
+			BigDecimal close = history.get(i).getClose();
+		
+			map = new HashMap<Object,Object>(); map.put("label", label); map.put("y", close); 
+			list.add(map);
+		}
+		String stockHistory = new Gson().toJson(list);
+		
+		//this is the final formatted output
+		System.out.println(stockHistory);
 	}
 	
 	void buildGraph() throws IOException {
+		//chart to display different stocks
+		//i know this looks wacky but it will actually work hahah
 		
+		String theChart =  "<script type=\"text/javascript\">\n" + 
+				"			window.onload = function() { \n" + 
+				"				var chart = new CanvasJS.Chart(\"chartContainer\", {\n" + 
+				"					theme: \"light2\",\n" + 
+				"					title: {\n" + 
+				"						text: \"\"\n" + 
+				"					},\n" + 
+				"					axisX: {\n" + 
+				"						title: \"Time\"\n" + 
+				"					},\n" + 
+				"					axisY: {\n" + 
+				"						title: \"Closing Price\",\n" + 
+				"						includeZero: true\n" + 
+				"					},\n" + 
+				"					data: [\n";
 		
+		//add all of the stock jsons to the data for the graph
+		for(int i=0; i<jsons.size(); i++) {
+			
+			theChart += "{\n" +
+							"type: \"line\",\n" + 
+							"yValueFormatString: \"#,$##0\",\n" + 
+							"dataPoints :" + jsons.get(i) +
+						"},\n";	
+		}
+		
+		//add the end code
+		theChart +=
+				"					]\n" + 
+				"				});\n" + 
+				"				chart.render();\n" + 
+				"			}\n" + 
+				"		</script>";
+		
+		session.setAttribute("chart", theChart);
+		
+	}
+	
+	public Stock getStock(String symbol) throws IOException {
+		return YahooFinance.get(symbol);
 	}
 }

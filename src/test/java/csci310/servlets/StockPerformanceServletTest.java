@@ -66,8 +66,8 @@ public class StockPerformanceServletTest extends Mockito {
 	}
 	
 	@Test
-	public void testBuildPortfolioJSONS() throws IOException, ServletException, InterruptedException {	
-		servlet.buildStockJSONS();
+	public void testBuildPortfolioJSON() throws IOException, ServletException, InterruptedException {	
+		servlet.buildPortfolioJSON();
 		assertTrue(true);
 	}
 	
