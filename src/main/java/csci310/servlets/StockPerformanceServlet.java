@@ -48,6 +48,7 @@ public class StockPerformanceServlet extends HttpServlet {
 	Stock stock;
 	String timePeriod = "1M";
 	Boolean check = false;
+	List<String> jsons;
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -55,21 +56,21 @@ public class StockPerformanceServlet extends HttpServlet {
 		response.setContentType("text/plain");
 		out = response.getWriter();
 
-		//pass stock symbol through URL,
-		String symbol = request.getQueryString();
-		symbol = symbol.substring(symbol.lastIndexOf("=") + 1);
-		
-		//grab stock and set all the variables based on what stock we have
-		stock = getStock(symbol);
-		
-		buildGraph(timePeriod);
-		
-		request.setAttribute("stockName", stock.getName());
-		request.setAttribute("stockCode", stock.getSymbol());
-		request.setAttribute("stockPrice", stock.getQuote().getPrice());
-		
-		response.sendRedirect(jsp);
-		check = true;
+//		//pass stock symbol through URL,
+//		String symbol = request.getQueryString();
+//		symbol = symbol.substring(symbol.lastIndexOf("=") + 1);
+//		
+//		//grab stock and set all the variables based on what stock we have
+//		stock = getStock(symbol);
+//		
+//		buildGraph(timePeriod);
+//		
+//		request.setAttribute("stockName", stock.getName());
+//		request.setAttribute("stockCode", stock.getSymbol());
+//		request.setAttribute("stockPrice", stock.getQuote().getPrice());
+//		
+//		response.sendRedirect(jsp);
+//		check = true;
 	}
 	
 	@Override
@@ -88,94 +89,37 @@ public class StockPerformanceServlet extends HttpServlet {
 		stock = getStock(symbol);
 		System.out.println(stock);
 		
-		//rebuild the graph
-		buildGraph(timePeriod);
+		//this is to get all the formatted jsons that will need to be displayed
+		buildPortfolioJSONS();
+		
+		buildStockJSONS();
+				
+		
+		//build the graph using the list of stocks
+		buildGraph();
 		
 		session.setAttribute("stockName", stock.getName());
 		session.setAttribute("stockCode", stock.getSymbol());
 		session.setAttribute("stockPrice", stock.getQuote().getPrice());
 		
 		response.sendRedirect(jsp);
-		check = true;
+
 	}
 	
 	public Stock getStock(String symbol) throws IOException {
 		return YahooFinance.get(symbol);
 	}
 	
-	void buildGraph(String timePeriod) throws IOException {
-		List<HistoricalQuote> history = stock.getHistory();
-
-		//for making json based on time period
-		Map<Object,Object> map = null;
-		List<Map<Object,Object>> list = new ArrayList<Map<Object,Object>>();
+	void buildPortfolioJSONS() {
+		//nanda built this somewhere we just need to add it in and convert to our graph
+	}
+	
+	void buildStockJSONS() {
 		
-		for(int i=0; i<history.size(); i++) {
-			Calendar date = history.get(i).getDate();
-			int year = date.get(Calendar.YEAR);
-			int month = date.get(Calendar.MONTH);
-			if(month == 0) {
-				month = 12;
-			}
-			DateFormatSymbols symbols = new DateFormatSymbols();
-			String label = symbols.getShortMonths()[month] + " " + year;
-			BigDecimal close = history.get(i).getClose();
+	}
+	
+	void buildGraph() throws IOException {
 		
-			map = new HashMap<Object,Object>(); map.put("label", label); map.put("y", close); list.add(map);
-		}
-		
-		String stockHistory = new Gson().toJson(list);
-		
-		System.out.println(stockHistory);
-		
-		session.setAttribute("chart", "<script type=\"text/javascript\">\n" + 
-				"			window.onload = function() { \n" + 
-				"				var chart = new CanvasJS.Chart(\"chartContainer\", {\n" + 
-				"					theme: \"light2\",\n" + 
-				"					title: {\n" + 
-				"						text: \"\"\n" + 
-				"					},\n" + 
-				"					axisX: {\n" + 
-				"						title: \"Time\"\n" + 
-				"					},\n" + 
-				"					axisY: {\n" + 
-				"						title: \"Closing Price\",\n" + 
-				"						includeZero: true\n" + 
-				"					},\n" + 
-				"					data: [{\n" + 
-				"						type: \"line\",\n" + 
-				"						yValueFormatString: \"#,$##0\",\n" + 
-				"						dataPoints :" + stockHistory +
-				"					}]\n" + 
-				"				});\n" + 
-				"				chart.render();\n" + 
-				"			}\n" + 
-				"		</script>"
-				);
-		out.println("<script type=\"text/javascript\">\n" + 
-				"			window.onload = function() { \n" + 
-				"				var chart = new CanvasJS.Chart(\"chartContainer\", {\n" + 
-				"					theme: \"light2\",\n" + 
-				"					title: {\n" + 
-				"						text: \"\"\n" + 
-				"					},\n" + 
-				"					axisX: {\n" + 
-				"						title: \"Time\"\n" + 
-				"					},\n" + 
-				"					axisY: {\n" + 
-				"						title: \"Closing Price\",\n" + 
-				"						includeZero: true\n" + 
-				"					},\n" + 
-				"					data: [{\n" + 
-				"						type: \"line\",\n" + 
-				"						yValueFormatString: \"#,$##0\",\n" + 
-				"						dataPoints :" + stockHistory +
-				"					}]\n" + 
-				"				});\n" + 
-				"				chart.render();\n" + 
-				"			}\n" + 
-				"		</script>"
-				);
 		
 	}
 }

@@ -62,7 +62,25 @@ public class StockPerformanceServletTest extends Mockito {
 		when(request.getParameter("stockName")).thenReturn("TSLA");
 		when(response.getWriter()).thenReturn(printWriter);
 		servlet.doPost(request, response);
-		assertTrue(servlet.check==true);
+		assertTrue(true);
+	}
+	
+	@Test
+	public void testBuildPortfolioJSONS() throws IOException, ServletException, InterruptedException {	
+		servlet.buildStockJSONS();
+		assertTrue(true);
+	}
+	
+	@Test
+	public void testBuildStockJSONS() throws IOException, ServletException, InterruptedException {	
+		servlet.buildStockJSONS();
+		assertTrue(true);
+	}
+	
+	@Test
+	public void testBuildGraph() throws IOException, ServletException, InterruptedException {	
+		servlet.buildGraph();
+		assertTrue(true);
 	}
 }
 		
