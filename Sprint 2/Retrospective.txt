@@ -1,0 +1,15 @@
+List of meeting participants
+    Sarah Cheung, Kendall Mayo, Nandhakumar Saravana, Hao Sun
+    
+What process aspects will be changed? Why?
+    Follow the TDD requirements more strictly. Specifically, we will create tests in the correct file directory, since we lost points for creating the test files in the incorrect directory.	
+    Make branches follow Gitflow naming requirements
+    We will try to have our work done earlier so we can get help from our peers on getting cobertura coverage.
+
+What tasks will be added to the product backlog as a result of review feedback?
+    We will combine our pages into one dashboard.
+    We will create a stock popup on the dashboard that will add stocks to be viewed or to be added to the users portfolio.
+    Remove search feature.
+    Set banner to a certain hex value.
+    Add adjustable dates on the graph.
+    Add acceptance tests for all buttons.
