@@ -46,7 +46,8 @@ public class StockPerformanceServlet extends HttpServlet {
 	static PrintWriter out;
 	private HttpSession session = null;
 	String timePeriod = "1M";
-	Boolean check = false;
+	Calendar date1;
+	Calendar date2;
 	List<String> tickers;
 	List<String> jsons;
 	
@@ -83,6 +84,7 @@ public class StockPerformanceServlet extends HttpServlet {
 			
 			//this is to format all the string jsons from the list of tickers
 			jsons = new ArrayList<String>();
+			getCalendarDate();
 			buildStockJSONS();
 				
 			//build the graph using the list of stocks
@@ -107,9 +109,14 @@ public class StockPerformanceServlet extends HttpServlet {
 		
 		
 		System.out.println("Hello from doPost");
+		
 		//this code runs when time period is changed
 		timePeriod = request.getParameter("timePeriod");
 		
+		tickers = new ArrayList<String>();
+		tickers.add("TSLA");
+		tickers.add("GOOGL");
+		jsons = new ArrayList<String>();
 		
 		buildStockJSONS();
 		buildGraph();
@@ -117,7 +124,15 @@ public class StockPerformanceServlet extends HttpServlet {
 	}
 	
 	void getCalendarDate() {
-		//nanda built this somewhere we just need to add it in and convert to our graph
+		//get calendar date based on user interval
+		if(timePeriod == "1D") {
+			
+		}
+		//if not selected just make the interval past year
+		else {
+//			date2 = Calendar.getInstance();
+//		    date1 = date2.add(Calendar.YEAR, -1);
+		}
 	}
 	
 	void buildPortfolioJSON() {

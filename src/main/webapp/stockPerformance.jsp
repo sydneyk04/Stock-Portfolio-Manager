@@ -24,8 +24,7 @@
 	    </nav>
 	    <div id="main-content" class = "mainContent">
 	     	
-	     	<h1 class="ml-5"><%=session.getAttribute("stockName")%> (<%=session.getAttribute("stockCode")%>)</h1>
-	     	<h2 class="ml-5">$<%=session.getAttribute("stockPrice")%></h2>	
+	     	<h1 class="ml-5"></h1>
 	     	<div class="text-center">
 	     		<form name="getdata" action="/stockperformance" method="post">
 	     		<div class="btn-group" role="group" aria-label="Basic example">
