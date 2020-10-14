@@ -45,9 +45,9 @@ public class StockPerformanceServlet extends HttpServlet {
 	private static String jsp= "stockPerformance.jsp";
 	static PrintWriter out;
 	private HttpSession session = null;
-	Stock stock;
 	String timePeriod = "1M";
 	Boolean check = false;
+	List<String> tickers;
 	List<String> jsons;
 	
 	@Override
@@ -55,21 +55,43 @@ public class StockPerformanceServlet extends HttpServlet {
 		session = request.getSession();
 		response.setContentType("text/plain");
 		out = response.getWriter();
+		
+		System.out.println("Hello from doGet");
+		//START JACKSON CODE//
+		
+			//Jackon, the code that should go here is a function that gets this info from the database and stores it locally:
+			//we can chat about best way to do this since we dont want to have to re call this function everytime the user 
+		    //adds or removes a stock- or maybe we do lol??
+			
+			//The return types i need:
+			//A list of the stocks in user portfolio of type List<String> with the ticker symbols, i made it a variable at the top
+			//A String that has the portfolio json in it - we are going to need to leverage nandas code for this
+		
+			//method stub you can use that i committed test file for TDD
+			buildPortfolioJSON();
 
-		//pass stock symbol through URL,
-		String symbol = request.getQueryString();
-		symbol = symbol.substring(symbol.lastIndexOf("=") + 1);
 		
-		//grab stock and set all the variables based on what stock we have
-		stock = getStock(symbol);
+		//END JACKSON CODE//
 		
-		buildGraph();
+		//START KENDALL CODE//
+			//My code is going to take in the data from above and format it to be displayed on the front end
+			
+			//for testing im making some tickers
+			tickers = new ArrayList<String>();
+			tickers.add("TSLA");
+			tickers.add("GOOGL");
+			
+			//this is to format all the string jsons from the list of tickers
+			jsons = new ArrayList<String>();
+			buildStockJSONS();
+				
+			//build the graph using the list of stocks
+			buildGraph();
 		
-		request.setAttribute("stockName", stock.getName());
-		request.setAttribute("stockCode", stock.getSymbol());
-		request.setAttribute("stockPrice", stock.getQuote().getPrice());
-		
-		response.sendRedirect(jsp);
+			response.sendRedirect(jsp);
+		//END KENDALL CODE//
+
+			
 	}
 	
 	@Override
@@ -79,35 +101,24 @@ public class StockPerformanceServlet extends HttpServlet {
 		response.setStatus(HttpServletResponse.SC_OK);
 		session = request.getSession();
 		
-		//this code is for getting the stock from the url, we will have to change this
-		//to get from database - maybe new function getStocks()?
+		//also im not sure if our initial code should go in dopost or doget so we can figure that out once we are 
+		//connecting everything to the dashboard
+		//for now i am typing '/stockperformance' in the url and having it display on stockPerformance.jsp
 		
-			//when user selects new time period
-			//timePeriod = request.getParameter(“timePeriod”);
-			String symbol = request.getParameter("stockName");
-			//grab stock and set all the variables based on what stock we have
-			System.out.println("stock symbol is: " + symbol);
-			stock = getStock(symbol);
-			System.out.println(stock);
 		
-		//this is to get all the formatted jsons that will need to be displayed
-		buildPortfolioJSON();
+		System.out.println("Hello from doPost");
+		//this code runs when time period is changed
+		timePeriod = request.getParameter("timePeriod");
+		
+		
 		buildStockJSONS();
-				
-		//build the graph using the list of stocks
 		buildGraph();
 		
-		session.setAttribute("stockName", stock.getName());
-		session.setAttribute("stockCode", stock.getSymbol());
-		session.setAttribute("stockPrice", stock.getQuote().getPrice());
-		
-		response.sendRedirect(jsp);
-
 	}
 	
-	
-	
-	
+	void getCalendarDate() {
+		//nanda built this somewhere we just need to add it in and convert to our graph
+	}
 	
 	void buildPortfolioJSON() {
 		//nanda built this somewhere we just need to add it in and convert to our graph
@@ -115,35 +126,38 @@ public class StockPerformanceServlet extends HttpServlet {
 	
 	void buildStockJSONS() throws IOException {
 		//Below is the code to build/format json for graph
-		//we just need to put this in a for loop and run for every stock user has added
 		
-		//get stock history - this is where time period should be passed in
-		//not sure how this is done
-		List<HistoricalQuote> history = stock.getHistory();
-	
+		//for loop to run through list of users stocks
+		for(int s=0; s<tickers.size(); s++) {
+			Stock stock = getStock(tickers.get(s));
+			
+			//this is where we need to deal with time period
+			List<HistoricalQuote> history = stock.getHistory();
+			
+			//this is for formatting it for the graph that i am using
+			Map<Object,Object> map = null;
+			List<Map<Object,Object>> list = new ArrayList<Map<Object,Object>>();
 		
-		//this is for formatting it for the graph i am using
-		Map<Object,Object> map = null;
-		List<Map<Object,Object>> list = new ArrayList<Map<Object,Object>>();
-
-		for(int i=0; i<history.size(); i++) {
-			Calendar date = history.get(i).getDate();
-			int year = date.get(Calendar.YEAR);
-			int month = date.get(Calendar.MONTH);
-			if(month == 0) {
-				month = 12;
+			for(int i=0; i<history.size(); i++) {
+				Calendar date = history.get(i).getDate();
+				int year = date.get(Calendar.YEAR);
+				int month = date.get(Calendar.MONTH);
+				if(month == 0) {
+					month = 12;
+				}
+				DateFormatSymbols symbols = new DateFormatSymbols();
+				String label = symbols.getShortMonths()[month] + " " + year;
+				BigDecimal close = history.get(i).getClose();
+			
+				map = new HashMap<Object,Object>(); map.put("label", label); map.put("y", close); 
+				list.add(map);
 			}
-			DateFormatSymbols symbols = new DateFormatSymbols();
-			String label = symbols.getShortMonths()[month] + " " + year;
-			BigDecimal close = history.get(i).getClose();
-		
-			map = new HashMap<Object,Object>(); map.put("label", label); map.put("y", close); 
-			list.add(map);
+			String stockHistory = new Gson().toJson(list);
+			System.out.println(stockHistory);
+			
+			//add to big list
+			jsons.add(stockHistory);
 		}
-		String stockHistory = new Gson().toJson(list);
-		
-		//this is the final formatted output
-		System.out.println(stockHistory);
 	}
 	
 	void buildGraph() throws IOException {

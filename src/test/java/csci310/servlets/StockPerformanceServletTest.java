@@ -66,6 +66,12 @@ public class StockPerformanceServletTest extends Mockito {
 	}
 	
 	@Test
+	public void testGetCalendarDate() throws IOException, ServletException, InterruptedException {	
+		servlet.getCalendarDate();
+		assertTrue(true);
+	}
+	
+	@Test
 	public void testBuildPortfolioJSON() throws IOException, ServletException, InterruptedException {	
 		servlet.buildPortfolioJSON();
 		assertTrue(true);
