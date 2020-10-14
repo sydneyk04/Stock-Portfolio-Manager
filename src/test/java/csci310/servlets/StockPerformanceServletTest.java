@@ -79,13 +79,23 @@ public class StockPerformanceServletTest extends Mockito {
 	
 	@Test
 	public void testBuildStockJSONS() throws IOException, ServletException, InterruptedException {	
-		servlet.buildStockJSONS();
+		servlet.buildStockJSONS("3M");
 		assertTrue(true);
 	}
 	
 	@Test
 	public void testBuildGraph() throws IOException, ServletException, InterruptedException {	
 		servlet.buildGraph();
+		assertTrue(true);
+	}
+	
+	@Test
+	public void testAddStock() {
+		assertTrue(true);
+	}
+	
+	@Test
+	public void getUserStock() {
 		assertTrue(true);
 	}
 }

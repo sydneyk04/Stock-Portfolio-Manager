@@ -10,7 +10,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import javax.servlet.RequestDispatcher;
@@ -21,9 +23,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.threeten.bp.format.DateTimeFormatter;
+
 import java.net.*;
 import java.io.*;
 import java.text.DateFormatSymbols;
+import java.text.SimpleDateFormat;
+
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -37,6 +43,7 @@ import com.google.gson.Gson;
 import yahoofinance.Stock;
 import yahoofinance.YahooFinance;
 import yahoofinance.histquotes.HistoricalQuote;
+import yahoofinance.histquotes.Interval;
 
 
 @WebServlet("/stockperformance")
@@ -46,10 +53,11 @@ public class StockPerformanceServlet extends HttpServlet {
 	static PrintWriter out;
 	private HttpSession session = null;
 	String timePeriod = "1M";
-	Calendar date1;
-	Calendar date2;
-	List<String> tickers;
+	Boolean check = false;
+	List<String> tickers = new ArrayList<String>();
 	List<String> jsons;
+	
+	Boolean dataFetched = false;
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -84,8 +92,7 @@ public class StockPerformanceServlet extends HttpServlet {
 			
 			//this is to format all the string jsons from the list of tickers
 			jsons = new ArrayList<String>();
-			getCalendarDate();
-			buildStockJSONS();
+			buildStockJSONS("1Y");
 				
 			//build the graph using the list of stocks
 			buildGraph();
@@ -109,45 +116,49 @@ public class StockPerformanceServlet extends HttpServlet {
 		
 		
 		System.out.println("Hello from doPost");
-		
 		//this code runs when time period is changed
 		timePeriod = request.getParameter("timePeriod");
 		
-		tickers = new ArrayList<String>();
-		tickers.add("TSLA");
-		tickers.add("GOOGL");
-		jsons = new ArrayList<String>();
 		
-		buildStockJSONS();
+		buildStockJSONS("1Y");
 		buildGraph();
 		
 	}
 	
 	void getCalendarDate() {
-		//get calendar date based on user interval
-		if(timePeriod == "1D") {
-			
-		}
-		//if not selected just make the interval past year
-		else {
-//			date2 = Calendar.getInstance();
-//		    date1 = date2.add(Calendar.YEAR, -1);
-		}
+		//nanda built this somewhere we just need to add it in and convert to our graph
 	}
 	
 	void buildPortfolioJSON() {
 		//nanda built this somewhere we just need to add it in and convert to our graph
 	}
 	
-	void buildStockJSONS() throws IOException {
+	void buildStockJSONS(String interval) throws IOException {
 		//Below is the code to build/format json for graph
+		//Add code to get historical quotes from a certain  period
+		Calendar from = Calendar.getInstance();
+		Calendar now = Calendar.getInstance();
+		if(interval.equalsIgnoreCase("1Y")) {
+			from.add(Calendar.YEAR, -1);
+		}
+		else if(interval.equalsIgnoreCase("3M")) {
+			from.add(Calendar.MONTH, -3);
+		}
+		else if(interval.equalsIgnoreCase("1M")) {
+			from.add(Calendar.MONTH, -1);
+		}
+		else if(interval.equalsIgnoreCase("1W")) {
+			from.add(Calendar.WEEK_OF_YEAR, -1);
+		}
+		else if(interval.equalsIgnoreCase("1D")) {
+			from.add(Calendar.DAY_OF_YEAR, -1);
+		}
 		
 		//for loop to run through list of users stocks
 		for(int s=0; s<tickers.size(); s++) {
-			Stock stock = getStock(tickers.get(s));
 			
-			//this is where we need to deal with time period
-			List<HistoricalQuote> history = stock.getHistory();
+			//this is where we need to deal with time period (Done!)
+			List<HistoricalQuote> history = YahooFinance.get(tickers.get(s), from, now, Interval.DAILY).getHistory();
 			
 			//this is for formatting it for the graph that i am using
 			Map<Object,Object> map = null;
@@ -220,4 +231,68 @@ public class StockPerformanceServlet extends HttpServlet {
 	public Stock getStock(String symbol) throws IOException {
 		return YahooFinance.get(symbol);
 	}
+	
+	public FirebaseApp initializeFireBase() throws IOException {
+		if (FirebaseApp.getApps().isEmpty()) {
+			FileInputStream serviceAccount;
+			serviceAccount = new FileInputStream("stock16-serviceaccount.json");
+			@SuppressWarnings("deprecation")
+			FirebaseOptions options = new FirebaseOptions.Builder()
+				.setCredentials(GoogleCredentials.fromStream(serviceAccount))
+				.setDatabaseUrl("https://stock16-e451e.firebaseio.com").build();
+			return FirebaseApp.initializeApp(options);
+		}
+		return null;
+	}
+	
+	public void addStock(String username, String symbol, Calendar from, Calendar to, double numOfShare) throws IOException {
+		initializeFireBase();
+		DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users").child(username).child("portfolio");
+		Map<String, Object> updates = new HashMap<>();
+		Map<String, String> content = new HashMap<>();
+		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+		String fromTime = format1.format(from);
+		String toTime = format1.format(to);
+		content.put("from", fromTime);
+		content.put("to", toTime);
+		content.put("shares", Double.toString(numOfShare));
+		updates.put(symbol, content);
+		
+		ref.updateChildrenAsync(updates);
+	}
+	
+	// retrieve stock symbols
+	public void getUserStock(String username) throws IOException, InterruptedException {
+		initializeFireBase();
+		final FirebaseDatabase database = FirebaseDatabase.getInstance();
+		DatabaseReference ref = database.getReference().child("users").child(username).child("portfolio");
+		
+		System.out.println(ref.toString());
+		
+		ref.addListenerForSingleValueEvent(new ValueEventListener() {
+			@Override
+			public void onDataChange(DataSnapshot snapshot) {
+				if(snapshot.exists()) {
+					for(DataSnapshot child : snapshot.getChildren()) {
+						tickers.add(child.getKey());
+					}
+					dataFetched = true;
+				}
+			}
+	
+			@Override
+			public void onCancelled(DatabaseError error) {
+				System.out.println(error.getMessage());
+				
+			}
+		});
+		
+		for (int i = 0; i < 5; ++i) {
+			TimeUnit.SECONDS.sleep(1);
+			if (dataFetched) {
+				break;
+			}
+		}
+	}
+
 }
