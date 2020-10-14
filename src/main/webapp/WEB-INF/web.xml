@@ -17,6 +17,10 @@
   	<servlet-class>csci310.servlets.SignUpServlet</servlet-class>
   </servlet>
   <servlet>
+  	<servlet-name>DashboardServlet</servlet-name>
+  	<servlet-class>csci310.servlets.DashboardServlet</servlet-class>
+  </servlet>
+  <servlet>
   	<servlet-name>HomeServlet</servlet-name>
   	<servlet-class>csci310.servlets.HomeServlet</servlet-class>
   </servlet>
@@ -45,6 +49,10 @@
   	<url-pattern>/signup</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
+  	<servlet-name>DashboardServlet</servlet-name>
+  	<url-pattern>/dashboard</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
   	<servlet-name>HomeServlet</servlet-name>
   	<url-pattern>/home</url-pattern>
   </servlet-mapping>
@@ -58,4 +66,6 @@
   </servlet-mapping>
   <servlet-mapping>
   	<servlet-name>SearchServlet</servlet-name>
-  	<url-pattern>/search</url-pattern></servlet-mapping></web-app>
+  	<url-pattern>/search</url-pattern>
+  </servlet-mapping>
+</web-app>
