@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="icon" href=https://www.daytrading.com/favicon32x32.png type="image/ico" />
 
-    <title>Gentelella Alela! | </title>
+    <title>USC 310 Stock Portfolio Management</title>
 
     <!-- Bootstrap -->
     <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -28,6 +28,9 @@
 
     <!-- Custom Theme Style -->
     <link href="../build/css/custom.min.css" rel="stylesheet">
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap" rel="stylesheet">
+    
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   </head>
@@ -35,6 +38,12 @@
   <body class="nav-md">
     <div class="container body">
       <div class="main_container">
+      	<nav id="banner" class="navbar navbar-dark bg-secondary navbar-static-top justify-content-center">
+		    <div id="banner-content" class="navbar-brand" style="color:white; font-family: 'Raleway', sans-serif;">
+		      		USC 310 Stock Portfolio Management
+		    </div>
+    	</nav>
+      
         <!-- top navigation -->
         <div class="top_nav">
           <div class="nav_menu">
@@ -45,7 +54,7 @@
                     <img src="images/img.jpg" alt="">John Doe
                   </a>
                   <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item"  href="login.html"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
+                    <a class="dropdown-item"  href="../login.jsp"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
                   </div>
                 </li>
 
