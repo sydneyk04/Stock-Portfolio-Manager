@@ -24,8 +24,8 @@
   		<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap" rel="stylesheet">
 	</head>
 	<body style="font-family: 'Raleway', sans-serif;">
-		<nav id="banner" class="navbar navbar-dark bg-secondary navbar-static-top justify-content-left">
-	      	<div id="banner-content" class="navbar-brand" style="color:white;font-size:45px">
+		<nav id="banner" class="navbar navbar-dark bg-secondary navbar-static-top justify-content-center">
+	      	<div id="banner-content" class="navbar-brand" style="color:white">
 	      		<a href="home.jsp" style="text-decoration: none; color:white;" >
 			    USC 310 Stock Portfolio Management 
 			</a>

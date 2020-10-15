@@ -17,8 +17,8 @@
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 	</head>
 	<body>
-		<nav id="banner" class="navbar navbar-dark bg-secondary navbar-static-top justify-content-left">
-	      	<a id="banner-content" class="navbar-brand" style="color:white;font-size:45px" href="/home.jsp">
+		<nav id="banner" class="navbar navbar-dark bg-secondary navbar-static-top justify-content-center">
+	      	<a id="banner-content" class="navbar-brand" style="color:white" href="/home.jsp">
 	      		USC 310 Stock Portfolio Management
 	      	</a>
 	    </nav>
