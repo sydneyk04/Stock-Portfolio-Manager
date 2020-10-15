@@ -1,18 +1,18 @@
 package csci310;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
+import yahoofinance.Stock;
+import yahoofinance.YahooFinance;
 
 public class PortfolioStock {
 	private String symbol;
 	private String name;
 	private Double shares;
 	private Double price;
+	private Stock stock;
 	
 	PortfolioStock(String symbol, String name, Double shares) {
 		this.symbol = symbol;
@@ -23,25 +23,21 @@ public class PortfolioStock {
 		setPrice();
 	}
 	
+	public Stock getStock(String symbol) {
+		try {
+			return YahooFinance.get(symbol);
+		} catch (IOException e) {
+			System.out.println(e);
+			return null;
+		}
+	}
+	
 	public void setPrice() {
-		String url = "https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v2/get-summary?region=US&symbol=" + symbol;
-		HttpResponse<JsonNode> response;
-		try {			
-//			response = Unirest.get(url)
-//					.header("x-rapidapi-host", "apidojo-yahoo-finance-v1.p.rapidapi.com")
-//					.header("x-rapidapi-key", "b649142cdemsh9271259a839a0e6p1038a7jsnd1899fcce2c0")
-//					.asJson();
-			
-			// ^ accidentally exceeded monthly quota
-			response = Unirest.get(url)
-					.header("x-rapidapi-host", "apidojo-yahoo-finance-v1.p.rapidapi.com")
-					.header("x-rapidapi-key", "d61ecfee64msh5bf4350ddab386dp1ebccbjsnd288af7e2d7d")
-					.asJson();
-			
-			price = response.getBody().getObject().getJSONObject("financialData").getJSONObject("currentPrice").getDouble("raw");
-		} catch (UnirestException e) {
-			System.out.println("Failed to fetch stock data from the server.");
-		}		
+		stock = getStock(symbol);
+		
+		if (stock != null) {
+			price = stock.getQuote().getPrice().doubleValue();
+		}
 	}
 
 	public String getSymbol() {
