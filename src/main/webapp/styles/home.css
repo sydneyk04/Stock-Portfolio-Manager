@@ -1,6 +1,10 @@
 body {
 	font-family: 'Raleway', sans-serif;
 }
+header {
+	height: 50px;
+	position: fixed;
+}
 
 form {
 	margin: 0;
