@@ -1,0 +1,22 @@
+*Sprint Backlog*
+Migrate the team repo
+Migrate UI
+Connect back end to front end
+File feasibility report 
+Portfolio Graph
+- SVG graph 
+- Portfolio changes
+- Date
+- Period selection
+- Manual enter
+- Default: 3 month range
+Update dashboard and log in UI to fit stakeholder requirements
+Add/Remove Stock functionality
+- Connect to database and stock API
+Unit Testing Coverage
+Acceptance Tests
+
+
+
+
+Group L will focus on migrating various code bases to a new GitHub repo, rounding out all feature UI and functionality, connecting the front end to back end, and creating robust tests. First, as a newly formed group it is imperative that we properly migrate and combine our various code bases to our new git repository. Going off that, the group will need to update variables and labels so that they are uniform across all pages. Given that the majority of the front end and back end was completed independently, the group will focus on connecting the two to make a functioning web application. Lastly, group L will complete a testing suite that enables the stakeholders to provide feedback at the sprint review next week. The ultimate goal for sprint 3 is to complete all known feature requirements so that the group can implement any final stakeholders requests in sprint 4. 
