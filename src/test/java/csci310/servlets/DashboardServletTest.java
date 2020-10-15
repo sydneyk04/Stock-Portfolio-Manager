@@ -2,6 +2,8 @@ package csci310.servlets;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,13 +35,13 @@ public class DashboardServletTest extends Mockito {
 	}
 
 	@Test
-	public void testDoGetHttpServletRequestHttpServletResponse() {
+	public void testDoGetHttpServletRequestHttpServletResponse() throws IOException {
 		servlet.doGet(request, response);
 		assertTrue(true);
 	}
 
 	@Test
-	public void testDoPostHttpServletRequestHttpServletResponse() {
+	public void testDoPostHttpServletRequestHttpServletResponse() throws IOException {
 		servlet.doPost(request, response);
 		assertTrue(true);
 	}
