@@ -6,8 +6,8 @@
 		<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap" rel="stylesheet">
 	</head>
 	<body>
-		<nav id="banner" class="navbar navbar-dark bg-secondary navbar-static-top justify-content-left">
-	      	<div id="banner-content" class="navbar-brand" style="color:white;font-size:45px">
+		<nav id="banner" class="navbar navbar-dark bg-secondary navbar-static-top justify-content-center">
+	      	<div id="banner-content" class="navbar-brand" style="color:white">
 	      		USC 310 Stock Portfolio Management
 	      	</div>
 		</nav>
@@ -36,8 +36,8 @@
 
 			<div id="error" name ="error"></div>
 			
-			<button type="submit" class="btn btn-lg btn-primary btn-block">Create User</button>
-			<button onclick="location.href='/login.jsp'" type="button" class="btn btn-lg btn-secondary btn-block">Cancel</button>
+			<button type="submit" class="btn btn-lg btn-primary btn-block">create account</button>
+			<button onclick="location.href='/login.jsp'" type="button" class="btn btn-lg btn-secondary btn-block">cancel</button>
 		</form>
 		</div>
 	</body>
