@@ -33,10 +33,12 @@ import java.text.SimpleDateFormat;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
@@ -259,6 +261,41 @@ public class StockPerformanceServlet extends HttpServlet {
 		updates.put(symbol, content);
 		
 		ref.updateChildrenAsync(updates);
+	}
+	
+	public void removeStock(String username, String symbol) throws IOException {
+		initializeFireBase();
+		Query queryRef = FirebaseDatabase.getInstance().getReference().child("users").child(username).child("portfolio").equalTo(symbol);
+		queryRef.addChildEventListener(new ChildEventListener() {
+					@Override
+					public void onChildAdded(DataSnapshot snapshot, String previousChild) {
+						snapshot.getRef().setValueAsync(null);
+					}
+
+					@Override
+					public void onChildChanged(DataSnapshot snapshot, String previousChildName) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void onChildRemoved(DataSnapshot snapshot) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void onChildMoved(DataSnapshot snapshot, String previousChildName) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void onCancelled(DatabaseError error) {
+						// TODO Auto-generated method stub
+						
+					}
+				});
 	}
 	
 	// retrieve stock symbols
