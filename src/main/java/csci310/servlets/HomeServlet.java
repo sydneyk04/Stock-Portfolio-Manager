@@ -16,7 +16,7 @@ import csci310.Portfolio;
 public class HomeServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static String HOMEPG= "home.jsp";
-	private static String INDEXPG= "production/index.jsp";
+	private static String INDEXPG= "production/index.html";
 	
 	private HttpSession session = null;
 	private HttpServletResponse response = null;
