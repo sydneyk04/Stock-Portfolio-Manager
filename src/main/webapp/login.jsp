@@ -21,8 +21,8 @@
     <link rel="stylesheet" href="styles/login.css">
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap" rel="stylesheet">  </head>
   <body>
-    <nav id="banner" class="navbar navbar-dark bg-secondary navbar-static-top justify-content-left">
-	    <div id="banner-content" class="navbar-brand" style="color:white;font-size:45px">
+    <nav id="banner" class="navbar navbar-dark bg-secondary navbar-static-top justify-content-center">
+	    <div id="banner-content" class="navbar-brand" style="color:white">
 	      		USC 310 Stock Portfolio Management
 	    </div>
     </nav>
@@ -50,7 +50,6 @@
             
             <div class="form-group">
               <input type="submit" class="btn btn-lg btn-block btn-primary" value="Login" id="login-form-submit" onclick="authenticate()">
-              <button onclick="location.href='/signup.jsp'" type="button" class="btn btn-lg btn-secondary btn-block">Cancel</button>
             </div>
 
             <p>Don't have an account? <a href="signup.jsp">Signup here</a>.</p>
