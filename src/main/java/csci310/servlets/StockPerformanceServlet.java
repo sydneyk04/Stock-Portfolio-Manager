@@ -23,10 +23,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.threeten.bp.format.DateTimeFormatter;
 
 import java.net.*;
 import java.io.*;
+import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 
@@ -62,6 +62,7 @@ public class StockPerformanceServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		session = request.getSession();
+		String username = session.getAttribute("username").toString();
 		response.setContentType("text/plain");
 		out = response.getWriter();
 		
@@ -87,9 +88,21 @@ public class StockPerformanceServlet extends HttpServlet {
 			
 			//for testing im making some tickers
 //			tickers = new ArrayList<String>();
-			tickers.add("TSLA");
-			tickers.add("GOOGL");
+//			tickers.add("TSLA");
+//			tickers.add("GOOGL");
+			Calendar rn = Calendar.getInstance();
 			
+			try {
+				getUserStock(username);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			System.out.println(tickers);
 			//this is to format all the string jsons from the list of tickers
 //			jsons = new ArrayList<String>();
 			buildStockJSONS("1Y");
@@ -225,7 +238,7 @@ public class StockPerformanceServlet extends HttpServlet {
 			theChart += "{\n" +
 //							"name: \"" + tickers.get(i) + "\"" + 
 							"type: \"line\",\n" + 
-							"yValueFormatString: \"#,$##0\",\n" + 
+							"yValueFormatString: \"$#,##0.00\",\n" + 
 							"dataPoints :" + jsons.get(i) +
 						"},\n";	
 		}
@@ -264,9 +277,10 @@ public class StockPerformanceServlet extends HttpServlet {
 		DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users").child(username).child("portfolio");
 		Map<String, Object> updates = new HashMap<>();
 		Map<String, String> content = new HashMap<>();
-		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
-		String fromTime = format1.format(from);
-		String toTime = format1.format(to);
+		DateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+		String fromTime = format1.format(from.getTime());
+		String toTime = format1.format(to.getTime());
+		content.put("name", YahooFinance.get(symbol).getName());
 		content.put("from", fromTime);
 		content.put("to", toTime);
 		content.put("shares", Double.toString(numOfShare));
@@ -307,6 +321,11 @@ public class StockPerformanceServlet extends HttpServlet {
 				break;
 			}
 		}
+	}
+	
+	public void removeStock(String username, String symbol) throws IOException {
+		initializeFireBase();
+		FirebaseDatabase.getInstance().getReference().child("users").child(username).child("portfolio").child(symbol).removeValueAsync();
 	}
 
 }
