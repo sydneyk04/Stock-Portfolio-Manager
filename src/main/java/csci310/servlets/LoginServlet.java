@@ -28,6 +28,7 @@ public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static String LOGINPG= "login.jsp";
 	private static String HOMESERVLET= "/home";
+	private static String DASHBOARDSERVLET= "/dashboard";
 	
 	private HttpSession session = null;
 	private HttpServletRequest request = null;
@@ -114,7 +115,8 @@ public class LoginServlet extends HttpServlet {
 			if (username != null) {
 				out.print("login success");
 				session.setAttribute("username", username);
-				response.sendRedirect(HOMESERVLET);
+				//response.sendRedirect(HOMESERVLET);
+				response.sendRedirect(DASHBOARDSERVLET);
 			} else {
 				out.print("login fail");
 				session.setAttribute("login_error_message", "Invalid login and/or password");

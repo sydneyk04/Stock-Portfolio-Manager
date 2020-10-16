@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,6 +17,7 @@ import csci310.Portfolio;
 public class HomeServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static String HOMEPG= "home.jsp";
+	private static String INDEXPG= "production/index.jsp";
 	
 	private HttpSession session = null;
 	private HttpServletResponse response = null;
@@ -80,10 +82,20 @@ public class HomeServlet extends HttpServlet {
 				e.printStackTrace();
 			}
 		}	
-				
+		
+		// retrievable value for jsp
 		portfolio.calculateValue();
 		session.setAttribute("portfolio", portfolio);
-		response.sendRedirect(HOMEPG);
+		
+		// retrievable value for html
+//		Cookie portfolioValueCookie = new Cookie("portfolioValue", String.valueOf(portfolio.getValue()));
+//		response.addCookie(portfolioValueCookie);
+//		//portfolioValueCookie.setMaxAge(60*60);
+//		portfolioValueCookie.setDomain("production/index.html");
+//		portfolioValueCookie.setPath("/dashboard");
+
+		// redirect to index page
+		response.sendRedirect(INDEXPG);
 		return;
 	}
 	

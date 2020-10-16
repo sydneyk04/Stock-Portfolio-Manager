@@ -49,13 +49,13 @@ import yahoofinance.histquotes.Interval;
 @WebServlet("/stockperformance")
 public class StockPerformanceServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static String jsp= "stockPerformance.jsp";
+	private static String jsp= "production/index.jsp";
 	static PrintWriter out;
 	private HttpSession session = null;
 	String timePeriod = "1M";
 	Boolean check = false;
 	List<String> tickers = new ArrayList<String>();
-	List<String> jsons;
+	List<String> jsons = new ArrayList<String>();;
 	
 	Boolean dataFetched = false;
 	
@@ -86,12 +86,12 @@ public class StockPerformanceServlet extends HttpServlet {
 			//My code is going to take in the data from above and format it to be displayed on the front end
 			
 			//for testing im making some tickers
-			tickers = new ArrayList<String>();
+//			tickers = new ArrayList<String>();
 			tickers.add("TSLA");
 			tickers.add("GOOGL");
 			
 			//this is to format all the string jsons from the list of tickers
-			jsons = new ArrayList<String>();
+//			jsons = new ArrayList<String>();
 			buildStockJSONS("1Y");
 				
 			//build the graph using the list of stocks
@@ -119,12 +119,12 @@ public class StockPerformanceServlet extends HttpServlet {
 		//this code runs when time period is changed
 		timePeriod = request.getParameter("timePeriod");
 		//for testing im making some tickers
-		tickers = new ArrayList<String>();
-		tickers.add("TSLA");
-		tickers.add("GOOGL");
+//		tickers = new ArrayList<String>();
+//		tickers.add("TSLA");
+//		tickers.add("GOOGL");
 		
 		//this is to format all the string jsons from the list of tickers
-		jsons = new ArrayList<String>();
+//		jsons = new ArrayList<String>();
 		
 		buildStockJSONS("1Y");
 		buildGraph();
