@@ -21,8 +21,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="icon" href=https://www.daytrading.com/favicon32x32.png type="image/ico" />
 
-    <title>Gentelella Alela! | </title>
+    <title>Dashboard</title>
 
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+	<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="styles/home.css">
+	
+	<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap" rel="stylesheet">
     <!-- Bootstrap -->
     <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
@@ -49,7 +56,21 @@
     <div class="container body">
       <div class="main_container">
         <!-- top navigation -->
-        <div class="top_nav">
+         <header style="height:70px; background:#787878;">
+  			<nav id="banner" class="navbar navbar-dark bg-secondary navbar-static-top justify-content-left">
+		      	<div id="banner-content" class="navbar-brand" style="color:white;font-size:45px;font-family: 'Raleway', sans-serif;">
+		      		<a href="index.html" style="text-decoration: none; color:white;" >
+				    USC 310 Stock Portfolio Management 
+				</a>
+		      	</div>
+		      	<div>
+		      	<a href="index.html" style="text-decoration: none; color:white;" >
+				    Logout
+				 </a>
+		      	</div>
+	   		</nav>
+	 	 </header>
+       <!--  <div class="top_nav">
           <div class="nav_menu">
               <nav class="nav navbar-nav" style="background:#2A3F54;">
               <ul class=" navbar-right">
@@ -65,11 +86,11 @@
              </ul>
             </nav>
           </div>
-        </div>
+        </div> -->
         <!-- /top navigation -->
 
         <!-- page content -->
-        <div class="right_col" role="main" style="margin-left:0px;padding-right:90px;padding-left:90px;">
+     <%--    <div class="right_col" role="main" style="margin-left:0px;padding-right:90px;padding-left:90px;">
           <!-- top tiles -->
           <div class="row">
             <div class="tile_count" style="width:inherit;">
@@ -79,7 +100,7 @@
               <!-- <span class="count_bottom"><i class="green">4% </i> From last Week</span> -->
             </div>
             </div>
-          </div>
+          </div> --%>
 
 
 
@@ -420,19 +441,6 @@
               <div class="x_panel">
                 <div class="x_title">
                   <h2>Manage Portfolio <small>+ / - stocks</small></h2>
-                  <ul class="nav navbar-right panel_toolbox">
-                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                    </li>
-                    <li class="dropdown">
-                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                          <a class="dropdown-item" href="#">Settings 1</a>
-                          <a class="dropdown-item" href="#">Settings 2</a>
-                        </div>
-                    </li>
-                    <li><a class="close-link"><i class="fa fa-close"></i></a>
-                    </li>
-                  </ul>
                   <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
