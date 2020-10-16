@@ -15,7 +15,7 @@ import javax.servlet.http.HttpSession;
 @WebServlet("/dashboard")
 public class DashboardServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static String INDEXPG= "production/index.html"; // do i redirect to index.html or index.jsp?
+	private static String INDEXPG= "production/index.html";
 	
 	private HttpSession session = null;
 	private HttpServletResponse response = null;

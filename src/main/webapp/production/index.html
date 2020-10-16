@@ -46,7 +46,7 @@
                     <img src="images/img.jpg" alt="">John Doe
                   </a>
                   <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item"  href="login.html"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
+                    <a class="dropdown-item"  href="../login.jsp"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
                   </div>
                 </li>
 
@@ -746,7 +746,7 @@
                         //         new Chart(e,a)
                         //
                         //     })
-                        }
+                        //}
                         var els = document.getElementsByClassName("canvasDoughnut");
 
                         for (var i = 0; i < els.length; i++) {
@@ -756,9 +756,40 @@
                         }
 
                       }
+                      
+                      function getCookie(name) {
+                  		// Split cookie string and get all individual name=value pairs in an array
+                   	    var cookieArr = document.cookie.split(";");
+                   	    
+                   	    // Loop through the array elements
+                   	    for(var i = 0; i < cookieArr.length; i++) {
+                   	        var cookiePair = cookieArr[i].split("=");
+                   	        
+                   	        /* Removing whitespace at the beginning of the cookie name
+                   	        and compare it with the given string */
+                   	        if(name == cookiePair[0].trim()) {
+                   	            // Decode the cookie value and return
+                   	            return decodeURIComponent(cookiePair[1]);
+                   	        }
+                   	    }
+                   	    
+                   	    // Return null if not found
+                   	    return null;
+                   	  }
+                      
+                      function getTotalPortfolioValue() {
+                   	    // Get cookie using our custom function
+                   	    var portfolioValue = getCookie("portfolioValue");
+                   	 	console.log("Total portfolio value: " + portfolioValue);
+                   	    
+                   	    if (portfolioValue == null) {
+                   	    	document.getElementById("totalPortfolio").innerHTML = "$0.00";
+                   	    } else {
+                   	    	document.getElementById("totalPortfolio").innerHTML = "$" + portfolioValue;
+                   	    }
+                      }
 
                       function updatePorfolio() {
-
 
                         var apiLink = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=IBM&apikey=60096f09efmsh63c9a7515124324p1b4c57jsna3f56df4cc32";
 
@@ -778,12 +809,13 @@
                             valueJson = valueJson["4. close"];
                             var dollarValue = valueJson;
 
-                            document.getElementById("totalPortfolio").innerHTML = "$" + dollarValue;
+                            //document.getElementById("totalPortfolio").innerHTML = "$" + dollarValue;
+                            getTotalPortfolioValue();
                           })
                           .catch(function (error) {
                             console.log(error);
-                          });
-
+                          });                    
+                        
                       }
 
 
