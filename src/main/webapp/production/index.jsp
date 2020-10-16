@@ -27,10 +27,7 @@
     <link href="../vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
 
     <!-- Custom Theme Style -->
-    <link href="../build/css/custom.min.css" rel="stylesheet">
-    <!-- Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap" rel="stylesheet">
-    
+    <link href="../build/css/custom.min.css" rel="stylesheet">   
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   </head>
@@ -38,12 +35,6 @@
   <body class="nav-md">
     <div class="container body">
       <div class="main_container">
-      	<nav id="banner" class="navbar navbar-dark bg-secondary navbar-static-top justify-content-center">
-		    <div id="banner-content" class="navbar-brand" style="color:white; font-family: 'Raleway', sans-serif;">
-		      		USC 310 Stock Portfolio Management
-		    </div>
-    	</nav>
-      
         <!-- top navigation -->
         <div class="top_nav">
           <div class="nav_menu">
