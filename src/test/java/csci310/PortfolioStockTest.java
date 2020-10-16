@@ -1,5 +1,7 @@
 package csci310;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
@@ -48,6 +50,12 @@ public class PortfolioStockTest {
 	}
 	
 	@Test
+	public void testGetStock() {
+		assertNotNull(stock.getStock("GOOG"));
+		assertNull(stock.getStock("FDAGRSRGSHSFGFG"));
+	}
+	
+	@Test
 	public void testGetTotalValue() {
 		assertTrue("Actual value " + stock.getTotalValue() + " is not greater than 0", stock.getTotalValue() > 0);
 	}
@@ -66,6 +74,10 @@ public class PortfolioStockTest {
 	public void testSetPrice() {
 		stock.setPrice();
 		assertTrue(stock.getPrice() > 0);
+		
+		PortfolioStock nullStock = new PortfolioStock("FDAGRSRGSHSFGFG", "FDAGRSRGSHSFGFG", 10.00);
+		nullStock.setPrice();
+		assertTrue(nullStock.getPrice() == 0);
 	}
 
 }
