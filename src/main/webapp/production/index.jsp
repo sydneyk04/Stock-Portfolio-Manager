@@ -75,8 +75,8 @@
             <div class="tile_count" style="width:inherit;">
             <div class="col-md-12 tile_stats_count">
               <span class="count_top"><i class="fa fa-user"></i> Total Portfolio Value</span>
-              <div class="count" id="totalPortfolio"></div>
-              <span class="count_bottom"><i class="green">4% </i> From last Week</span>
+              <div class="count" id="totalPortfolio">$<%= portfolio_value%></div>
+              <!-- <span class="count_bottom"><i class="green">4% </i> From last Week</span> -->
             </div>
             </div>
           </div>
@@ -747,7 +747,7 @@
                             var dollarValue = valueJson;
 
                             //document.getElementById("totalPortfolio").innerHTML = "$" + dollarValue;
-                            getTotalPortfolioValue();
+                            //getTotalPortfolioValue();
                           })
                           .catch(function (error) {
                             console.log(error);

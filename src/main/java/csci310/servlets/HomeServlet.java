@@ -88,11 +88,11 @@ public class HomeServlet extends HttpServlet {
 		session.setAttribute("portfolio", portfolio);
 		
 		// retrievable value for html
-		Cookie portfolioValueCookie = new Cookie("portfolioValue", String.valueOf(portfolio.getValue()));
-		response.addCookie(portfolioValueCookie);
-		//portfolioValueCookie.setMaxAge(60*60);
-		portfolioValueCookie.setDomain("production/index.html");
-		portfolioValueCookie.setPath("/dashboard");
+//		Cookie portfolioValueCookie = new Cookie("portfolioValue", String.valueOf(portfolio.getValue()));
+//		response.addCookie(portfolioValueCookie);
+//		//portfolioValueCookie.setMaxAge(60*60);
+//		portfolioValueCookie.setDomain("production/index.html");
+//		portfolioValueCookie.setPath("/dashboard");
 
 		// redirect to index page
 		response.sendRedirect(INDEXPG);
