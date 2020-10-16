@@ -33,12 +33,10 @@ import java.text.SimpleDateFormat;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
@@ -81,6 +79,7 @@ public class StockPerformanceServlet extends HttpServlet {
 			//method stub you can use that i committed test file for TDD
 			buildPortfolioJSON();
 
+		
 		//END JACKSON CODE//
 		
 		//START KENDALL CODE//
@@ -127,6 +126,7 @@ public class StockPerformanceServlet extends HttpServlet {
 	}
 	
 	void getCalendarDate() {
+		//nanda built this somewhere we just need to add it in and convert to our graph
 		
 		
 	}
@@ -174,10 +174,10 @@ public class StockPerformanceServlet extends HttpServlet {
 				Calendar date = history.get(i).getDate();
 				int year = date.get(Calendar.YEAR);
 				int month = date.get(Calendar.MONTH);
-				int day = date.get(Calendar.DAY_OF_MONTH)+1;
-				int time = date.get(Calendar.HOUR)+1;
+				int day = date.get(Calendar.DAY_OF_MONTH);
+//				System.out.println(day);
 				DateFormatSymbols symbols = new DateFormatSymbols();
-				String label = symbols.getShortMonths()[month] + " " + year;
+				String label = day + " " + symbols.getShortMonths()[month] + " " + year;
 				BigDecimal close = history.get(i).getClose();
 			
 				map = new HashMap<Object,Object>(); map.put("label", label); map.put("y", close); 
@@ -265,41 +265,6 @@ public class StockPerformanceServlet extends HttpServlet {
 		updates.put(symbol, content);
 		
 		ref.updateChildrenAsync(updates);
-	}
-	
-	public void removeStock(String username, String symbol) throws IOException {
-		initializeFireBase();
-		Query queryRef = FirebaseDatabase.getInstance().getReference().child("users").child(username).child("portfolio").equalTo(symbol);
-		queryRef.addChildEventListener(new ChildEventListener() {
-					@Override
-					public void onChildAdded(DataSnapshot snapshot, String previousChild) {
-						snapshot.getRef().setValueAsync(null);
-					}
-
-					@Override
-					public void onChildChanged(DataSnapshot snapshot, String previousChildName) {
-						// TODO Auto-generated method stub
-						
-					}
-
-					@Override
-					public void onChildRemoved(DataSnapshot snapshot) {
-						// TODO Auto-generated method stub
-						
-					}
-
-					@Override
-					public void onChildMoved(DataSnapshot snapshot, String previousChildName) {
-						// TODO Auto-generated method stub
-						
-					}
-
-					@Override
-					public void onCancelled(DatabaseError error) {
-						// TODO Auto-generated method stub
-						
-					}
-				});
 	}
 	
 	// retrieve stock symbols
