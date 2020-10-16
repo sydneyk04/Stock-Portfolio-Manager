@@ -79,7 +79,6 @@ public class StockPerformanceServlet extends HttpServlet {
 			//method stub you can use that i committed test file for TDD
 			buildPortfolioJSON();
 
-		
 		//END JACKSON CODE//
 		
 		//START KENDALL CODE//
@@ -126,11 +125,16 @@ public class StockPerformanceServlet extends HttpServlet {
 	}
 	
 	void getCalendarDate() {
-		//nanda built this somewhere we just need to add it in and convert to our graph
+		
+		
 	}
 	
 	void buildPortfolioJSON() {
 		//nanda built this somewhere we just need to add it in and convert to our graph
+		
+		
+		
+		
 	}
 	
 	void buildStockJSONS(String interval) throws IOException {
@@ -168,9 +172,8 @@ public class StockPerformanceServlet extends HttpServlet {
 				Calendar date = history.get(i).getDate();
 				int year = date.get(Calendar.YEAR);
 				int month = date.get(Calendar.MONTH);
-				if(month == 0) {
-					month = 12;
-				}
+				int day = date.get(Calendar.DAY_OF_MONTH)+1;
+				int time = date.get(Calendar.HOUR)+1;
 				DateFormatSymbols symbols = new DateFormatSymbols();
 				String label = symbols.getShortMonths()[month] + " " + year;
 				BigDecimal close = history.get(i).getClose();
@@ -193,6 +196,7 @@ public class StockPerformanceServlet extends HttpServlet {
 		String theChart =  "<script type=\"text/javascript\">\n" + 
 				"			window.onload = function() { \n" + 
 				"				var chart = new CanvasJS.Chart(\"chartContainer\", {\n" + 
+				"					zoomEnabled: true,\n" + 
 				"					theme: \"light2\",\n" + 
 				"					title: {\n" + 
 				"						text: \"\"\n" + 
