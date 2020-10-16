@@ -1,4 +1,12 @@
 <!DOCTYPE html>
+<%
+	//Disable Caching
+	response.setHeader("Cache-Control", "no-cache, no-store");
+	response.setHeader("Pragma","no-cache");
+	response.setDateHeader ("Expires", 0);
+
+	String chart = (String) session.getAttribute("chart");
+%>
 <html lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -33,6 +41,7 @@
   </head>
 
   <body class="nav-md">
+  
     <div class="container body">
       <div class="main_container">
         <!-- top navigation -->
@@ -86,9 +95,17 @@
                 </div>
 
                 <div class="col-md-9 col-sm-9 ">
-                  <!-- <div id="chart_plot_01" class="demo-placeholder"></div> -->
-                  <canvas id="myChart" width="1000" height="400"></canvas>
-                  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+                <form name="getdata" action="/stockperformance" method="post">
+                	<input type="submit" id="1-day-btn" class="btn btn-secondary" name="timePeriod" value="CLICK FOR GRAPH"/>
+                </form>
+               
+               <!--   <div id="chart_plot_01" class="demo-placeholder"></div> -->
+                  <!-- <canvas id="chartContainer" width="1000" height="400"></canvas> -->
+                  <div id="chartContainer" style="width: 1000px; height: 400px" ></div>
+                  <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+				  <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+                  <%= chart%>
+                  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
                   <script>
                   // Creating the original chart
                   var ctx = document.getElementById('myChart').getContext('2d');
@@ -233,9 +250,7 @@
                   addData(myChart)
 
 
-
-
-                  </script>
+                  </script> -->
                 </div>
                 <div class="col-md-3 col-sm-3  bg-white">
                   <div class="x_title">

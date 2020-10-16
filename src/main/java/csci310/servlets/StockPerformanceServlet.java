@@ -118,10 +118,17 @@ public class StockPerformanceServlet extends HttpServlet {
 		System.out.println("Hello from doPost");
 		//this code runs when time period is changed
 		timePeriod = request.getParameter("timePeriod");
+		//for testing im making some tickers
+		tickers = new ArrayList<String>();
+		tickers.add("TSLA");
+		tickers.add("GOOGL");
 		
+		//this is to format all the string jsons from the list of tickers
+		jsons = new ArrayList<String>();
 		
 		buildStockJSONS("1Y");
 		buildGraph();
+		response.sendRedirect("production/index.jsp");
 		
 	}
 	
@@ -196,7 +203,7 @@ public class StockPerformanceServlet extends HttpServlet {
 		//i know this looks wacky but it will actually work hahah
 		
 		String theChart =  "<script type=\"text/javascript\">\n" + 
-				"			window.onload = function() { \n" + 
+//				"			window.onload = function() { \n" + 
 				"				var chart = new CanvasJS.Chart(\"chartContainer\", {\n" + 
 				"					zoomEnabled: true,\n" + 
 				"					theme: \"light2\",\n" + 
@@ -204,10 +211,10 @@ public class StockPerformanceServlet extends HttpServlet {
 				"						text: \"\"\n" + 
 				"					},\n" + 
 				"					axisX: {\n" + 
-				"						title: \"Time\"\n" + 
+				"						title: \"\"\n" + 
 				"					},\n" + 
 				"					axisY: {\n" + 
-				"						title: \"Closing Price\",\n" + 
+				"						title: \"\",\n" + 
 				"						includeZero: true\n" + 
 				"					},\n" + 
 				"					data: [\n";
@@ -216,6 +223,7 @@ public class StockPerformanceServlet extends HttpServlet {
 		for(int i=0; i<jsons.size(); i++) {
 			
 			theChart += "{\n" +
+//							"name: \"" + tickers.get(i) + "\"" + 
 							"type: \"line\",\n" + 
 							"yValueFormatString: \"#,$##0\",\n" + 
 							"dataPoints :" + jsons.get(i) +
@@ -227,7 +235,7 @@ public class StockPerformanceServlet extends HttpServlet {
 				"					]\n" + 
 				"				});\n" + 
 				"				chart.render();\n" + 
-				"			}\n" + 
+//				"			}\n" + 
 				"		</script>";
 		
 		session.setAttribute("chart", theChart);
