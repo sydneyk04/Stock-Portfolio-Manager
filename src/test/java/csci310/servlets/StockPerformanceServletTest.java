@@ -95,6 +95,10 @@ public class StockPerformanceServletTest extends Mockito {
 	}
 	
 	@Test
+	public void testRemoveStock() {
+		assertTrue(true);
+	}
+	@Test
 	public void getUserStock() {
 		assertTrue(true);
 	}
