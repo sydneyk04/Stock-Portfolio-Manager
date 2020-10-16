@@ -1,4 +1,17 @@
+<%@ page import="csci310.*" %>
 <!DOCTYPE html>
+<%
+	//Disable Caching
+	response.setHeader("Cache-Control", "no-cache, no-store");
+	response.setHeader("Pragma","no-cache");
+	response.setDateHeader ("Expires", 0);
+
+	Portfolio portfolio = (Portfolio) session.getAttribute("portfolio");
+	Double portfolio_value = 0.00;
+	if (portfolio != null) {
+		portfolio_value = portfolio.getValue();
+	}
+%>
 <html lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -8,7 +21,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="icon" href=https://www.daytrading.com/favicon32x32.png type="image/ico" />
 
-    <title>USC 310 Stock Portfolio Management</title>
+    <title>Gentelella Alela! | </title>
 
     <!-- Bootstrap -->
     <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -27,7 +40,7 @@
     <link href="../vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
 
     <!-- Custom Theme Style -->
-    <link href="../build/css/custom.min.css" rel="stylesheet">   
+    <link href="../build/css/custom.min.css" rel="stylesheet">
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   </head>
@@ -67,6 +80,8 @@
             </div>
             </div>
           </div>
+
+
 
 
           <div class="row">
@@ -398,84 +413,7 @@
                 </div>
               </div>
             </div> -->
-
-            <div class="col-md-4 col-sm-4 ">
-              <div class="x_panel tile fixed_height_320 overflow_hidden">
-                <div class="x_title">
-                  <h2>Biggest holdings</h2>
-                  <ul class="nav navbar-right panel_toolbox">
-                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                    </li>
-                    <li class="dropdown">
-                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                          <a class="dropdown-item" href="#">Settings 1</a>
-                          <a class="dropdown-item" href="#">Settings 2</a>
-                        </div>
-                    </li>
-                    <li><a class="close-link"><i class="fa fa-close"></i></a>
-                    </li>
-                  </ul>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="x_content">
-                  <table class="" style="width:100%">
-                    <tr>
-                      <th style="width:37%;">
-                        <p>Portfolio Allocation</p>
-                      </th>
-                      <th>
-                        <div class="col-lg-7 col-md-7 col-sm-7 ">
-                          <p class="">Stock</p>
-                        </div>
-                        <div class="col-lg-5 col-md-5 col-sm-5 ">
-                          <p class="">Share of Portfolio</p>
-                        </div>
-                      </th>
-                    </tr>
-                    <tr>
-                      <td>
-                        <canvas class="canvasDoughnut" height="140" width="140" style="margin: 15px 10px 10px 0"></canvas>
-                      </td>
-                      <td>
-                        <table class="tile_info">
-                          <tr>
-                            <td>
-                              <p><i class="fa fa-square blue"></i>AAPL </p>
-                            </td>
-                            <td>30%</td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <p><i class="fa fa-square green"></i>TT </p>
-                            </td>
-                            <td>10%</td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <p><i class="fa fa-square purple"></i>ATT </p>
-                            </td>
-                            <td>20%</td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <p><i class="fa fa-square aero"></i>NASDAQ </p>
-                            </td>
-                            <td>15%</td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <p><i class="fa fa-square red"></i>VIX </p>
-                            </td>
-                            <td>30%</td>
-                          </tr>
-                        </table>
-                      </td>
-                    </tr>
-                  </table>
-                </div>
-              </div>
-            </div>
+            
 
             <!-- Start to do list -->
             <div class="col-md-4 col-sm-4 ">
@@ -745,7 +683,7 @@
                         //         new Chart(e,a)
                         //
                         //     })
-                        }
+                        //}
                         var els = document.getElementsByClassName("canvasDoughnut");
 
                         for (var i = 0; i < els.length; i++) {
@@ -755,9 +693,40 @@
                         }
 
                       }
+                      
+                      function getCookie(name) {
+                  		// Split cookie string and get all individual name=value pairs in an array
+                   	    var cookieArr = document.cookie.split(";");
+                   	    
+                   	    // Loop through the array elements
+                   	    for(var i = 0; i < cookieArr.length; i++) {
+                   	        var cookiePair = cookieArr[i].split("=");
+                   	        
+                   	        /* Removing whitespace at the beginning of the cookie name
+                   	        and compare it with the given string */
+                   	        if(name == cookiePair[0].trim()) {
+                   	            // Decode the cookie value and return
+                   	            return decodeURIComponent(cookiePair[1]);
+                   	        }
+                   	    }
+                   	    
+                   	    // Return null if not found
+                   	    return null;
+                   	  }
+                      
+                      function getTotalPortfolioValue() {
+                   	    // Get cookie using our custom function
+                   	    var portfolioValue = getCookie("portfolioValue");
+                   	 	console.log("Total portfolio value: " + portfolioValue);
+                   	    
+                   	    if (portfolioValue == null) {
+                   	    	document.getElementById("totalPortfolio").innerHTML = "$0.00";
+                   	    } else {
+                   	    	document.getElementById("totalPortfolio").innerHTML = "$" + portfolioValue;
+                   	    }
+                      }
 
                       function updatePorfolio() {
-
 
                         var apiLink = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=IBM&apikey=60096f09efmsh63c9a7515124324p1b4c57jsna3f56df4cc32";
 
@@ -777,12 +746,13 @@
                             valueJson = valueJson["4. close"];
                             var dollarValue = valueJson;
 
-                            document.getElementById("totalPortfolio").innerHTML = "$" + dollarValue;
+                            //document.getElementById("totalPortfolio").innerHTML = "$" + dollarValue;
+                            getTotalPortfolioValue();
                           })
                           .catch(function (error) {
                             console.log(error);
-                          });
-
+                          });                    
+                        
                       }
 
 
@@ -894,62 +864,12 @@
             </div>
             <!-- End to do list -->
 
-
-            <div class="col-md-4 col-sm-4 ">
-              <div class="x_panel tile fixed_height_320">
-                <div class="x_title">
-                  <h2>Risk Allocation</h2>
-                  <ul class="nav navbar-right panel_toolbox">
-                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                    </li>
-                    <li class="dropdown">
-                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                          <a class="dropdown-item" href="#">Settings 1</a>
-                          <a class="dropdown-item" href="#">Settings 2</a>
-                        </div>
-                    </li>
-                    <li><a class="close-link"><i class="fa fa-close"></i></a>
-                    </li>
-                  </ul>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="x_content">
-                  <div class="dashboard-widget-content">
-                    <!-- <ul class="quick-list">
-                      <li><i class="fa fa-calendar-o"></i><a href="#">Settings</a>
-                      </li>
-                      <li><i class="fa fa-bars"></i><a href="#">Subscription</a>
-                      </li>
-                      <li><i class="fa fa-bar-chart"></i><a href="#">Auto Renewal</a> </li>
-                      <li><i class="fa fa-line-chart"></i><a href="#">Achievements</a>
-                      </li>
-                      <li><i class="fa fa-bar-chart"></i><a href="#">Auto Renewal</a> </li>
-                      <li><i class="fa fa-line-chart"></i><a href="#">Achievements</a>
-                      </li>
-                      <li><i class="fa fa-area-chart"></i><a href="#">Logout</a>
-                      </li>
-                    </ul> -->
-
-                    <div class="sidebar-widget">
-                        <h4>Portfolio Diversification Score</h4>
-                        <canvas width="150" height="80" id="chart_gauge_01" class="" style="width: 160px; height: 100px;"></canvas>
-                        <div class="goal-wrapper">
-                          <span id="gauge-text" class="gauge-value pull-left">1</span>
-                          <span class="gauge-value pull-left">%</span>
-                          <span id="goal-text" class="goal-value pull-right">100%</span>
-                        </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
           </div>
 
 
 
         </div>
+      
         <!-- /page content -->
 
         <!-- footer content -->
