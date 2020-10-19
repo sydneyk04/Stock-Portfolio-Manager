@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -51,13 +52,13 @@ public class DashboardServletTest extends Mockito {
 	}
 
 	@Test
-	public void testDoGetHttpServletRequestHttpServletResponse() throws IOException {
+	public void testDoGetHttpServletRequestHttpServletResponse() throws IOException, ServletException {
 		servlet.doGet(request, response);
 		assertTrue(true);
 	}
 
 	@Test
-	public void testDoPostHttpServletRequestHttpServletResponse() throws IOException {
+	public void testDoPostHttpServletRequestHttpServletResponse() throws IOException, ServletException {
 		servlet.doPost(request, response);
 		assertTrue(true);
 	}

@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
@@ -83,7 +84,10 @@ public class StockPerformanceServletTest extends Mockito {
 	
 	@Test
 	public void testBuildStockJSONS() throws IOException, ServletException, InterruptedException {	
-		servlet.buildStockJSONS("3M");
+		Calendar from = Calendar.getInstance();
+		from.add(Calendar.YEAR, -1);
+		Calendar now = Calendar.getInstance();
+		servlet.buildStockJSONS(from, now);
 		assertTrue(true);
 	}
 	

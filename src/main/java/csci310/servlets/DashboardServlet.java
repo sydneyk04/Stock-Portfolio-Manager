@@ -27,13 +27,13 @@ public class DashboardServlet extends HttpServlet {
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-//		homeServlet.doGet(request, response);
+		homeServlet.doGet(request, response);
 		stockperformanceServlet.doGet(request, response);
 	}
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-//		homeServlet.doPost(request, response);
+		homeServlet.doPost(request, response);
 		stockperformanceServlet.doPost(request, response);
 	}
 	

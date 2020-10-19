@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -52,7 +53,8 @@ public class StockPerformanceServlet extends HttpServlet {
 	private static String jsp= "production/index.jsp";
 	static PrintWriter out;
 	private HttpSession session = null;
-	String timePeriod = "1M";
+	Calendar from ;
+	Calendar now;
 	Boolean check = false;
 	List<String> tickers = new ArrayList<String>();
 	List<String> jsons = new ArrayList<String>();;
@@ -65,55 +67,31 @@ public class StockPerformanceServlet extends HttpServlet {
 		String username = session.getAttribute("username").toString();
 		response.setContentType("text/plain");
 		out = response.getWriter();
-		
 		System.out.println("Hello from doGet");
-		//START JACKSON CODE//
+		buildPortfolioJSON();
 		
-			//Jackon, the code that should go here is a function that gets this info from the database and stores it locally:
-			//we can chat about best way to do this since we dont want to have to re call this function everytime the user 
-		    //adds or removes a stock- or maybe we do lol??
+		//default time period is 1Y
+		from = Calendar.getInstance();
+		from.add(Calendar.YEAR, -1);
+		now = Calendar.getInstance();
 			
-			//The return types i need:
-			//A list of the stocks in user portfolio of type List<String> with the ticker symbols, i made it a variable at the top
-			//A String that has the portfolio json in it - we are going to need to leverage nandas code for this
-		
-			//method stub you can use that i committed test file for TDD
-			buildPortfolioJSON();
-
-		
-		//END JACKSON CODE//
-		
-		//START KENDALL CODE//
-			//My code is going to take in the data from above and format it to be displayed on the front end
+		try {
+			getUserStock(username);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 			
-			//for testing im making some tickers
-//			tickers = new ArrayList<String>();
-//			tickers.add("TSLA");
-//			tickers.add("GOOGL");
-			Calendar rn = Calendar.getInstance();
-			
-			try {
-				getUserStock(username);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			System.out.println(tickers);
-			//this is to format all the string jsons from the list of tickers
-//			jsons = new ArrayList<String>();
-			buildStockJSONS("1Y");
+		System.out.println(tickers);
+		buildStockJSONS(from, now);
 				
-			//build the graph using the list of stocks
-			buildGraph();
+		//build the graph using the list of stocks
+		buildGraph();
 		
-			response.sendRedirect(jsp);
-		//END KENDALL CODE//
-
-			
+		response.sendRedirect(jsp);
 	}
 	
 	@Override
@@ -122,25 +100,17 @@ public class StockPerformanceServlet extends HttpServlet {
 		out = response.getWriter();
 		response.setStatus(HttpServletResponse.SC_OK);
 		session = request.getSession();
-		
-		//also im not sure if our initial code should go in dopost or doget so we can figure that out once we are 
-		//connecting everything to the dashboard
-		//for now i am typing '/stockperformance' in the url and having it display on stockPerformance.jsp
-		
-		
 		System.out.println("Hello from doPost");
-		//this code runs when time period is changed
-		timePeriod = request.getParameter("timePeriod");
-		//for testing im making some tickers
-//		tickers = new ArrayList<String>();
-//		tickers.add("TSLA");
-//		tickers.add("GOOGL");
 		
-		//this is to format all the string jsons from the list of tickers
-//		jsons = new ArrayList<String>();
+		//code for when user changes time period
+		//just need to grab the two dates from the frontend in calendar format
+		//Calendar from = request.getParameter("from");
+		//Calendar now = request.getParameter("now");
 		
-		buildStockJSONS("1Y");
+		//pass the new dates into build stock jsons
+		buildStockJSONS(from, now);
 		buildGraph();
+		
 		response.sendRedirect("production/index.jsp");
 		
 	}
@@ -159,26 +129,8 @@ public class StockPerformanceServlet extends HttpServlet {
 		
 	}
 	
-	void buildStockJSONS(String interval) throws IOException {
+	void buildStockJSONS(Calendar from, Calendar now) throws IOException {
 		//Below is the code to build/format json for graph
-		//Add code to get historical quotes from a certain  period
-		Calendar from = Calendar.getInstance();
-		Calendar now = Calendar.getInstance();
-		if(interval.equalsIgnoreCase("1Y")) {
-			from.add(Calendar.YEAR, -1);
-		}
-		else if(interval.equalsIgnoreCase("3M")) {
-			from.add(Calendar.MONTH, -3);
-		}
-		else if(interval.equalsIgnoreCase("1M")) {
-			from.add(Calendar.MONTH, -1);
-		}
-		else if(interval.equalsIgnoreCase("1W")) {
-			from.add(Calendar.WEEK_OF_YEAR, -1);
-		}
-		else if(interval.equalsIgnoreCase("1D")) {
-			from.add(Calendar.DAY_OF_YEAR, -1);
-		}
 		
 		//for loop to run through list of users stocks
 		for(int s=0; s<tickers.size(); s++) {
@@ -230,15 +182,25 @@ public class StockPerformanceServlet extends HttpServlet {
 				"						title: \"\",\n" + 
 				"						includeZero: true\n" + 
 				"					},\n" + 
+				"					legend: {" +
+				"						verticalAlign: \"top\",\n" + 
+				"						horizontalAlign: \"center\",\n" + 
+				"						dockInsidePlotArea: true,\n" + 
+				"					},\n" + 
 				"					data: [\n";
 		
 		//add all of the stock jsons to the data for the graph
 		for(int i=0; i<jsons.size(); i++) {
+			System.out.println(tickers.get(i));
+		}
+		
+		for(int i=0; i<jsons.size(); i++) {
 			
 			theChart += "{\n" +
-//							"name: \"" + tickers.get(i) + "\"" + 
 							"type: \"line\",\n" + 
-							"yValueFormatString: \"$#,##0.00\",\n" + 
+							"name: \"" + tickers.get(i) + "\",\n" +
+							"showInLegend: true,\n" +
+							"yValueFormatString: \"$##0.00\",\n" + 
 							"dataPoints :" + jsons.get(i) +
 						"},\n";	
 		}
@@ -302,6 +264,7 @@ public class StockPerformanceServlet extends HttpServlet {
 			public void onDataChange(DataSnapshot snapshot) {
 				if(snapshot.exists()) {
 					for(DataSnapshot child : snapshot.getChildren()) {
+						System.out.println("adding stock");
 						tickers.add(child.getKey());
 					}
 					dataFetched = true;
