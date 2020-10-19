@@ -59,12 +59,12 @@
          <header style="height:70px; background:#787878;">
   			<nav id="banner" class="navbar navbar-dark bg-secondary navbar-static-top justify-content-left">
 		      	<div id="banner-content" class="navbar-brand" style="color:white;font-size:45px;font-family: 'Raleway', sans-serif;">
-		      		<a href="index.html" style="text-decoration: none; color:white;" >
+		      		<a href="index.jsp" style="text-decoration: none; color:white;" >
 				    USC 310 Stock Portfolio Management 
 				</a>
 		      	</div>
 		      	<div>
-		      	<a href="index.html" style="text-decoration: none; color:white;" >
+		      	<a href="../login.jsp" style="text-decoration: none; color:white;" >
 				    Logout
 				 </a>
 		      	</div>
@@ -112,6 +112,8 @@
                 <div class="row x_title">
                   <div class="col-md-6">
                     <h3>Your Stock Portfolio Performance</h3>
+                    <span class="count_top"><i class="fa fa-user"></i> Total Portfolio Value: $<%= portfolio_value%></span>
+              		<!-- <div class="count" id="totalPortfolio"></div> -->
                   </div>
                   <div class="col-md-6">
                     <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
