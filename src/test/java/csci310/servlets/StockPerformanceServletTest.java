@@ -2,11 +2,13 @@ package csci310.servlets;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -21,6 +23,7 @@ import javax.servlet.http.HttpSession;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import com.google.firebase.FirebaseApp;
@@ -28,6 +31,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import csci310.servlets.SignUpServlet.MyCallback;
+import static org.hamcrest.Matchers.*;
 
 public class StockPerformanceServletTest extends Mockito {
 	static StockPerformanceServlet servlet;
@@ -95,9 +99,16 @@ public class StockPerformanceServletTest extends Mockito {
 	}
 	
 	@Test
-	public void testRemoveStock() {
-		assertTrue(true);
+	public void testRemoveStock() throws IOException {
+		StockPerformanceServlet mockedServlet = mock(StockPerformanceServlet.class);
+		mockedServlet.removeStock("username", "symbol");
+		ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(String.class);
+		verify(mockedServlet).removeStock(argumentCaptor.capture(), argumentCaptor.capture());
+		List<String> capturedArgument = argumentCaptor.getAllValues();
+		assertThat(capturedArgument, hasItem("username"));
+		assertThat(capturedArgument, hasItem("symbol"));
 	}
+	
 	@Test
 	public void getUserStock() {
 		assertTrue(true);
