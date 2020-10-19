@@ -100,13 +100,7 @@ public class StockPerformanceServletTest extends Mockito {
 	
 	@Test
 	public void testRemoveStock() throws IOException {
-		StockPerformanceServlet mockedServlet = mock(StockPerformanceServlet.class);
-		mockedServlet.removeStock("username", "symbol");
-		ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(String.class);
-		verify(mockedServlet).removeStock(argumentCaptor.capture(), argumentCaptor.capture());
-		List<String> capturedArgument = argumentCaptor.getAllValues();
-		assertThat(capturedArgument, hasItem("username"));
-		assertThat(capturedArgument, hasItem("symbol"));
+		servlet.removeStock("none", "none");
 	}
 	
 	@Test
