@@ -13,11 +13,6 @@
 				    USC CS 310 Stock Portfolio Management 
 					</a>
 		      	</div>
-		      	<div>
-		      		<a href="index.html" style="text-decoration: none; color:white;" >
-				    Logout
-				 </a>
-		      	</div>
 	   		</nav>
 	 	 </header>
 		
