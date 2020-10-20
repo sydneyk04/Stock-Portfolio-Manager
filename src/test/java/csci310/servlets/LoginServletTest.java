@@ -64,7 +64,7 @@ public class LoginServletTest extends Mockito {
 		for (FirebaseApp app : FirebaseApp.getApps()) {
 			app.delete();
 		}
-		servlet.initializeFirebase("test-google-credentials.json");
+		servlet.initializeFirebase("stock16-service-account.json");
 	}
 	 
 	@Test
