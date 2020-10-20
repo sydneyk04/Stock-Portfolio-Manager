@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -50,24 +51,25 @@ import yahoofinance.histquotes.Interval;
 @WebServlet("/stockperformance")
 public class StockPerformanceServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static String jsp= "production/index.jsp";
 	static PrintWriter out;
 	private HttpSession session = null;
 	Calendar from ;
 	Calendar now;
 	Boolean check = false;
-	List<String> tickers = new ArrayList<String>();
-	List<String> jsons = new ArrayList<String>();;
+	List<ArrayList> myStocks = new ArrayList<ArrayList>();
+	List<String> jsons = new ArrayList<String>();
+	List<String> portfolioJSON = new ArrayList<String>();
 	
 	Boolean dataFetched = false;
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		session = request.getSession();
-		String username = session.getAttribute("username").toString();
 		response.setContentType("text/plain");
 		out = response.getWriter();
 		System.out.println("Hello from doGet");
+		
+		String username = session.getAttribute("username").toString();
 		buildPortfolioJSON();
 		
 		//default time period is 1Y
@@ -84,14 +86,16 @@ public class StockPerformanceServlet extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		//set stocks as session variable for front end
+		session.setAttribute("myStocks", myStocks);
 			
-		System.out.println(tickers);
 		buildStockJSONS(from, now);
 				
 		//build the graph using the list of stocks
 		buildGraph();
 		
-		response.sendRedirect(jsp);
+		
 	}
 	
 	@Override
@@ -115,17 +119,23 @@ public class StockPerformanceServlet extends HttpServlet {
 		
 	}
 	
-	void getCalendarDate() {
-		//nanda built this somewhere we just need to add it in and convert to our graph
-		
+	void addPortfolioValues() throws IOException {
 		
 	}
 	
-	void buildPortfolioJSON() {
-		//nanda built this somewhere we just need to add it in and convert to our graph
+	
+	void buildPortfolioJSON() throws IOException {
 		
+		Double portfolioVal;
 		
-		
+		//for loop to run through list of users stocks and create value of portfolio
+//		for(int s=0; s<myStocks.size(); s++) {
+//			Stock stock = YahooFinance.get((String)myStocks.get(s).get(0));
+//			Double price = stock.getQuote().getPrice().doubleValue();
+//			Double shares = myStocks.get(s).get(2);
+//			BigDecimal value = new BigDecimal(price * shares).setScale(2, RoundingMode.HALF_EVEN);
+//			portfolioVal += value.doubleValue();;
+//		}
 		
 	}
 	
@@ -133,10 +143,12 @@ public class StockPerformanceServlet extends HttpServlet {
 		//Below is the code to build/format json for graph
 		
 		//for loop to run through list of users stocks
-		for(int s=0; s<tickers.size(); s++) {
+		for(int s=0; s<myStocks.size(); s++) {
 			
 			//this is where we need to deal with time period (Done!)
-			List<HistoricalQuote> history = YahooFinance.get(tickers.get(s), from, now, Interval.DAILY).getHistory();
+			String ticker = (String) myStocks.get(s).get(0);
+			System.out.println("ticker in build json " + ticker);
+			List<HistoricalQuote> history = YahooFinance.get(ticker, from, now, Interval.DAILY).getHistory();
 			
 			//this is for formatting it for the graph that i am using
 			Map<Object,Object> map = null;
@@ -152,6 +164,10 @@ public class StockPerformanceServlet extends HttpServlet {
 				String label = day + " " + symbols.getShortMonths()[month] + " " + year;
 				BigDecimal close = history.get(i).getClose();
 			
+				//
+				buildPortfolioJSON();
+				
+				
 				map = new HashMap<Object,Object>(); map.put("label", label); map.put("y", close); 
 				list.add(map);
 			}
@@ -191,14 +207,14 @@ public class StockPerformanceServlet extends HttpServlet {
 		
 		//add all of the stock jsons to the data for the graph
 		for(int i=0; i<jsons.size(); i++) {
-			System.out.println(tickers.get(i));
+			System.out.println(myStocks.get(i).get(0));
 		}
 		
 		for(int i=0; i<jsons.size(); i++) {
 			
 			theChart += "{\n" +
 							"type: \"line\",\n" + 
-							"name: \"" + tickers.get(i) + "\",\n" +
+							"name: \"" + myStocks.get(i).get(0) + "\",\n" +
 							"showInLegend: true,\n" +
 							"yValueFormatString: \"$##0.00\",\n" + 
 							"dataPoints :" + jsons.get(i) +
@@ -264,8 +280,22 @@ public class StockPerformanceServlet extends HttpServlet {
 			public void onDataChange(DataSnapshot snapshot) {
 				if(snapshot.exists()) {
 					for(DataSnapshot child : snapshot.getChildren()) {
-						System.out.println("adding stock");
-						tickers.add(child.getKey());
+						//get all values of stock
+						ArrayList<String> stock = new ArrayList<String>();
+						//add ticker
+						String ticker = child.getKey().toString();
+						stock.add(ticker);
+						for(DataSnapshot children : child.getChildren()) {
+							String name = children.child("name").getValue().toString();
+							String shares = children.child("shares").getValue().toString();
+							String from = children.child("from").getValue().toString();
+							stock.add(name);
+							stock.add(shares);
+							stock.add(from);
+						}
+						//add to big array
+						System.out.println("adding stock info: " + stock);
+						myStocks.add(stock);
 					}
 					dataFetched = true;
 				}
