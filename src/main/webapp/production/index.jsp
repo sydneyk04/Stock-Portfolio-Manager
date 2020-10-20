@@ -60,7 +60,7 @@
   			<nav id="banner" class="navbar navbar-dark bg-secondary navbar-static-top justify-content-left">
 		      	<div id="banner-content" class="navbar-brand" style="color:white;font-size:45px;font-family: 'Raleway', sans-serif;">
 		      		<a href="index.jsp" style="text-decoration: none; color:white;" >
-				    USC 310 Stock Portfolio Management 
+				    USC CS 310 Stock Portfolio Management 
 				</a>
 		      	</div>
 		      	<div>
@@ -585,19 +585,19 @@
                               <div style="float: left; width: 30%; overflow: scroll; margin-right:2.5%; display:table-cell;">
                                 <div style="margin-right:5px;">
                                   <p style="text-align:center;">Exchange*</p>
-                                  <input class="stockinput" type="text" id="exchange" name="fname">
+                                  <input class="stockinput" type="text" id="exchange" name="fname" required>
                                 </div>
                               </div>
                               <div style="float: left; width: 30%; overflow: scroll; margin-right:2.5%; margin-left:2.5%; display:table-cell;">
                                 <div style="margin-right:5px;">
                                   <p style="text-align:center;">Ticker*</p>
-                                  <input class="stockinput" type="text" id="ticker" name="fname">
+                                  <input class="stockinput" type="text" id="ticker" name="fname" required>
                                 </div>
                               </div>
                               <div style="float: left; width: 30%; overflow: scroll; margin-left:2.5%; display:table-cell;">
                                 <div style="margin-right:5px;">
                                   <p style="text-align:center;"># Shares*</p>
-                                  <input class="stockinput" type="text" id="shares" name="fname">
+                                  <input class="stockinput" type="text" id="shares" name="fname" required>
                                 </div>
                               </div>
                             </div>
@@ -606,13 +606,13 @@
                               <div style="float: left; width: 30%; overflow: scroll; margin-right:2.5%; display:table-cell;">
                                 <div style="margin-right:5px;">
                                   <p style="text-align:center;">Date Purchased*</p>
-                                  <input class="stockinput" type="text" id="exchange" name="fname">
+                                  <input class="stockinput" type="date" id="exchange" name="fname" required>
                                 </div>
                               </div>
                               <div style="float: left; width: 30%; overflow: scroll; margin-right:2.5%; margin-left:2.5%; display:table-cell;">
                                 <div style="margin-right:5px;">
                                   <p style="text-align:center;">Date Sold</p>
-                                  <input class="stockinput" type="text" id="ticker" name="fname">
+                                  <input class="stockinput" type="date" id="ticker" name="fname">
                                 </div>
                               </div>
                               <div style="float: left; width: 30%; overflow: scroll; margin-left:2.5%; display:table-cell;">

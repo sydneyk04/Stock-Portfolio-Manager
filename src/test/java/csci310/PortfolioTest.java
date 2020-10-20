@@ -38,16 +38,5 @@ public class PortfolioTest {
 		assertNull(portfolio.initializeFirebase("stock16-service-account.json"));
 	}
 
-	@Test
-	public void testFetchData() throws InterruptedException {
-		portfolio.fetchData();
-		assertEquals(2, portfolio.getStocks().size());
-	}
-
-	@Test
-	public void testCalculateValue() {
-		portfolio.calculateValue();
-		assertTrue(portfolio.getValue() > 0);
-	}
 
 }
