@@ -10,7 +10,7 @@
   			<nav id="banner" class="navbar navbar-dark bg-secondary navbar-static-top justify-content-left">
 		      	<div id="banner-content" class="navbar-brand" style="color:white;font-size:45px;font-family: 'Raleway', sans-serif;">
 		      		<a href="index.html" style="text-decoration: none; color:white;" >
-				    USC 310 Stock Portfolio Management 
+				    USC CS 310 Stock Portfolio Management 
 					</a>
 		      	</div>
 		      	<div>
