@@ -7,11 +7,11 @@
 	response.setDateHeader ("Expires", 0);
 
 	String chart = (String) session.getAttribute("chart");
-	Portfolio portfolio = (Portfolio) session.getAttribute("portfolio");
-	Double portfolio_value = 0.00;
-	if (portfolio != null) {
-		portfolio_value = portfolio.getValue();
-	}
+	//Portfolio portfolio = (Portfolio) session.getAttribute("portfolio");
+	//Double portfolio_value = 0.00;
+	//if (portfolio != null) {
+	//	portfolio_value = portfolio.getValue();
+	//}
 %>
 <html lang="en">
   <head>
@@ -631,9 +631,6 @@
                         </div>
                       </div>
                     </div>
-
-
-
 
 
 

@@ -30,6 +30,7 @@ import java.net.*;
 import java.io.*;
 import java.text.DateFormat;
 import java.text.DateFormatSymbols;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import com.google.auth.oauth2.GoogleCredentials;
@@ -58,7 +59,8 @@ public class StockPerformanceServlet extends HttpServlet {
 	Boolean check = false;
 	List<ArrayList> myStocks = new ArrayList<ArrayList>();
 	List<String> jsons = new ArrayList<String>();
-	List<String> portfolioJSON = new ArrayList<String>();
+	List<ArrayList> portfolioValHistory = new ArrayList<ArrayList>();
+	String portfolioJSON;
 	
 	Boolean dataFetched = false;
 	
@@ -89,8 +91,14 @@ public class StockPerformanceServlet extends HttpServlet {
 		
 		//set stocks as session variable for front end
 		session.setAttribute("myStocks", myStocks);
-			
-		buildStockJSONS(from, now);
+		
+		
+		try {
+			buildStockJSONS(from, now);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 				
 		//build the graph using the list of stocks
 		buildGraph();
@@ -112,34 +120,69 @@ public class StockPerformanceServlet extends HttpServlet {
 		//Calendar now = request.getParameter("now");
 		
 		//pass the new dates into build stock jsons
-		buildStockJSONS(from, now);
-		buildGraph();
+		try {
+			buildStockJSONS(from, now);
+		} catch (ParseException e) {
+			
+		}
 		
+		buildGraph();
 		response.sendRedirect("production/index.jsp");
 		
 	}
 	
-	void addPortfolioValues() throws IOException {
+	void addPortfolioValues(Integer i, Double close, Double shares, String label, Boolean after) throws IOException {
+		Double portfolioValue = close * shares;
+		ArrayList<String> val = new ArrayList<String>();
+	
+		//if there is already a value at that index, add to it
+		try {
+			portfolioValHistory.get(i);
+			ArrayList<String> holder = portfolioValHistory.get(i);
+			//only add if purchased before this date
+			if(after == true) {
+				portfolioValue += Double.parseDouble(holder.get(1));
+				val.add(label);
+				val.add(String.valueOf(portfolioValue));
+				portfolioValHistory.set(i, val);
+			}
+		} catch ( IndexOutOfBoundsException e ) {
+			//otherwise create new value
+			//if purchased before add valye
+			if(after == true) {
+				val.add(label);
+				val.add(String.valueOf(portfolioValue));
+				portfolioValHistory.add(i, val);
+			} 
+			//otherwise initialize the value at the index so it can be displayed on same graph
+			else {
+				val.add(label);
+				val.add(String.valueOf(0));
+				portfolioValHistory.add(i, val);
+			}
+			
+		}
 		
 	}
 	
 	
 	void buildPortfolioJSON() throws IOException {
+		Map<Object,Object> map = null;
+		List<Map<Object,Object>> list = new ArrayList<Map<Object,Object>>();
+		//for loop to run through portfolio values
+		for(int s=0; s<portfolioValHistory.size(); s++) {
+			ArrayList<String> val = portfolioValHistory.get(s);
+			String label = val.get(0);
+			Double y = Double.parseDouble(val.get(1));
+			map = new HashMap<Object,Object>(); map.put("label", label); map.put("y", y);
+			list.add(map);
+		}
 		
-		Double portfolioVal;
-		
-		//for loop to run through list of users stocks and create value of portfolio
-//		for(int s=0; s<myStocks.size(); s++) {
-//			Stock stock = YahooFinance.get((String)myStocks.get(s).get(0));
-//			Double price = stock.getQuote().getPrice().doubleValue();
-//			Double shares = myStocks.get(s).get(2);
-//			BigDecimal value = new BigDecimal(price * shares).setScale(2, RoundingMode.HALF_EVEN);
-//			portfolioVal += value.doubleValue();;
-//		}
-		
+		portfolioJSON = new Gson().toJson(list);
+		System.out.println(portfolioJSON);
 	}
 	
-	void buildStockJSONS(Calendar from, Calendar now) throws IOException {
+	void buildStockJSONS(Calendar from, Calendar now) throws IOException, ParseException {
 		//Below is the code to build/format json for graph
 		
 		//for loop to run through list of users stocks
@@ -147,13 +190,11 @@ public class StockPerformanceServlet extends HttpServlet {
 			
 			//this is where we need to deal with time period (Done!)
 			String ticker = (String) myStocks.get(s).get(0);
-			System.out.println("ticker in build json " + ticker);
 			List<HistoricalQuote> history = YahooFinance.get(ticker, from, now, Interval.DAILY).getHistory();
 			
 			//this is for formatting it for the graph that i am using
 			Map<Object,Object> map = null;
 			List<Map<Object,Object>> list = new ArrayList<Map<Object,Object>>();
-		
 			for(int i=0; i<history.size(); i++) {
 				Calendar date = history.get(i).getDate();
 				int year = date.get(Calendar.YEAR);
@@ -162,12 +203,44 @@ public class StockPerformanceServlet extends HttpServlet {
 //				System.out.println(day);
 				DateFormatSymbols symbols = new DateFormatSymbols();
 				String label = day + " " + symbols.getShortMonths()[month] + " " + year;
-				BigDecimal close = history.get(i).getClose();
+				Double close = history.get(i).getClose().doubleValue();
+				Double shares = Double.parseDouble((String) myStocks.get(s).get(2));
+				
+				String holder = year + "-" + (month + 1) + "-" + day;
+				DateFormat formatter = new SimpleDateFormat("YYYY-MM-DD"); 
+				Date datePurchased = (Date)formatter.parse((String)myStocks.get(s).get(3));
+				Date sellDate = (Date)formatter.parse((String)myStocks.get(s).get(4));
+				Date historicalDate = (Date)formatter.parse(holder);
+				
+				boolean owned = false;
+				owned = sellDate.after(historicalDate);
+				owned = datePurchased.before(historicalDate);
+				
+				//if user owned stock during this point in time add to portfolio value
+//				Boolean owned = false;
+//				String datePurchased = (String)myStocks.get(s).get(3);
+//				String[] dpParts = datePurchased.split("\\-");
+//				String dateSold = (String)myStocks.get(s).get(4);
+//				String[] sellParts = datePurchased.split("\\-");
+//				Integer dpYear = Integer.parseInt(dpParts[0]); 
+//				Integer sellYear = Integer.parseInt(sellParts[0]); 
+//				
+//				if(dpYear < year) {
+//					owned = true;
+//				} else if(dpYear == year){
+//					Integer dpMonth = Integer.parseInt(dpParts[1]);
+//					if(dpMonth < month+1) {
+//						owned = true;
+//					} else if(dpMonth == month+1){
+//						Integer dpDay = Integer.parseInt(dpParts[2]);
+//						if(dpDay <= day) {
+//							owned = true;
+//						}
+//					}
+//				}
+
+				addPortfolioValues(i, close, shares, label, owned);
 			
-				//
-				buildPortfolioJSON();
-				
-				
 				map = new HashMap<Object,Object>(); map.put("label", label); map.put("y", close); 
 				list.add(map);
 			}
@@ -177,12 +250,14 @@ public class StockPerformanceServlet extends HttpServlet {
 			//add to big list
 			jsons.add(stockHistory);
 		}
+		
+		buildPortfolioJSON();
 	}
 	
 	void buildGraph() throws IOException {
 		//chart to display different stocks
 		//i know this looks wacky but it will actually work hahah
-		
+		System.out.println("hi1");
 		String theChart =  "<script type=\"text/javascript\">\n" + 
 //				"			window.onload = function() { \n" + 
 				"				var chart = new CanvasJS.Chart(\"chartContainer\", {\n" + 
@@ -205,13 +280,9 @@ public class StockPerformanceServlet extends HttpServlet {
 				"					},\n" + 
 				"					data: [\n";
 		
-		//add all of the stock jsons to the data for the graph
-		for(int i=0; i<jsons.size(); i++) {
-			System.out.println(myStocks.get(i).get(0));
-		}
 		
 		for(int i=0; i<jsons.size(); i++) {
-			
+			System.out.println("hiiii");
 			theChart += "{\n" +
 							"type: \"line\",\n" + 
 							"name: \"" + myStocks.get(i).get(0) + "\",\n" +
@@ -220,7 +291,17 @@ public class StockPerformanceServlet extends HttpServlet {
 							"dataPoints :" + jsons.get(i) +
 						"},\n";	
 		}
+		System.out.println("hi2");
 		
+		//add the portfolio
+		theChart += "{\n" +
+						"type: \"line\",\n" + 
+						"name: \"Portfolio\",\n" + 
+						"showInLegend: true,\n" +
+						"yValueFormatString: \"$##0.00\",\n" + 
+						"dataPoints :" + portfolioJSON +
+					"},\n";	
+		System.out.println("hi3");
 		//add the end code
 		theChart +=
 				"					]\n" + 
@@ -285,16 +366,21 @@ public class StockPerformanceServlet extends HttpServlet {
 						//add ticker
 						String ticker = child.getKey().toString();
 						stock.add(ticker);
-						for(DataSnapshot children : child.getChildren()) {
-							String name = children.child("name").getValue().toString();
-							String shares = children.child("shares").getValue().toString();
-							String from = children.child("from").getValue().toString();
-							stock.add(name);
-							stock.add(shares);
-							stock.add(from);
-						}
+						System.out.println("INFO FOR: " + ticker);
+						String name = child.child("name").getValue().toString();
+						String shares = child.child("shares").getValue().toString();
+						String from = child.child("from").getValue().toString();
+						String to = child.child("to").getValue().toString();
+						System.out.println("    " + name);
+						System.out.println("    " + shares);
+						System.out.println("    " + from);
+						System.out.println("    " + to);
+						System.out.println();
+						stock.add(name);
+						stock.add(shares);
+						stock.add(from);
+						stock.add(to);
 						//add to big array
-						System.out.println("adding stock info: " + stock);
 						myStocks.add(stock);
 					}
 					dataFetched = true;

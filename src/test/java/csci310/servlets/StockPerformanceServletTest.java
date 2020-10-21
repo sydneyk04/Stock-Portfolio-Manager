@@ -8,6 +8,8 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
@@ -45,7 +47,7 @@ public class StockPerformanceServletTest extends Mockito {
 	static FirebaseDatabase mockedFirebaseDatabase;
 	
 	@BeforeClass
-    public static void setup() {
+    public static void setup() throws IOException {
 		servlet = new StockPerformanceServlet();
 		request = mock(HttpServletRequest.class);
 		response = mock(HttpServletResponse.class);
@@ -55,24 +57,35 @@ public class StockPerformanceServletTest extends Mockito {
 		mockedDatabaseReference = Mockito.mock(DatabaseReference.class);
 		mockedFirebaseDatabase = Mockito.mock(FirebaseDatabase.class);
 		when(request.getSession()).thenReturn(session); 
+		when(response.getWriter()).thenReturn(printWriter);
+		ArrayList<String> stock = new ArrayList<String>();
+		String ticker = "TSLA";
+		String name = "Tesla";
+		String shares = "1";
+		String dp = "2020-10-10";
+		stock.add(ticker);
+		stock.add(name);
+		stock.add(shares);
+		stock.add(dp);
+		servlet.myStocks.add(stock);
     }
 	
 	@Test
 	public void testDoGet() throws IOException, ServletException {	
+		when(request.getParameter("ticker")).thenReturn("TSLA");
+		servlet.doGet(request, response);
 		assertTrue(true);
 	}
 	
 	@Test
 	public void testDoPost() throws IOException, ServletException, InterruptedException {	
-		when(request.getParameter("stockName")).thenReturn("TSLA");
-		when(response.getWriter()).thenReturn(printWriter);
 		servlet.doPost(request, response);
 		assertTrue(true);
 	}
 	
 	@Test
 	public void testAddPortfolioValues() throws IOException, ServletException, InterruptedException {	
-		servlet.addPortfolioValues();
+		servlet.addPortfolioValues(0, 0.0, 0.0, "label", false);
 		assertTrue(true);
 	}
 	
@@ -83,7 +96,7 @@ public class StockPerformanceServletTest extends Mockito {
 	}
 	
 	@Test
-	public void testBuildStockJSONS() throws IOException, ServletException, InterruptedException {	
+	public void testBuildStockJSONS() throws IOException, ServletException, InterruptedException, ParseException {	
 		Calendar from = Calendar.getInstance();
 		from.add(Calendar.YEAR, -1);
 		Calendar now = Calendar.getInstance();
@@ -92,9 +105,11 @@ public class StockPerformanceServletTest extends Mockito {
 	}
 	
 	@Test
-	public void testBuildGraph() throws IOException, ServletException, InterruptedException {	
+	public void testBuildGraph() throws IOException, ServletException, InterruptedException, ParseException {	
+		System.out.println("testbuild graph");
 		servlet.buildGraph();
 		assertTrue(true);
+		System.out.println("end testbuild graph");
 	}
 	
 	@Test

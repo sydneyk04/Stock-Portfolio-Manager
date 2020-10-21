@@ -23,17 +23,21 @@ public class DashboardServlet extends HttpServlet {
 	
 	// Servlets
 	private StockPerformanceServlet stockperformanceServlet = new StockPerformanceServlet();
-	private HomeServlet homeServlet = new HomeServlet();	// grabs user's portfolio from firebase
+//	private HomeServlet homeServlet = new HomeServlet();	// grabs user's portfolio from firebase
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		homeServlet.doGet(request, response);
+		
+		session = request.getSession();
+//		homeServlet.doGet(request, response);
 		stockperformanceServlet.doGet(request, response);
+		
+		response.sendRedirect("production/index.jsp");
 	}
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		homeServlet.doPost(request, response);
+//		homeServlet.doPost(request, response);
 		stockperformanceServlet.doPost(request, response);
 	}
 	
