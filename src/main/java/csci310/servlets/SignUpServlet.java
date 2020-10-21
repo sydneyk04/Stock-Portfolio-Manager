@@ -68,7 +68,7 @@ public class SignUpServlet extends HttpServlet {
 			}
 			
 			if (createdUser) {
-				response.sendRedirect("/home.jsp");
+				response.sendRedirect("/production/index.jsp");
 				return;
 			} else {
 				request.getRequestDispatcher("signup.jsp").include(request, response);
