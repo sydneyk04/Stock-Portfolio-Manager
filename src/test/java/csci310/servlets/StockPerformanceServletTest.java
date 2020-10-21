@@ -123,8 +123,14 @@ public class StockPerformanceServletTest extends Mockito {
 	}
 	
 	@Test
-	public void getUserStock() {
-		assertTrue(true);
+	public void getUserStock() throws IOException, InterruptedException {
+		servlet.myStocks.clear();
+		servlet.getUserStock("johnDoe");
+		System.out.println(servlet.myStocks);
+		assertThat(servlet.myStocks, hasSize(3));
+		servlet.myStocks.clear();
+		servlet.getUserStock("none");
+		assertThat(servlet.myStocks, hasSize(0));
 	}
 }
 		
