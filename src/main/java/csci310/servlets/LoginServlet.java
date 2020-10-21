@@ -46,8 +46,15 @@ public class LoginServlet extends HttpServlet {
 			dataFetched = false;
 			String username = request.getParameter("username");
 			String password = request.getParameter("password");
-		
+			
+			if(username != null) {
+				if(username.contains(".") || username.contains("$") || 
+						username.contains("[") || username.contains("]") || username.contains("#")) {
+					onAuthenticate(null);
+				}
+			}
 			authenticate(username, password);
+					
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
