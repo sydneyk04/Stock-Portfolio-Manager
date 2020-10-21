@@ -61,7 +61,7 @@ public class LoginServlet extends HttpServlet {
 	}
 	
 	public void authenticate(final String username, final String password) throws InterruptedException {
-		initializeFirebase("stock16-service-account.json");
+		initializeFirebase("stock16-serviceaccount.json");
 		final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(username);
 		
 		userRef.addListenerForSingleValueEvent(new ValueEventListener() {
