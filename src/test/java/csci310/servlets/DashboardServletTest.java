@@ -1,20 +1,21 @@
 package csci310.servlets;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-
-import csci310.Portfolio;
 
 public class DashboardServletTest extends Mockito {
 	@Mock
@@ -29,9 +30,6 @@ public class DashboardServletTest extends Mockito {
 	@Mock
 	RequestDispatcher rd;
 	
-	@Mock
-	Portfolio p;
-	
 	DashboardServlet servlet;
 
 	@Before
@@ -40,7 +38,6 @@ public class DashboardServletTest extends Mockito {
     	response = Mockito.mock(HttpServletResponse.class);
     	session = Mockito.mock(HttpSession.class);
     	rd = Mockito.mock(RequestDispatcher.class);
-    	p = Mockito.mock(Portfolio.class);
     	servlet = new DashboardServlet();
 		
 		session.setAttribute("username", "johnDoe");
@@ -60,6 +57,34 @@ public class DashboardServletTest extends Mockito {
 	public void testDoPostHttpServletRequestHttpServletResponse() throws IOException {
 		servlet.doPost(request, response);
 		assertTrue(true);
+	}
+	
+	@Test
+	public void testLogoutPost() throws IOException {		
+		StringWriter writer = new StringWriter();
+		PrintWriter out = new PrintWriter(writer);
+  
+		when(request.getParameter("action")).thenReturn("logout");
+		when(response.getWriter()).thenReturn(out);
+		
+		servlet.doPost(request, response);
+		String postResult = writer.getBuffer().toString();
+        
+		Assert.assertEquals("logout success", postResult);
+	}
+	
+	@Test
+	public void testLogoutGet() throws IOException {		
+		StringWriter writer = new StringWriter();
+		PrintWriter out = new PrintWriter(writer);
+  
+		when(request.getParameter("action")).thenReturn("logout");
+		when(response.getWriter()).thenReturn(out);
+		
+		servlet.doGet(request, response);
+		String getResult = writer.getBuffer().toString();
+        
+		Assert.assertEquals("logout success", getResult);
 	}
 
 }

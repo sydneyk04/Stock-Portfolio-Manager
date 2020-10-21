@@ -5,12 +5,6 @@
 	response.setHeader("Cache-Control", "no-cache, no-store");
 	response.setHeader("Pragma","no-cache");
 	response.setDateHeader ("Expires", 0);
-
-	Portfolio portfolio = (Portfolio) session.getAttribute("portfolio");
-	Double portfolio_value = 0.00;
-	if (portfolio != null) {
-		portfolio_value = portfolio.getValue();
-	}
 %>
 <html lang="en">
   <head>
@@ -60,13 +54,21 @@
   			<nav id="banner" class="navbar navbar-dark bg-secondary navbar-static-top justify-content-left">
 		      	<div id="banner-content" class="navbar-brand" style="color:white;font-size:45px;font-family: 'Raleway', sans-serif;">
 		      		<a href="index.jsp" style="text-decoration: none; color:white;" >
-				    USC CS 310 Stock Portfolio Management 
-				</a>
+				    	USC CS 310 Stock Portfolio Management 
+					</a>
 		      	</div>
 		      	<div>
+		      	<!-- 
 		      	<a href="../login.jsp" style="text-decoration: none; color:white;" >
 				    Logout
 				 </a>
+				-->
+					<form name="formname" action="/dashboard" method="POST">
+						<input type="hidden" name="action" value="logout">
+						<button id="logout-button" type="submit" class="btn btn-primary btn-md justify-content-start">
+							Logout <i class="icon-signout"></i>
+						</button>	       
+					</form>
 		      	</div>
 	   		</nav>
 	 	 </header>
@@ -112,8 +114,6 @@
                 <div class="row x_title">
                   <div class="col-md-6">
                     <h3>Your Stock Portfolio Performance</h3>
-                    <span class="count_top"><i class="fa fa-user"></i> Total Portfolio Value: $<%= portfolio_value%></span>
-              		<!-- <div class="count" id="totalPortfolio"></div> -->
                   </div>
                   <div class="col-md-6">
                     <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
@@ -270,9 +270,6 @@
 
                   addData(myChart)
 
-
-
-
                   </script>
                 </div>
                 <div class="col-md-3 col-sm-3  bg-white">
@@ -281,42 +278,6 @@
                     <div class="clearfix"></div>
                   </div>
 
-                  <!-- <div class="col-md-12 col-sm-12 ">
-                    <div>
-                      <p>TSLA</p>
-                      <div class="">
-                        <div class="progress progress_sm" style="width: 76%;">
-                          <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="80"></div>
-                        </div>
-                      </div>
-                    </div>
-                    <div>
-                      <p>AAPL</p>
-                      <div class="">
-                        <div class="progress progress_sm" style="width: 76%;">
-                          <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="60"></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-12 col-sm-12 ">
-                    <div>
-                      <p>DIS</p>
-                      <div class="">
-                        <div class="progress progress_sm" style="width: 76%;">
-                          <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="40"></div>
-                        </div>
-                      </div>
-                    </div>
-                    <div>
-                      <p>SPY</p>
-                      <div class="">
-                        <div class="progress progress_sm" style="width: 76%;">
-                          <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="50"></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div> -->
                   <button type="button" class="btn btn-primary" id="spytoggle" style="color:#007bff;background:#fff;">Remove S&P</button>
                 </div>
 
@@ -327,116 +288,7 @@
           </div>
           <br />
 
-          <div class="row">
-
-
-            <!-- <div class="col-md-4 col-sm-4 ">
-              <div class="x_panel tile fixed_height_320">
-                <div class="x_title">
-                  <h2>App Versions</h2>
-                  <ul class="nav navbar-right panel_toolbox">
-                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                    </li>
-                    <li class="dropdown">
-                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                          <a class="dropdown-item" href="#">Settings 1</a>
-                          <a class="dropdown-item" href="#">Settings 2</a>
-                        </div>
-                    </li>
-                    <li><a class="close-link"><i class="fa fa-close"></i></a>
-                    </li>
-                  </ul>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="x_content">
-                  <h4>App Usage across versions</h4>
-                  <div class="widget_summary">
-                    <div class="w_left w_25">
-                      <span>0.1.5.2</span>
-                    </div>
-                    <div class="w_center w_55">
-                      <div class="progress">
-                        <div class="progress-bar bg-green" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 66%;">
-                          <span class="sr-only">60% Complete</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="w_right w_20">
-                      <span>123k</span>
-                    </div>
-                    <div class="clearfix"></div>
-                  </div>
-
-                  <div class="widget_summary">
-                    <div class="w_left w_25">
-                      <span>0.1.5.3</span>
-                    </div>
-                    <div class="w_center w_55">
-                      <div class="progress">
-                        <div class="progress-bar bg-green" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 45%;">
-                          <span class="sr-only">60% Complete</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="w_right w_20">
-                      <span>53k</span>
-                    </div>
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="widget_summary">
-                    <div class="w_left w_25">
-                      <span>0.1.5.4</span>
-                    </div>
-                    <div class="w_center w_55">
-                      <div class="progress">
-                        <div class="progress-bar bg-green" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 25%;">
-                          <span class="sr-only">60% Complete</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="w_right w_20">
-                      <span>23k</span>
-                    </div>
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="widget_summary">
-                    <div class="w_left w_25">
-                      <span>0.1.5.5</span>
-                    </div>
-                    <div class="w_center w_55">
-                      <div class="progress">
-                        <div class="progress-bar bg-green" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 5%;">
-                          <span class="sr-only">60% Complete</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="w_right w_20">
-                      <span>3k</span>
-                    </div>
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="widget_summary">
-                    <div class="w_left w_25">
-                      <span>0.1.5.6</span>
-                    </div>
-                    <div class="w_center w_55">
-                      <div class="progress">
-                        <div class="progress-bar bg-green" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 2%;">
-                          <span class="sr-only">60% Complete</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="w_right w_20">
-                      <span>1k</span>
-                    </div>
-                    <div class="clearfix"></div>
-                  </div>
-
-                </div>
-              </div>
-            </div> -->
-            
+          <div class="row">    
 
             <!-- Start to do list -->
             <div class="col-md-4 col-sm-4 ">
@@ -533,37 +385,6 @@
 
                       </li>
                     </ul>
-                    <!-- <div class="inputrow">
-                      <div style="float: left; width: 33.33%; overflow: scroll;"><p style="text-align:center;">Exchange</p></div>
-                      <div style="float: left; width: 33.33%; overflow: scroll;"><p style="text-align:center;">Exchange</p></div>
-                      <div style="float: left; width: 33.33%; overflow: scroll;"><p style="text-align:center;">Exchange</p></div>
-                    </div> -->
-                    <hr>
-                    <!-- <div class="inputrow">
-                      <div style="float: left; width: 30%; overflow: scroll; margin-right:2.5%; display:table-cell;">
-                        <div style="margin-right:5px;">
-                          <p style="text-align:center;">Exchange</p>
-                          <input class="stockinput" type="text" id="exchange" name="fname">
-                        </div>
-                      </div>
-                      <div style="float: left; width: 30%; overflow: scroll; margin-right:2.5%; margin-left:2.5%; display:table-cell;">
-                        <div style="margin-right:5px;">
-                          <p style="text-align:center;">Ticker</p>
-                          <input class="stockinput" type="text" id="ticker" name="fname">
-                        </div>
-                      </div>
-                      <div style="float: left; width: 30%; overflow: scroll; margin-left:2.5%; display:table-cell;">
-                        <div style="margin-right:5px;">
-                          <p style="text-align:center;"># Shares</p>
-                          <input class="stockinput" type="text" id="shares" name="fname">
-                        </div>
-                      </div>
-                    </div> -->
-                    <!-- <br> -->
-                    <!-- <div class="addstockbutton">
-                      <button type="button" id="stockaddbutton" class="addstockbutton">Add Stock</button>
-                    </div> -->
-
 
                     <!-- Button trigger modal -->
                     <div class="addstockbutton">
@@ -629,11 +450,6 @@
                         </div>
                       </div>
                     </div>
-
-
-
-
-
 
                     <style>
                       .stockinput{
@@ -766,7 +582,7 @@
                       }
 
 
-                      updatePorfolio();
+                      //updatePorfolio();
                       setTimeout(
                         function()
                         {
