@@ -81,10 +81,8 @@ public class StockPerformanceServlet extends HttpServlet {
 			
 		try {
 			getUserStock(username);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
+		} 
+		 catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -96,8 +94,7 @@ public class StockPerformanceServlet extends HttpServlet {
 		try {
 			buildStockJSONS(from, now);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
 		}
 				
 		//build the graph using the list of stocks
