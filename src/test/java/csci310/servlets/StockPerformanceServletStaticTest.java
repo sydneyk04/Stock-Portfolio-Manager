@@ -3,6 +3,8 @@ package csci310.servlets;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Calendar;
+import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
@@ -33,7 +35,7 @@ import com.google.firebase.database.ValueEventListener;
 @PowerMockRunnerDelegate(JUnit4.class)
 @PrepareForTest({ FirebaseDatabase.class, FirebaseOptions.class} )
 @PowerMockIgnore("jdk.internal.reflect.*")
-public class LoginServletStaticTest extends Mockito{
+public class StockPerformanceServletStaticTest extends Mockito{
  
 		@Mock
     	HttpServletRequest request;
@@ -50,7 +52,7 @@ public class LoginServletStaticTest extends Mockito{
     	@Mock
     	DatabaseReference mockedDatabaseReference;
     
-    	LoginServlet servlet;
+    	StockPerformanceServlet servlet;
     
     	@Before
     	public void setUp() throws Exception {
@@ -58,7 +60,7 @@ public class LoginServletStaticTest extends Mockito{
         	response = mock(HttpServletResponse.class);
         	session = mock(HttpSession.class);
         	rd = mock(RequestDispatcher.class);
-        	servlet = new LoginServlet();
+        	servlet = new StockPerformanceServlet();
          
         	when(request.getSession()).thenReturn(session); 
         
@@ -73,48 +75,28 @@ public class LoginServletStaticTest extends Mockito{
     	}  
     
     	@Test
-    	public void testAuthenticateOnCancelled() throws IOException {
-		when(mockedDatabaseReference.child(anyString())).thenReturn(mockedDatabaseReference);
+    	public void testGetUserStock() throws IOException, InterruptedException {
+    		when(mockedDatabaseReference.child(anyString())).thenReturn(mockedDatabaseReference);
 		 
-		StringWriter writer = new StringWriter();
-		PrintWriter out = new PrintWriter(writer);
-		 
-		when(response.getWriter()).thenReturn(out);
-		 
-		doAnswer(new Answer<Void>() {
-			public Void answer(InvocationOnMock invocation) {
-				ValueEventListener valueEventListener = (ValueEventListener) invocation.getArguments()[0];
-				DatabaseError error = mock(DatabaseError.class);
-				valueEventListener.onCancelled(error);
-				return null;     
-			}
-		}).when(mockedDatabaseReference).addListenerForSingleValueEvent(any(ValueEventListener.class));
-		      
-		servlet.doPost(request, response);
-	}   
+    		doAnswer(new Answer<Void>() {
+				public Void answer(InvocationOnMock invocation) {
+					ValueEventListener valueEventListener = (ValueEventListener) invocation.getArguments()[0];
+					DatabaseError error = mock(DatabaseError.class);
+					valueEventListener.onCancelled(error);
+					return null;     
+				}
+			}).when(mockedDatabaseReference).addListenerForSingleValueEvent(any(ValueEventListener.class));
+			      
+			servlet.getUserStock("johnDoe");
+    	}   
+    	
+    	@SuppressWarnings("unchecked")
+		@Test
+    	public void testAddStock() throws IOException {
+    		Calendar c = Calendar.getInstance();
+    		when(mockedDatabaseReference.child(anyString())).thenReturn(mockedDatabaseReference);
+    		when(mockedDatabaseReference.updateChildrenAsync(anyMap())).thenReturn(null);
+    		servlet.addStock("johnDoe", "GOOG", c, c, 1);
+    	}
     
-    	@Test
-    	public void testAuthenticateOnCancelledThrowIOException() throws IOException {
-		when(mockedDatabaseReference.child(anyString())).thenReturn(mockedDatabaseReference);
-		 
-		StringWriter writer = new StringWriter();
-		PrintWriter out = new PrintWriter(writer);
-		 
-		when(response.getWriter()).thenReturn(out);
-		 
-		doAnswer(new Answer<Void>() {
-			public Void answer(InvocationOnMock invocation) {
-				ValueEventListener valueEventListener = (ValueEventListener) invocation.getArguments()[0];
-				DatabaseError error = mock(DatabaseError.class);
-				valueEventListener.onCancelled(error);
-				return null;     
-			}
-		}).when(mockedDatabaseReference).addListenerForSingleValueEvent(any(ValueEventListener.class));
-		 
-		doThrow(IOException.class)
-			.when(response)
-			.sendRedirect(anyString());
-		      
-		servlet.doPost(request, response);
-	}   
 }

@@ -1,12 +1,5 @@
-<%@ page import="csci310.*" %>
+
 <!DOCTYPE html>
-<%
-	//Disable Caching
-	response.setHeader("Cache-Control", "no-cache, no-store");
-	response.setHeader("Pragma","no-cache");
-	response.setDateHeader ("Expires", 0);
-	String chart = (String) session.getAttribute("chart");
-%>
 <html lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -16,15 +9,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="icon" href=https://www.daytrading.com/favicon32x32.png type="image/ico" />
 
-    <title>Dashboard</title>
+    <title>Gentelella Alela! | </title>
 
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-	<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-	<link rel="stylesheet" href="styles/home.css">
-	
-	<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap" rel="stylesheet">
     <!-- Bootstrap -->
     <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
@@ -48,33 +34,10 @@
   </head>
 
   <body class="nav-md">
-  
     <div class="container body">
       <div class="main_container">
         <!-- top navigation -->
-         <header style="height:70px; background:#787878;">
-  			<nav id="banner" class="navbar navbar-dark bg-secondary navbar-static-top justify-content-left">
-		      	<div id="banner-content" class="navbar-brand" style="color:white;font-size:45px;font-family: 'Raleway', sans-serif;">
-		      		<a href="index.jsp" style="text-decoration: none; color:white;" >
-				    	USC CS 310 Stock Portfolio Management 
-					</a>
-		      	</div>
-		      	<div>
-		      	<!-- 
-		      	<a href="../login.jsp" style="text-decoration: none; color:white;" >
-				    Logout
-				 </a>
-				-->
-					<form name="formname" action="/dashboard" method="POST">
-						<input type="hidden" name="action" value="logout">
-						<button id="logout-button" type="submit" class="btn btn-primary btn-md justify-content-start">
-							Logout <i class="icon-signout"></i>
-						</button>	       
-					</form>
-		      	</div>
-	   		</nav>
-	 	 </header>
-       <!--  <div class="top_nav">
+        <div class="top_nav">
           <div class="nav_menu">
               <nav class="nav navbar-nav" style="background:#2A3F54;">
               <ul class=" navbar-right">
@@ -83,28 +46,28 @@
                     <img src="images/img.jpg" alt="">John Doe
                   </a>
                   <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item"  href="../login.jsp"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
+                    <a class="dropdown-item"  href="login.html"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
                   </div>
                 </li>
 
              </ul>
             </nav>
           </div>
-        </div> -->
+        </div>
         <!-- /top navigation -->
 
         <!-- page content -->
-     <%--    <div class="right_col" role="main" style="margin-left:0px;padding-right:90px;padding-left:90px;">
+        <div class="right_col" role="main" style="margin-left:0px;padding-right:90px;padding-left:90px;">
           <!-- top tiles -->
           <div class="row">
             <div class="tile_count" style="width:inherit;">
             <div class="col-md-12 tile_stats_count">
               <span class="count_top"><i class="fa fa-user"></i> Total Portfolio Value</span>
-              <div class="count" id="totalPortfolio">$<%= portfolio_value%></div>
-              <!-- <span class="count_bottom"><i class="green">4% </i> From last Week</span> -->
+              <div class="count" id="totalPortfolio"></div>
+              <span class="count_bottom"><i class="green">4% </i> From last Week</span>
             </div>
             </div>
-          </div> --%>
+          </div>
 
 
 
@@ -126,20 +89,206 @@
                 </div>
 
                 <div class="col-md-9 col-sm-9 ">
-                	<!--   <div id="chart_plot_01" class="demo-placeholder"></div> -->
-                  <!-- <canvas id="chartContainer" width="1000" height="400"></canvas> -->
-                  <div id="chartContainer" style="width: 1000px; height: 400px" ></div>
-                  <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
-				  <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-                  <%= chart%>
-                  </script>
-			</div>
+                  <!-- <div id="chart_plot_01" class="demo-placeholder"></div> -->
+                  <div id="myChart" width="1000" height="400">
+                  	<form name="getdata" action="/stockperformance" method="post">
+                  		<input type="submit" id="button" class="btn btn-secondary" value=""/>
+                  	</form>
+                  	<%=chart%>
+                  </div>
+                  
+                  
+                  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+                  <script>
+                  // Creating the original chart
+                  var ctx = document.getElementById('myChart').getContext('2d');
+                  var myChart = new Chart(ctx, {
+                      type: 'line',
+                      data: {
+                          labels: ['December', 'January', 'February', 'March', 'April', 'May'],
+                          datasets: [{
+                              label: 'Porfolio Value ($ mil USD)',
+                              data: [6, 7, 11, 11.5, 12, 15],
+                              backgroundColor: [
+                                  'rgba(255, 99, 132, 0)',
+                                  'rgba(54, 162, 235, 0)',
+                                  'rgba(255, 206, 86, 0)',
+                                  'rgba(75, 192, 192, 0)',
+                                  'rgba(153, 102, 255, 0)',
+                                  'rgba(255, 159, 64, 0)'
+                              ],
+                              borderColor: [
+                                  'rgba(255, 99, 132, 1)',
+                                  'rgba(54, 162, 235, 1)',
+                                  'rgba(255, 206, 86, 1)',
+                                  'rgba(75, 192, 192, 1)',
+                                  'rgba(153, 102, 255, 1)',
+                                  'rgba(255, 159, 64, 1)'
+                              ],
+                              borderWidth: 3
+                          },
+                          {
+                              label: 'SPY Value (Indexed vs start of period $ mil USD)',
+                              data: [6, 6.5, 8, 10, 7, 12],
+                              backgroundColor: [
+                                  'rgba(255, 99, 132, 0)',
+                                  'rgba(54, 162, 235, 0)',
+                                  'rgba(255, 206, 86, 0)',
+                                  'rgba(75, 192, 192, 0)',
+                                  'rgba(153, 102, 255, 0)',
+                                  'rgba(255, 159, 64, 0)'
+                              ],
+                              borderColor: [
+                                  'rgba(255, 200, 0, 1)',
+                                  'rgba(54, 200, 0, 1)',
+                                  'rgba(255, 200, 0, 1)',
+                                  'rgba(75, 200, 0, 1)',
+                                  'rgba(153, 200, 0, 1)',
+                                  'rgba(255, 200, 0, 1)'
+                              ],
+                              borderWidth: 3
+                          }]
+                      },
+                      options: {
+                          scales: {
+                              yAxes: [{
+                                  ticks: {
+                                      beginAtZero: true
+                                  }
+                              }]
+                          }
+                      }
+                  });
+
+                  console.log(myChart.data.datasets);
+
+
+
+
+
+                  // Actual chart updating triggers
+                  $(document).ready(function(){
+
+                    // Chart updating functions
+                    function addData(chart, label, data) {
+                      // chart.data.labels.push(label);
+                      chart.data.datasets.push(data);
+                      chart.update();
+                    }
+
+                    function removeData(chart, label) {
+                      var i;
+                      for (i = 0; i < chart.data.datasets.length; i++) {
+                        if(chart.data.datasets[i]["label"] == label){
+                          chart.data.datasets.splice(i, 1);
+                        }
+                      }
+                      chart.update();
+                    }
+
+                    $("#spytoggle").click(function(){
+                      console.log("spy toggling")
+                      var buttonText = $("#spytoggle").text();
+                      console.log(buttonText);
+                      var addSPY = false;
+                      if(buttonText == "Add S&P"){
+                        addSPY = true;
+                      }
+                      if(buttonText == "Remove S&P"){
+                        addSPY = false;
+                      }
+
+                      labels = ['December', 'January', 'February', 'March', 'April', 'May']
+
+                      if(addSPY){
+                        var chartData = {
+                            label: 'SPY Value (Indexed vs start of period $ mil USD)',
+                            data: [6, 6.5, 8, 10, 7, 12],
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0)',
+                                'rgba(54, 162, 235, 0)',
+                                'rgba(255, 206, 86, 0)',
+                                'rgba(75, 192, 192, 0)',
+                                'rgba(153, 102, 255, 0)',
+                                'rgba(255, 159, 64, 0)'
+                            ],
+                            borderColor: [
+                                'rgba(255, 200, 0, 1)',
+                                'rgba(54, 200, 0, 1)',
+                                'rgba(255, 200, 0, 1)',
+                                'rgba(75, 200, 0, 1)',
+                                'rgba(153, 200, 0, 1)',
+                                'rgba(255, 200, 0, 1)'
+                            ],
+                            borderWidth: 3
+                        };
+                        addData(myChart, labels, chartData);
+                        $("#spytoggle").html("Remove S&P");
+                        console.log("add spy");
+                        document.getElementById("spytoggle").style.background='#fff';
+                        document.getElementById("spytoggle").style.color='#007bff';
+                      }else{
+                        removeData(myChart, "SPY Value (Indexed vs start of period $ mil USD)");
+                        $("#spytoggle").html("Add S&P");
+                        console.log("remove spy");
+                        document.getElementById("spytoggle").style.background='#007bff';
+                        document.getElementById("spytoggle").style.color='#fff';
+                      }
+
+
+
+                    });
+                  });
+
+                  addData(myChart)
+
+
+
+
+                  </script> -->
+                </div>
                 <div class="col-md-3 col-sm-3  bg-white">
                   <div class="x_title">
                     <h2>Toggle Graph</h2>
                     <div class="clearfix"></div>
                   </div>
 
+                  <!-- <div class="col-md-12 col-sm-12 ">
+                    <div>
+                      <p>TSLA</p>
+                      <div class="">
+                        <div class="progress progress_sm" style="width: 76%;">
+                          <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="80"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <p>AAPL</p>
+                      <div class="">
+                        <div class="progress progress_sm" style="width: 76%;">
+                          <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="60"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-12 col-sm-12 ">
+                    <div>
+                      <p>DIS</p>
+                      <div class="">
+                        <div class="progress progress_sm" style="width: 76%;">
+                          <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="40"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <p>SPY</p>
+                      <div class="">
+                        <div class="progress progress_sm" style="width: 76%;">
+                          <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="50"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div> -->
                   <button type="button" class="btn btn-primary" id="spytoggle" style="color:#007bff;background:#fff;">Remove S&P</button>
                 </div>
 
@@ -150,13 +299,212 @@
           </div>
           <br />
 
-          <div class="row">    
+          <div class="row">
+
+
+            <!-- <div class="col-md-4 col-sm-4 ">
+              <div class="x_panel tile fixed_height_320">
+                <div class="x_title">
+                  <h2>App Versions</h2>
+                  <ul class="nav navbar-right panel_toolbox">
+                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                    <li class="dropdown">
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                          <a class="dropdown-item" href="#">Settings 1</a>
+                          <a class="dropdown-item" href="#">Settings 2</a>
+                        </div>
+                    </li>
+                    <li><a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                  </ul>
+                  <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                  <h4>App Usage across versions</h4>
+                  <div class="widget_summary">
+                    <div class="w_left w_25">
+                      <span>0.1.5.2</span>
+                    </div>
+                    <div class="w_center w_55">
+                      <div class="progress">
+                        <div class="progress-bar bg-green" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 66%;">
+                          <span class="sr-only">60% Complete</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="w_right w_20">
+                      <span>123k</span>
+                    </div>
+                    <div class="clearfix"></div>
+                  </div>
+
+                  <div class="widget_summary">
+                    <div class="w_left w_25">
+                      <span>0.1.5.3</span>
+                    </div>
+                    <div class="w_center w_55">
+                      <div class="progress">
+                        <div class="progress-bar bg-green" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 45%;">
+                          <span class="sr-only">60% Complete</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="w_right w_20">
+                      <span>53k</span>
+                    </div>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="widget_summary">
+                    <div class="w_left w_25">
+                      <span>0.1.5.4</span>
+                    </div>
+                    <div class="w_center w_55">
+                      <div class="progress">
+                        <div class="progress-bar bg-green" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 25%;">
+                          <span class="sr-only">60% Complete</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="w_right w_20">
+                      <span>23k</span>
+                    </div>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="widget_summary">
+                    <div class="w_left w_25">
+                      <span>0.1.5.5</span>
+                    </div>
+                    <div class="w_center w_55">
+                      <div class="progress">
+                        <div class="progress-bar bg-green" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 5%;">
+                          <span class="sr-only">60% Complete</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="w_right w_20">
+                      <span>3k</span>
+                    </div>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="widget_summary">
+                    <div class="w_left w_25">
+                      <span>0.1.5.6</span>
+                    </div>
+                    <div class="w_center w_55">
+                      <div class="progress">
+                        <div class="progress-bar bg-green" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 2%;">
+                          <span class="sr-only">60% Complete</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="w_right w_20">
+                      <span>1k</span>
+                    </div>
+                    <div class="clearfix"></div>
+                  </div>
+
+                </div>
+              </div>
+            </div> -->
+
+            <div class="col-md-4 col-sm-4 ">
+              <div class="x_panel tile fixed_height_320 overflow_hidden">
+                <div class="x_title">
+                  <h2>Biggest holdings</h2>
+                  <ul class="nav navbar-right panel_toolbox">
+                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                    <li class="dropdown">
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                          <a class="dropdown-item" href="#">Settings 1</a>
+                          <a class="dropdown-item" href="#">Settings 2</a>
+                        </div>
+                    </li>
+                    <li><a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                  </ul>
+                  <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                  <table class="" style="width:100%">
+                    <tr>
+                      <th style="width:37%;">
+                        <p>Portfolio Allocation</p>
+                      </th>
+                      <th>
+                        <div class="col-lg-7 col-md-7 col-sm-7 ">
+                          <p class="">Stock</p>
+                        </div>
+                        <div class="col-lg-5 col-md-5 col-sm-5 ">
+                          <p class="">Share of Portfolio</p>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr>
+                      <td>
+                        <canvas class="canvasDoughnut" height="140" width="140" style="margin: 15px 10px 10px 0"></canvas>
+                      </td>
+                      <td>
+                        <table class="tile_info">
+                          <tr>
+                            <td>
+                              <p><i class="fa fa-square blue"></i>AAPL </p>
+                            </td>
+                            <td>30%</td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <p><i class="fa fa-square green"></i>TT </p>
+                            </td>
+                            <td>10%</td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <p><i class="fa fa-square purple"></i>ATT </p>
+                            </td>
+                            <td>20%</td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <p><i class="fa fa-square aero"></i>NASDAQ </p>
+                            </td>
+                            <td>15%</td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <p><i class="fa fa-square red"></i>VIX </p>
+                            </td>
+                            <td>30%</td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
 
             <!-- Start to do list -->
             <div class="col-md-4 col-sm-4 ">
               <div class="x_panel">
                 <div class="x_title">
                   <h2>Manage Portfolio <small>+ / - stocks</small></h2>
+                  <ul class="nav navbar-right panel_toolbox">
+                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                    <li class="dropdown">
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                          <a class="dropdown-item" href="#">Settings 1</a>
+                          <a class="dropdown-item" href="#">Settings 2</a>
+                        </div>
+                    </li>
+                    <li><a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                  </ul>
                   <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
@@ -247,6 +595,37 @@
 
                       </li>
                     </ul>
+                    <!-- <div class="inputrow">
+                      <div style="float: left; width: 33.33%; overflow: scroll;"><p style="text-align:center;">Exchange</p></div>
+                      <div style="float: left; width: 33.33%; overflow: scroll;"><p style="text-align:center;">Exchange</p></div>
+                      <div style="float: left; width: 33.33%; overflow: scroll;"><p style="text-align:center;">Exchange</p></div>
+                    </div> -->
+                    <hr>
+                    <!-- <div class="inputrow">
+                      <div style="float: left; width: 30%; overflow: scroll; margin-right:2.5%; display:table-cell;">
+                        <div style="margin-right:5px;">
+                          <p style="text-align:center;">Exchange</p>
+                          <input class="stockinput" type="text" id="exchange" name="fname">
+                        </div>
+                      </div>
+                      <div style="float: left; width: 30%; overflow: scroll; margin-right:2.5%; margin-left:2.5%; display:table-cell;">
+                        <div style="margin-right:5px;">
+                          <p style="text-align:center;">Ticker</p>
+                          <input class="stockinput" type="text" id="ticker" name="fname">
+                        </div>
+                      </div>
+                      <div style="float: left; width: 30%; overflow: scroll; margin-left:2.5%; display:table-cell;">
+                        <div style="margin-right:5px;">
+                          <p style="text-align:center;"># Shares</p>
+                          <input class="stockinput" type="text" id="shares" name="fname">
+                        </div>
+                      </div>
+                    </div> -->
+                    <!-- <br> -->
+                    <!-- <div class="addstockbutton">
+                      <button type="button" id="stockaddbutton" class="addstockbutton">Add Stock</button>
+                    </div> -->
+
 
                     <!-- Button trigger modal -->
                     <div class="addstockbutton">
@@ -268,19 +647,19 @@
                               <div style="float: left; width: 30%; overflow: scroll; margin-right:2.5%; display:table-cell;">
                                 <div style="margin-right:5px;">
                                   <p style="text-align:center;">Exchange*</p>
-                                  <input class="stockinput" type="text" id="exchange" name="fname" required>
+                                  <input class="stockinput" type="text" id="exchange" name="fname">
                                 </div>
                               </div>
                               <div style="float: left; width: 30%; overflow: scroll; margin-right:2.5%; margin-left:2.5%; display:table-cell;">
                                 <div style="margin-right:5px;">
                                   <p style="text-align:center;">Ticker*</p>
-                                  <input class="stockinput" type="text" id="ticker" name="fname" required>
+                                  <input class="stockinput" type="text" id="ticker" name="fname">
                                 </div>
                               </div>
                               <div style="float: left; width: 30%; overflow: scroll; margin-left:2.5%; display:table-cell;">
                                 <div style="margin-right:5px;">
                                   <p style="text-align:center;"># Shares*</p>
-                                  <input class="stockinput" type="text" id="shares" name="fname" required>
+                                  <input class="stockinput" type="text" id="shares" name="fname">
                                 </div>
                               </div>
                             </div>
@@ -289,13 +668,13 @@
                               <div style="float: left; width: 30%; overflow: scroll; margin-right:2.5%; display:table-cell;">
                                 <div style="margin-right:5px;">
                                   <p style="text-align:center;">Date Purchased*</p>
-                                  <input class="stockinput" type="date" id="exchange" name="fname" required>
+                                  <input class="stockinput" type="text" id="exchange" name="fname">
                                 </div>
                               </div>
                               <div style="float: left; width: 30%; overflow: scroll; margin-right:2.5%; margin-left:2.5%; display:table-cell;">
                                 <div style="margin-right:5px;">
                                   <p style="text-align:center;">Date Sold</p>
-                                  <input class="stockinput" type="date" id="ticker" name="fname">
+                                  <input class="stockinput" type="text" id="ticker" name="fname">
                                 </div>
                               </div>
                               <div style="float: left; width: 30%; overflow: scroll; margin-left:2.5%; display:table-cell;">
@@ -312,7 +691,13 @@
                         </div>
                       </div>
                     </div>
-					 <style>
+
+
+
+
+
+
+                    <style>
                       .stockinput{
                         border: none;
                         background-color: Gainsboro;
@@ -370,7 +755,7 @@
                         //         new Chart(e,a)
                         //
                         //     })
-                        //}
+                        }
                         var els = document.getElementsByClassName("canvasDoughnut");
 
                         for (var i = 0; i < els.length; i++) {
@@ -380,40 +765,9 @@
                         }
 
                       }
-                      
-                      function getCookie(name) {
-                  		// Split cookie string and get all individual name=value pairs in an array
-                   	    var cookieArr = document.cookie.split(";");
-                   	    
-                   	    // Loop through the array elements
-                   	    for(var i = 0; i < cookieArr.length; i++) {
-                   	        var cookiePair = cookieArr[i].split("=");
-                   	        
-                   	        /* Removing whitespace at the beginning of the cookie name
-                   	        and compare it with the given string */
-                   	        if(name == cookiePair[0].trim()) {
-                   	            // Decode the cookie value and return
-                   	            return decodeURIComponent(cookiePair[1]);
-                   	        }
-                   	    }
-                   	    
-                   	    // Return null if not found
-                   	    return null;
-                   	  }
-                      
-                      function getTotalPortfolioValue() {
-                   	    // Get cookie using our custom function
-                   	    var portfolioValue = getCookie("portfolioValue");
-                   	 	console.log("Total portfolio value: " + portfolioValue);
-                   	    
-                   	    if (portfolioValue == null) {
-                   	    	document.getElementById("totalPortfolio").innerHTML = "$0.00";
-                   	    } else {
-                   	    	document.getElementById("totalPortfolio").innerHTML = "$" + portfolioValue;
-                   	    }
-                      }
 
                       function updatePorfolio() {
+
 
                         var apiLink = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=IBM&apikey=60096f09efmsh63c9a7515124324p1b4c57jsna3f56df4cc32";
 
@@ -433,17 +787,16 @@
                             valueJson = valueJson["4. close"];
                             var dollarValue = valueJson;
 
-                            //document.getElementById("totalPortfolio").innerHTML = "$" + dollarValue;
-                            //getTotalPortfolioValue();
+                            document.getElementById("totalPortfolio").innerHTML = "$" + dollarValue;
                           })
                           .catch(function (error) {
                             console.log(error);
-                          });                    
-                        
+                          });
+
                       }
 
 
-                      //updatePorfolio();
+                      updatePorfolio();
                       setTimeout(
                         function()
                         {
@@ -551,12 +904,62 @@
             </div>
             <!-- End to do list -->
 
+
+            <div class="col-md-4 col-sm-4 ">
+              <div class="x_panel tile fixed_height_320">
+                <div class="x_title">
+                  <h2>Risk Allocation</h2>
+                  <ul class="nav navbar-right panel_toolbox">
+                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                    <li class="dropdown">
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                          <a class="dropdown-item" href="#">Settings 1</a>
+                          <a class="dropdown-item" href="#">Settings 2</a>
+                        </div>
+                    </li>
+                    <li><a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                  </ul>
+                  <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                  <div class="dashboard-widget-content">
+                    <!-- <ul class="quick-list">
+                      <li><i class="fa fa-calendar-o"></i><a href="#">Settings</a>
+                      </li>
+                      <li><i class="fa fa-bars"></i><a href="#">Subscription</a>
+                      </li>
+                      <li><i class="fa fa-bar-chart"></i><a href="#">Auto Renewal</a> </li>
+                      <li><i class="fa fa-line-chart"></i><a href="#">Achievements</a>
+                      </li>
+                      <li><i class="fa fa-bar-chart"></i><a href="#">Auto Renewal</a> </li>
+                      <li><i class="fa fa-line-chart"></i><a href="#">Achievements</a>
+                      </li>
+                      <li><i class="fa fa-area-chart"></i><a href="#">Logout</a>
+                      </li>
+                    </ul> -->
+
+                    <div class="sidebar-widget">
+                        <h4>Portfolio Diversification Score</h4>
+                        <canvas width="150" height="80" id="chart_gauge_01" class="" style="width: 160px; height: 100px;"></canvas>
+                        <div class="goal-wrapper">
+                          <span id="gauge-text" class="gauge-value pull-left">1</span>
+                          <span class="gauge-value pull-left">%</span>
+                          <span id="goal-text" class="goal-value pull-right">100%</span>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
 
 
 
         </div>
-      
         <!-- /page content -->
 
         <!-- footer content -->

@@ -17,7 +17,7 @@
   	<servlet-class>csci310.servlets.DashboardServlet</servlet-class>
   </servlet>
    <servlet>
-  	<servlet-name>StockPerformanceServlet</servlet-name>
+	<servlet-name>StockPerformanceServlet</servlet-name>
   	<servlet-class>csci310.servlets.StockPerformanceServlet</servlet-class>
   </servlet>
    <servlet-mapping>
@@ -33,7 +33,7 @@
   	<url-pattern>/dashboard</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-  	<servlet-name>StockPerformanceServlet</servlet-name>
+	<servlet-name>StockPerformanceServlet</servlet-name>
   	<url-pattern>/stockperformance</url-pattern>
   </servlet-mapping>
 </web-app>
