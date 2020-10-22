@@ -35,13 +35,13 @@ import com.google.firebase.database.ValueEventListener;
 @PowerMockIgnore("jdk.internal.reflect.*")
 public class LoginServletStaticTest extends Mockito{
  
-	@Mock
+		@Mock
     	HttpServletRequest request;
 
     	@Mock
     	HttpServletResponse response;
     
-	@Mock
+    	@Mock
     	HttpSession session;
     
     	@Mock
