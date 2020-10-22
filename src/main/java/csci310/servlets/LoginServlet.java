@@ -46,15 +46,22 @@ public class LoginServlet extends HttpServlet {
 			dataFetched = false;
 			String username = request.getParameter("username");
 			String password = request.getParameter("password");
-		
+			
+			if(username != null) {
+				if(username.contains(".") || username.contains("$") || 
+						username.contains("[") || username.contains("]") || username.contains("#")) {
+					onAuthenticate(null);
+				}
+			}
 			authenticate(username, password);
+					
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	public void authenticate(final String username, final String password) throws InterruptedException {
-		initializeFirebase("stock16-service-account.json");
+		initializeFirebase("stock16-serviceaccount.json");
 		final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(username);
 		
 		userRef.addListenerForSingleValueEvent(new ValueEventListener() {
