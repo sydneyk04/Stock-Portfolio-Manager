@@ -13,32 +13,62 @@ import javax.servlet.http.HttpSession;
 /*
  * Main servlet for dashboard page that contains instances of other servlets
  */
+
 @WebServlet("/dashboard")
 public class DashboardServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static String INDEXPG= "production/index.html";
+	private static String LOGINPG= "login.jsp";
+	private static String INDEXPG= "production/index.jsp";
 	private HttpSession session = null;
 	private HttpServletResponse response = null;
 	private PrintWriter out = null;
 	
-	// Servlets
+	// Servlets - initialize servlets here (e.g. HomeServlet homeServlet = new HomeServlet();)
 	private StockPerformanceServlet stockperformanceServlet = new StockPerformanceServlet();
-//	private HomeServlet homeServlet = new HomeServlet();	// grabs user's portfolio from firebase
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		
 		session = request.getSession();
-//		homeServlet.doGet(request, response);
+		this.response = response;
+		out = response.getWriter();
+		
+		// Call functions of servlet here (e.g. homeServlet.doGet(request, response);)
 		stockperformanceServlet.doGet(request, response);
 		
-		response.sendRedirect("production/index.jsp");
+		String action = request.getParameter("action");
+		if (action != null && action.equals("logout")) {
+			logout();
+			return;
+		} 
+		else {
+			response.sendRedirect(INDEXPG);
+		}
 	}
 	
-	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-//		homeServlet.doPost(request, response);
+		session = request.getSession();
+		this.response = response;
+		out = response.getWriter();
+		
+		// Call functions of servlet here (e.g. homeServlet.doPost(request, response);)
 		stockperformanceServlet.doPost(request, response);
+		
+		String action = request.getParameter("action");
+		if (action != null && action.equals("logout")) {
+			logout();
+			return;
+		}
+		else {
+			response.sendRedirect(INDEXPG);
+		}
+	}
+	
+	public void logout() throws IOException {
+		session.setAttribute("username", null);
+		session.setAttribute("login_error_message", null);
+		out.print("logout success");	
+		response.sendRedirect(LOGINPG);
+		out.flush();
 	}
 	
 }
