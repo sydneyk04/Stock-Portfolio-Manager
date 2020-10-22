@@ -55,12 +55,12 @@ public class LoginServletTest extends Mockito {
    	 }
  
 	@Test
-	public void testInitializeFirebaseNull() { 
+	public void testInitializeFirebaseNull() throws IOException { 
 		assertNull(servlet.initializeFirebase("stock16-service-account.json"));
 	}
 	 
     @Test
-	public void testInitializeFirebaseThrowIOException() { 
+	public void testInitializeFirebaseThrowIOException() throws IOException { 
 		for (FirebaseApp app : FirebaseApp.getApps()) {
 			app.delete();
 		}
@@ -80,7 +80,7 @@ public class LoginServletTest extends Mockito {
 		String result = writer.getBuffer().toString();
         
 		Assert.assertEquals("login success", result);
-     
+		
 		doThrow(IOException.class)
 			.when(response)
 			.sendRedirect(anyString());
@@ -106,6 +106,33 @@ public class LoginServletTest extends Mockito {
 		servlet.doPost(request, response);
 		result = writer.getBuffer().toString();
      
+		Assert.assertEquals("login fail", result);
+		
+		LoginServlet spyServlet = spy(servlet);
+		doNothing().when(spyServlet).authenticate(anyString(), anyString());
+		when(request.getParameter("username")).thenReturn(".");
+		spyServlet.doPost(request, response);
+		result = writer.getBuffer().toString();
+		Assert.assertEquals("login fail", result);
+		
+		when(request.getParameter("username")).thenReturn("$");
+		spyServlet.doPost(request, response);
+		result = writer.getBuffer().toString();
+		Assert.assertEquals("login fail", result);
+		
+		when(request.getParameter("username")).thenReturn("[");
+		spyServlet.doPost(request, response);
+		result = writer.getBuffer().toString();
+		Assert.assertEquals("login fail", result);
+		
+		when(request.getParameter("username")).thenReturn("]");
+		spyServlet.doPost(request, response);
+		result = writer.getBuffer().toString();
+		Assert.assertEquals("login fail", result);
+		
+		when(request.getParameter("username")).thenReturn("#");
+		spyServlet.doPost(request, response);
+		result = writer.getBuffer().toString();
 		Assert.assertEquals("login fail", result);
 	}
 
