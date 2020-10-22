@@ -314,10 +314,6 @@ public class StockPerformanceServlet extends HttpServlet {
 		
 	}
 	
-	public Stock getStock(String symbol) throws IOException {
-		return YahooFinance.get(symbol);
-	}
-	
 	public FirebaseApp initializeFireBase() throws IOException {
 		if (FirebaseApp.getApps().isEmpty()) {
 			FileInputStream serviceAccount;
