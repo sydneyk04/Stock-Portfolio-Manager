@@ -72,34 +72,36 @@ public class StockPerformanceServlet extends HttpServlet {
 		System.out.println("Hello from doGet");
 		
 		String username = session.getAttribute("username").toString();
-		buildPortfolioJSON();
 		
-		//default time period is 1Y
-		from = Calendar.getInstance();
-		from.add(Calendar.YEAR, -1);
-		now = Calendar.getInstance();
-			
-		try {
-			getUserStock(username);
-		} 
-		 catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		//set stocks as session variable for front end
-		session.setAttribute("myStocks", myStocks);
-		
-		
-		try {
-			buildStockJSONS(from, now);
-		} catch (ParseException e) {
-			
-		}
+		if(username != null) {
+			//default time period is 1Y
+			from = Calendar.getInstance();
+			from.add(Calendar.YEAR, -1);
+			now = Calendar.getInstance();
 				
-		//build the graph using the list of stocks
-		buildGraph();
-		
+			try {
+				getUserStock(username);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			//set stocks as session variable for front end
+			session.setAttribute("myStocks", myStocks);
+			
+			try {
+				buildStockJSONS(from, now);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+					
+			//build the graph using the list of stocks
+			buildGraph();
+		}
 		
 	}
 	
@@ -112,7 +114,8 @@ public class StockPerformanceServlet extends HttpServlet {
 		System.out.println("Hello from doPost");
 		
 		//code for when user changes time period
-		//just need to grab the two dates from the frontend in calendar format
+		//just need to grab the two dates from the front end in calendar format
+		
 		//Calendar from = request.getParameter("from");
 		//Calendar now = request.getParameter("now");
 		
@@ -145,7 +148,7 @@ public class StockPerformanceServlet extends HttpServlet {
 			}
 		} catch ( IndexOutOfBoundsException e ) {
 			//otherwise create new value
-			//if purchased before add valye
+			//if purchased before add value
 			if(after == true) {
 				val.add(label);
 				val.add(String.valueOf(portfolioValue));
@@ -181,7 +184,6 @@ public class StockPerformanceServlet extends HttpServlet {
 	
 	void buildStockJSONS(Calendar from, Calendar now) throws IOException, ParseException {
 		//Below is the code to build/format json for graph
-		
 		//for loop to run through list of users stocks
 		for(int s=0; s<myStocks.size(); s++) {
 			
@@ -197,45 +199,22 @@ public class StockPerformanceServlet extends HttpServlet {
 				int year = date.get(Calendar.YEAR);
 				int month = date.get(Calendar.MONTH);
 				int day = date.get(Calendar.DAY_OF_MONTH);
-//				System.out.println(day);
 				DateFormatSymbols symbols = new DateFormatSymbols();
 				String label = day + " " + symbols.getShortMonths()[month] + " " + year;
 				Double close = history.get(i).getClose().doubleValue();
 				Double shares = Double.parseDouble((String) myStocks.get(s).get(2));
 				
+				//check if user owned stock during this point in time add to portfolio value
 				String holder = year + "-" + (month + 1) + "-" + day;
 				DateFormat formatter = new SimpleDateFormat("YYYY-MM-DD"); 
 				Date datePurchased = (Date)formatter.parse((String)myStocks.get(s).get(3));
 				Date sellDate = (Date)formatter.parse((String)myStocks.get(s).get(4));
 				Date historicalDate = (Date)formatter.parse(holder);
-				
 				boolean owned = false;
 				owned = sellDate.after(historicalDate);
 				owned = datePurchased.before(historicalDate);
-				
-				//if user owned stock during this point in time add to portfolio value
-//				Boolean owned = false;
-//				String datePurchased = (String)myStocks.get(s).get(3);
-//				String[] dpParts = datePurchased.split("\\-");
-//				String dateSold = (String)myStocks.get(s).get(4);
-//				String[] sellParts = datePurchased.split("\\-");
-//				Integer dpYear = Integer.parseInt(dpParts[0]); 
-//				Integer sellYear = Integer.parseInt(sellParts[0]); 
-//				
-//				if(dpYear < year) {
-//					owned = true;
-//				} else if(dpYear == year){
-//					Integer dpMonth = Integer.parseInt(dpParts[1]);
-//					if(dpMonth < month+1) {
-//						owned = true;
-//					} else if(dpMonth == month+1){
-//						Integer dpDay = Integer.parseInt(dpParts[2]);
-//						if(dpDay <= day) {
-//							owned = true;
-//						}
-//					}
-//				}
-
+			
+				//create portfolio value at that index
 				addPortfolioValues(i, close, shares, label, owned);
 			
 				map = new HashMap<Object,Object>(); map.put("label", label); map.put("y", close); 
@@ -252,9 +231,9 @@ public class StockPerformanceServlet extends HttpServlet {
 	}
 	
 	void buildGraph() throws IOException {
+		System.out.println("buildgraph func");
 		//chart to display different stocks
 		//i know this looks wacky but it will actually work hahah
-		System.out.println("hi1");
 		String theChart =  "<script type=\"text/javascript\">\n" + 
 //				"			window.onload = function() { \n" + 
 				"				var chart = new CanvasJS.Chart(\"chartContainer\", {\n" + 
@@ -279,7 +258,6 @@ public class StockPerformanceServlet extends HttpServlet {
 		
 		
 		for(int i=0; i<jsons.size(); i++) {
-			System.out.println("hiiii");
 			theChart += "{\n" +
 							"type: \"line\",\n" + 
 							"name: \"" + myStocks.get(i).get(0) + "\",\n" +
@@ -288,7 +266,6 @@ public class StockPerformanceServlet extends HttpServlet {
 							"dataPoints :" + jsons.get(i) +
 						"},\n";	
 		}
-		System.out.println("hi2");
 		
 		//add the portfolio
 		theChart += "{\n" +
@@ -298,7 +275,6 @@ public class StockPerformanceServlet extends HttpServlet {
 						"yValueFormatString: \"$##0.00\",\n" + 
 						"dataPoints :" + portfolioJSON +
 					"},\n";	
-		System.out.println("hi3");
 		//add the end code
 		theChart +=
 				"					]\n" + 
