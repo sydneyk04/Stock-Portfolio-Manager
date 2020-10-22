@@ -23,7 +23,7 @@ public class tickerAddRemoveDefinitions {
 
 	@Given("I am on dashboard")
 	public void i_am_on_dashboard() {
-		driver.get("https://www.index.com/index/");
+		driver.get("http://localhost:8080/production/index.jsp");
 	}
 
 	@Given("I click the button to add stocks to my portfolio")

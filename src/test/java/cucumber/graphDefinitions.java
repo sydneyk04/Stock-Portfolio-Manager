@@ -22,6 +22,10 @@ public class graphDefinitions {
 	
 	private final WebDriver driver = new ChromeDriver();
 	
+	@Given("I am on dashboard")
+	public void i_am_on_dashbaord() {
+		driver.get("http://localhost:8080/production/index.jsp");
+	}
 	@Given("I click the button to change the graph date range")
 	public void i_click_the_button_to_change_the_graph_date_range() {
 		WebElement button = driver.findElement(By.id("reportrange"));

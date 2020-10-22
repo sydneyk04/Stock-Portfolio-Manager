@@ -21,17 +21,17 @@ import io.cucumber.java.en.When;
 public class loginRegisterDefinitions {
 	
 	private final WebDriver driver = new ChromeDriver();
-	private String validUsername = "valid";
+	private String validUsername = "ashott";
 	private String invalidUsername = "invalid";
 	private String invalidPassword = "invalid";
-	private String validPassword = "valid";
+	private String validPassword = "41325";
 	private String notregisteredUsername = "notRegistered";
-	private String takenUsername = "taken";
+	private String takenUsername = "ashott";
 	
 	//log in tests
 	@Given("I am on the log in page")
 	public void i_am_on_the_log_in_page() {
-		driver.get("https://www.index.com/login/");
+		driver.get("http://localhost:8080/login.jsp");
 	}
 	@Given("I input my correct username and password")
 	public void i_input_my_correct_username_and_password() {
@@ -78,7 +78,7 @@ public class loginRegisterDefinitions {
 	//register tests
 	@Given("I am on the register page")
 	public void i_am_on_the_register_page() {
-		driver.get("https://www.index.com/register/");
+		driver.get("http://localhost:8080/signup.jsp");
 	}
 	@Given("I type in an already used username and the password and confirmation password")
 	public void i_type_in_an_already_used_username_and_the_password_and_confirmation_password() {
