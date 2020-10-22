@@ -16,16 +16,8 @@
   	<servlet-name>DashboardServlet</servlet-name>
   	<servlet-class>csci310.servlets.DashboardServlet</servlet-class>
   </servlet>
-<<<<<<< HEAD
-  <servlet>
-  	<servlet-name>HomeServlet</servlet-name>
-  	<servlet-class>csci310.servlets.HomeServlet</servlet-class>
-  </servlet>
-  <servlet>
-=======
    <servlet>
->>>>>>> branch 'develop' of https://github.com/CSCI310/project-20203b-groupl-20203.git
-  	<servlet-name>StockPerformanceServlet</servlet-name>
+	<servlet-name>StockPerformanceServlet</servlet-name>
   	<servlet-class>csci310.servlets.StockPerformanceServlet</servlet-class>
   </servlet>
    <servlet-mapping>
@@ -41,14 +33,7 @@
   	<url-pattern>/dashboard</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-<<<<<<< HEAD
-  	<servlet-name>HomeServlet</servlet-name>
-  	<url-pattern>/home</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-=======
->>>>>>> branch 'develop' of https://github.com/CSCI310/project-20203b-groupl-20203.git
-  	<servlet-name>StockPerformanceServlet</servlet-name>
+	<servlet-name>StockPerformanceServlet</servlet-name>
   	<url-pattern>/stockperformance</url-pattern>
   </servlet-mapping>
 </web-app>
