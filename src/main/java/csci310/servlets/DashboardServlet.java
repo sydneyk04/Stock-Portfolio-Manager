@@ -2,6 +2,8 @@ package csci310.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -32,15 +34,14 @@ public class DashboardServlet extends HttpServlet {
 		this.response = response;
 		out = response.getWriter();
 		
-		// Call functions of servlet here (e.g. homeServlet.doGet(request, response);)
-		stockperformanceServlet.doGet(request, response);
-		
 		String action = request.getParameter("action");
 		if (action != null && action.equals("logout")) {
 			logout();
 			return;
 		} 
 		else {
+			// Call functions of servlet here (e.g. homeServlet.doGet(request, response);)
+			stockperformanceServlet.doGet(request, response);
 			response.sendRedirect(INDEXPG);
 		}
 	}
@@ -50,15 +51,14 @@ public class DashboardServlet extends HttpServlet {
 		this.response = response;
 		out = response.getWriter();
 		
-		// Call functions of servlet here (e.g. homeServlet.doPost(request, response);)
-		stockperformanceServlet.doPost(request, response);
-		
 		String action = request.getParameter("action");
 		if (action != null && action.equals("logout")) {
 			logout();
 			return;
 		}
 		else {
+			// Call functions of servlet here (e.g. homeServlet.doPost(request, response);)
+			stockperformanceServlet.doPost(request, response);
 			response.sendRedirect(INDEXPG);
 		}
 	}
@@ -66,6 +66,14 @@ public class DashboardServlet extends HttpServlet {
 	public void logout() throws IOException {
 		session.setAttribute("username", null);
 		session.setAttribute("login_error_message", null);
+		
+		//reset variables in graph servlet
+		session.setAttribute("myStocks", null);
+		stockperformanceServlet.myStocks = new ArrayList<ArrayList>();
+		stockperformanceServlet.jsons = new ArrayList<String>();
+		stockperformanceServlet.portfolioValHistory = new ArrayList<ArrayList>();
+		stockperformanceServlet.portfolioJSON = "";
+		
 		out.print("logout success");	
 		response.sendRedirect(LOGINPG);
 		out.flush();
