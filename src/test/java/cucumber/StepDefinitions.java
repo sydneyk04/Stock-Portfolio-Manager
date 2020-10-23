@@ -1,5 +1,6 @@
 package cucumber;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -340,8 +341,226 @@ public class StepDefinitions {
 	}
 
 	/**************************
+	 * ADD/STOCK FEATURE
+	 **************************/
+	@Given("I am on dashboard")
+	public void i_am_on_dashboard() {
+		driver.get("http://localhost:8080/production/index.jsp");
+	}
+
+	@Given("I click the button to add stocks to my portfolio")
+	public void i_click_the_button_to_add_stocks_to_my_portfolio() {
+		WebElement button = driver.findElement(By.id("add"));
+		button.click();
+	}
+
+	@Given("I enter a stock ticker not in my portfolio and a certain number of shares")
+	public void i_enter_a_stock_ticker_not_in_my_portfolio_and_a_certain_number_of_shares() {
+	    WebElement exchange = driver.findElement(By.id("exchange"));
+	    exchange.sendKeys("NASDAQ");
+	    WebElement ticker = driver.findElement(By.id("ticker"));
+	    ticker.sendKeys("TSLA");
+	    WebElement shares = driver.findElement(By.id("shares"));
+	    shares.sendKeys("10");
+	}
+
+	@When("I click the submit button")
+	public void i_click_the_submit_button() {
+		WebElement submit = driver.findElement(By.id("stockaddbutton"));
+	    submit.click();;
+	}
+
+	@Then("I should see the value of my portfolio increase and the stocks in my portfolio be updated")
+	public void i_should_see_the_value_of_my_portfolio_increase_and_the_stocks_in_my_portfolio_be_updated() {
+		WebElement exchange = driver.findElement(By.id("exchange1"));
+	    assertEquals(exchange.getText(), "NASDAQ");
+	    WebElement ticker = driver.findElement(By.id("ticker1"));
+	    assertEquals(ticker.getText(), "TSLA");
+	    WebElement shares = driver.findElement(By.id("shares1"));
+	    assertEquals(shares.getText(), "10");
+	    
+	    //logout
+	    WebElement element;
+		try {
+			element = driver.findElement(By.id("logout-button"));
+		} catch (NoSuchElementException e) {
+			element = driver.findElement(By.xpath("//*[@id=\"logout-button\"]"));
+		}
+		
+		element.click();
+	}
+
+	@Given("I click the button to remove stocks from my portfolio")
+	public void i_click_the_button_to_remove_stocks_from_my_portfolio() {
+		WebElement button = driver.findElement(By.id("remove1"));
+		button.click();
+	}
+
+	@Given("I enter a stock ticker and number of shares less than the number I have of that stock")
+	public void i_enter_a_stock_ticker_and_number_of_shares_less_than_the_number_I_have_of_that_stock() {
+		WebElement exchange = driver.findElement(By.id("exchange"));
+	    exchange.sendKeys("NASDAQ");
+	    WebElement ticker = driver.findElement(By.id("ticker"));
+	    ticker.sendKeys("AAPL");
+	    WebElement shares = driver.findElement(By.id("shares"));
+	    shares.sendKeys("5");
+	}
+
+	@Then("I should see the value of my portfolio decrease and the number of shares of that stock in my portfolio be updated")
+	public void i_should_see_the_value_of_my_portfolio_decrease_and_the_number_of_shares_of_that_stock_in_my_portfolio_be_updated() {
+	    // Write code here that turns the phrase above into concrete actions
+		WebElement exchange = driver.findElement(By.id("exchange1"));
+	    assertEquals(exchange.getText(), "NASDAQ");
+	    WebElement ticker = driver.findElement(By.id("ticker1"));
+	    assertEquals(ticker.getText(), "TSLA");
+	    WebElement shares = driver.findElement(By.id("shares1"));
+	    assertEquals(shares.getText(), "10");
+	    
+	    //logout
+	    WebElement element;
+		try {
+			element = driver.findElement(By.id("logout-button"));
+		} catch (NoSuchElementException e) {
+			element = driver.findElement(By.xpath("//*[@id=\"logout-button\"]"));
+		}
+		
+		element.click();
+	}
+
+	@Given("I enter an invalid stock ticker and number of shares")
+	public void i_enter_an_invalid_stock_ticker_and_number_of_shares() {
+		WebElement exchange = driver.findElement(By.id("exchange"));
+	    exchange.sendKeys("NASDAQ");
+	    WebElement ticker = driver.findElement(By.id("ticker"));
+	    ticker.sendKeys("NKLA");
+	    WebElement shares = driver.findElement(By.id("shares"));
+	    shares.sendKeys("20");
+	}
+
+	@Then("I should see an error message saying stock ticker was not found")
+	public void i_should_see_an_error_message_saying_stock_ticker_was_not_found() {
+		WebElement msg = driver.findElement(By.id("errormsg"));
+		assertEquals(msg.getText(), "Sorry, this stock does not exist.");
+		
+		//logout
+	    WebElement element;
+		try {
+			element = driver.findElement(By.id("logout-button"));
+		} catch (NoSuchElementException e) {
+			element = driver.findElement(By.xpath("//*[@id=\"logout-button\"]"));
+		}
+		
+		element.click();
+	}
+
+	@Given("I enter a stock ticker and number of shares greater than I have of this stock")
+	public void i_enter_a_stock_ticker_and_number_of_shares_greater_than_I_have_of_this_stock() {
+		WebElement exchange = driver.findElement(By.id("exchange"));
+	    exchange.sendKeys("NASDAQ");
+	    WebElement ticker = driver.findElement(By.id("ticker"));
+	    ticker.sendKeys("AAPL");
+	    WebElement shares = driver.findElement(By.id("shares"));
+	    shares.sendKeys("20");
+	}
+
+	@Then("I should see an error message saying I'm trying to remove more shares than I have")
+	public void i_should_see_an_error_message_saying_I_m_trying_to_remove_more_shares_than_I_have() {
+		WebElement msg = driver.findElement(By.id("errormsg"));
+		assertEquals(msg.getText(), "Sorry, you don't have enough stocks to sell.");
+		
+		//logout
+	    WebElement element;
+		try {
+			element = driver.findElement(By.id("logout-button"));
+		} catch (NoSuchElementException e) {
+			element = driver.findElement(By.xpath("//*[@id=\"logout-button\"]"));
+		}
+		
+		element.click();
+	}
+
+	@Given("I enter a stock ticker in my portfolio and a certain number of shares")
+	public void i_enter_a_stock_ticker_in_my_portfolio_and_a_certain_number_of_shares() {
+		WebElement exchange = driver.findElement(By.id("exchange"));
+	    exchange.sendKeys("NASDAQ");
+	    WebElement ticker = driver.findElement(By.id("ticker"));
+	    ticker.sendKeys("AAPL");
+	    WebElement shares = driver.findElement(By.id("shares"));
+	    shares.sendKeys("10");
+	}
+
+	@Then("I should see the value of my portfolio increase and the shares owned updated")
+	public void i_should_see_the_value_of_my_portfolio_increase_and_the_shares_owned_updated() {
+		WebElement exchange = driver.findElement(By.id("exchange1"));
+	    assertEquals(exchange.getText(), "NASDAQ");
+	    WebElement ticker = driver.findElement(By.id("ticker1"));
+	    assertEquals(ticker.getText(), "TSLA");
+	    WebElement shares = driver.findElement(By.id("shares1"));
+	    assertEquals(shares.getText(), "10");
+	    
+	  //logout
+	    WebElement element;
+		try {
+			element = driver.findElement(By.id("logout-button"));
+			System.out.println("logout button found");
+		} catch (NoSuchElementException e) {
+			element = driver.findElement(By.xpath("//*[@id=\"logout-button\"]"));
+			System.out.println("logout button found");
+		}
+		
+		element.click();
+	}
+	
+	
+	/**************************
 	 * PORTFOLIO PERFORMANCE FEATURE
 	 **************************/
+	@Given("I click the button to change the graph date range")
+	public void i_click_the_button_to_change_the_graph_date_range() {
+		WebElement button = driver.findElement(By.id("reportrange"));
+		button.click();
+	}
+	@Given("I select an appropriate date range")
+	public void i_select_an_appropriate_date_range() {
+		WebElement button = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[1]/table/tbody/tr[3]/td[3]"));
+		button.click();
+		button = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[1]/table/tbody/tr[5]/td[3]"));
+		button.click();
+	}
+	@Given("I try to enter an invalid date")
+	public void i_try_to_enter_an_invalid_date() {
+		WebElement button = driver.findElement(By.id("reportrange"));
+		//this might have to change depending on how Paul sets up input
+		button.sendKeys("09/09/2019 - 09/09/2020");
+	}
+	@Given("I enter an appropriate date range")
+	public void i_enter_an_appropriate_date_range() {
+		WebElement button = driver.findElement(By.id("reportrange"));
+		//this might have to change depending on how Paul sets up input
+		button.sendKeys("01/01/2020 - 09/09/2020");
+	}
+	@Given("I click the button to add the S&P")
+	public void i_click_the_button_to_add_the_S_P() {
+	    WebElement button = driver.findElement(By.id("spytoggle"));
+	    button.click();
+	}
+	@Given("I click the button to remove the S&P")
+	public void i_click_the_button_to_remove_the_S_P() {
+	    WebElement button = driver.findElement(By.id("spytoggle"));
+	    button.click();
+	}
+	@Then("I should see the graph date range change")
+	public void i_should_see_the_graph_date_range_change() {
+		assertTrue(true);
+	}
+	@Then("I should see the S&P stock removed from the graph")
+	public void i_should_see_the_S_P_stock_removed_from_the_graph() {
+		assertTrue(true);
+	}
+	@Then("I should see the S&P stock added to the graph")
+	public void i_should_see_the_S_P_stock_added_to_the_graph() {
+		assertTrue(true);
+	}
 
 	
 	@After()
