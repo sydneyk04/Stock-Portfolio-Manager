@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -33,7 +34,7 @@ import com.google.firebase.database.ValueEventListener;
 @PowerMockRunnerDelegate(JUnit4.class)
 @PrepareForTest({ FirebaseDatabase.class, FirebaseOptions.class} )
 @PowerMockIgnore("jdk.internal.reflect.*")
-public class LoginServletStaticTest extends Mockito{
+public class SignUpServletStaticTest extends Mockito{
  
 		@Mock
     	HttpServletRequest request;
@@ -50,7 +51,7 @@ public class LoginServletStaticTest extends Mockito{
     	@Mock
     	DatabaseReference mockedDatabaseReference;
     
-    	LoginServlet servlet;
+    	SignUpServlet servlet;
     
     	@Before
     	public void setUp() throws Exception {
@@ -58,10 +59,11 @@ public class LoginServletStaticTest extends Mockito{
         	response = mock(HttpServletResponse.class);
         	session = mock(HttpSession.class);
         	rd = mock(RequestDispatcher.class);
-        	servlet = new LoginServlet();
+        	servlet = new SignUpServlet();
          
         	when(request.getSession()).thenReturn(session); 
-        
+        	doNothing().when(response).setContentType(anyString());
+        	doNothing().when(response).setStatus(anyInt());
         	mockedDatabaseReference = Mockito.mock(DatabaseReference.class);
         
         	FirebaseDatabase mockedFirebaseDatabase = Mockito.mock(FirebaseDatabase.class);
@@ -73,48 +75,25 @@ public class LoginServletStaticTest extends Mockito{
     	}  
     
     	@Test
-    	public void testAuthenticateOnCancelled() throws IOException {
-		when(mockedDatabaseReference.child(anyString())).thenReturn(mockedDatabaseReference);
-		 
-		StringWriter writer = new StringWriter();
-		PrintWriter out = new PrintWriter(writer);
-		 
-		when(response.getWriter()).thenReturn(out);
-		 
-		doAnswer(new Answer<Void>() {
-			public Void answer(InvocationOnMock invocation) {
-				ValueEventListener valueEventListener = (ValueEventListener) invocation.getArguments()[0];
-				DatabaseError error = mock(DatabaseError.class);
-				valueEventListener.onCancelled(error);
-				return null;     
-			}
-		}).when(mockedDatabaseReference).addListenerForSingleValueEvent(any(ValueEventListener.class));
-		      
-		servlet.doPost(request, response);
-	}   
+    	public void testCreateUserOnCancelled() throws IOException, ServletException {
+			when(mockedDatabaseReference.child(anyString())).thenReturn(mockedDatabaseReference);
+			 
+			StringWriter writer = new StringWriter();
+			PrintWriter out = new PrintWriter(writer);
+			 
+			//doNothing().when(mockedDatabaseReference).push();
+			
+			 
+			doAnswer(new Answer<Void>() {
+				public Void answer(InvocationOnMock invocation) {
+					ValueEventListener valueEventListener = (ValueEventListener) invocation.getArguments()[0];
+					DatabaseError error = mock(DatabaseError.class);
+					valueEventListener.onCancelled(error);
+					return null;     
+				}
+			}).when(mockedDatabaseReference).addListenerForSingleValueEvent(any(ValueEventListener.class));
+			      
+			servlet.createUser("username", "password", null);
+    	}   
     
-    	@Test
-    	public void testAuthenticateOnCancelledThrowIOException() throws IOException {
-		when(mockedDatabaseReference.child(anyString())).thenReturn(mockedDatabaseReference);
-		 
-		StringWriter writer = new StringWriter();
-		PrintWriter out = new PrintWriter(writer);
-		 
-		when(response.getWriter()).thenReturn(out);
-		 
-		doAnswer(new Answer<Void>() {
-			public Void answer(InvocationOnMock invocation) {
-				ValueEventListener valueEventListener = (ValueEventListener) invocation.getArguments()[0];
-				DatabaseError error = mock(DatabaseError.class);
-				valueEventListener.onCancelled(error);
-				return null;     
-			}
-		}).when(mockedDatabaseReference).addListenerForSingleValueEvent(any(ValueEventListener.class));
-		 
-		doThrow(IOException.class)
-			.when(response)
-			.sendRedirect(anyString());
-		      
-		servlet.doPost(request, response);
-	}   
 }

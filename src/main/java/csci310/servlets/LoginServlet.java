@@ -1,6 +1,7 @@
 package csci310.servlets;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.concurrent.TimeUnit;
@@ -28,6 +29,7 @@ public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static String LOGINPG= "login.jsp";
 	private static String HOMESERVLET= "/home";
+	private static String DASHBOARDSERVLET= "/dashboard";
 	
 	private HttpSession session = null;
 	private HttpServletRequest request = null;
@@ -45,15 +47,22 @@ public class LoginServlet extends HttpServlet {
 			dataFetched = false;
 			String username = request.getParameter("username");
 			String password = request.getParameter("password");
-		
+			
+			if(username != null) {
+				if(username.contains(".") || username.contains("$") || 
+						username.contains("[") || username.contains("]") || username.contains("#")) {
+					onAuthenticate(null);
+				}
+			}
 			authenticate(username, password);
+					
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public void authenticate(final String username, final String password) throws InterruptedException {
-		initializeFirebase("stock16-service-account.json");
+	public void authenticate(final String username, final String password) throws InterruptedException, IOException {
+		initializeFirebase("stock16-serviceaccount.json");
 		final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(username);
 		
 		userRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -90,18 +99,15 @@ public class LoginServlet extends HttpServlet {
 	}
 
 	@SuppressWarnings("deprecation")
-	public FirebaseApp initializeFirebase(String filename) {
+	public FirebaseApp initializeFirebase(String filename) throws IOException {
 		if (FirebaseApp.getApps().isEmpty()) {
 			FileInputStream serviceAccount;
-			try {
-				serviceAccount = new FileInputStream(filename);
-				FirebaseOptions options = new FirebaseOptions.Builder()
-					.setCredentials(GoogleCredentials.fromStream(serviceAccount))
-					.setDatabaseUrl("https://stock16-e451e.firebaseio.com").build();
-				return FirebaseApp.initializeApp(options);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			
+			serviceAccount = new FileInputStream(filename);
+			FirebaseOptions options = new FirebaseOptions.Builder()
+				.setCredentials(GoogleCredentials.fromStream(serviceAccount))
+				.setDatabaseUrl("https://stock16-e451e.firebaseio.com").build();
+			return FirebaseApp.initializeApp(options);
 		}
 		return null;
 	}
@@ -114,7 +120,8 @@ public class LoginServlet extends HttpServlet {
 			if (username != null) {
 				out.print("login success");
 				session.setAttribute("username", username);
-				response.sendRedirect(HOMESERVLET);
+				//response.sendRedirect(HOMESERVLET);
+				response.sendRedirect(DASHBOARDSERVLET);
 			} else {
 				out.print("login fail");
 				session.setAttribute("login_error_message", "Invalid login and/or password");

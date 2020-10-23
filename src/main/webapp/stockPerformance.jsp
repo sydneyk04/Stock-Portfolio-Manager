@@ -24,11 +24,16 @@
 	    </nav>
 	    <div id="main-content" class = "mainContent">
 	     	
-	     	<h1 class="ml-5"><%=session.getAttribute("stockName")%> (<%=session.getAttribute("stockCode")%>)</h1>
-	     	<h2 class="ml-5">$<%=session.getAttribute("stockPrice")%></h2>	
+	     	<h1 class="ml-5"></h1>
 	     	<div class="text-center">
 	     		<form name="getdata" action="/stockperformance" method="post">
 	     		<div class="btn-group" role="group" aria-label="Basic example">
+	     		<div class="input-group date" data-provide="datepicker">
+				    <input type="text" class="form-control">
+				    <div class="input-group-addon">
+				        <span class="glyphicon glyphicon-th"></span>
+				    </div>
+				</div>
 				  <input type="submit" id="1-day-btn" class="btn btn-secondary" name="timePeriod" value="1D"/>
 				  <input type="submit" id="1-week-btn" class="btn btn-secondary" name="timePeriod" value="1W"/>
 				  <input type="submit" id="1-month-btn" class="btn btn-secondary" name="timePeriod" value="1M"/>

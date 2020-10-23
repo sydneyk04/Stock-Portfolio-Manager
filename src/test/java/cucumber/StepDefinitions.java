@@ -1,5 +1,6 @@
 package cucumber;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -26,9 +27,7 @@ public class StepDefinitions {
 	private static final String ROOT_URL = "http://localhost:8080/";
 	private static final String Signup_URL = "http://localhost:8080/signup.jsp";
 	private static final String Login_URL = "http://localhost:8080/login.jsp";
-	private static final String Notfound_URL = "http://localhost:8080/notfound.jsp";
-	private static final String Predict_URL = "http://localhost:8080/predict.jsp";
-	private static final String Portfolio_URL = "http://localhost:8080/portfolio_perf.jsp";
+	private static final String Dashboard_URL = "http://localhost:8080/production/index.jsp";
 
 	private final WebDriver driver = new ChromeDriver();
 	private static String entered_pass;
@@ -47,7 +46,9 @@ public class StepDefinitions {
 
     }
 	
-	//Landing Page Feature Tests
+	/**************************
+	 * LANDING PAGE FEATURE
+	 **************************/
 	@Given("I am on the landing page")
 	public void i_am_on_the_landing_page() {
 		driver.get(ROOT_URL);
@@ -105,6 +106,9 @@ public class StepDefinitions {
 		assertTrue(driver.getPageSource().contains(text));
 	}
 	
+	/**************************
+	 * LOGIN FEATURE
+	 **************************/
 	@Given("I am on the login page")
 	public void i_am_on_the_login_page() {
 		driver.get(Login_URL);
@@ -135,11 +139,13 @@ public class StepDefinitions {
 			e.printStackTrace();
 		}
 		
-		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/home.jsp"));
+		assertTrue(driver.getCurrentUrl().equalsIgnoreCase(Dashboard_URL));
 	}
 
 	
-	//Sign Up Feature
+	/**************************
+	 * SIGNUP FEATURE
+	 **************************/
 	@Given("I am on the sign up page")
 	public void i_am_on_the_sign_up_page() {
 		driver.get(Signup_URL);
@@ -175,7 +181,7 @@ public class StepDefinitions {
 
 	@Then("I should be brought to the dashboard page")
 	public void i_should_be_brought_to_the_dashboard_page() {
-	  assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/home.jsp"));
+	  assertTrue(driver.getCurrentUrl().equalsIgnoreCase(Dashboard_URL));
 	}
 
 	@When("I leave a password field blank")
@@ -246,7 +252,9 @@ public class StepDefinitions {
 		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/login.jsp"));
 	}
 	
-	//Stock Performance Feature
+	/**************************
+	 * STOCK PERFORMANCE FEATURE
+	 **************************/
 	@Given("I am logged in on the stock performance page")
 	public void i_am_logged_in_on_the_stock_performance_page() {
 		i_am_on_the_login_page();
@@ -263,7 +271,7 @@ public class StepDefinitions {
 	
 	@Then("I should be on the home page")
 	public void i_should_be_on_the_home_page() {
-		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/home.jsp"));
+		assertTrue(driver.getCurrentUrl().equalsIgnoreCase(Dashboard_URL));
 	}
 
 	@When("I click the cancel button")
@@ -289,10 +297,10 @@ public class StepDefinitions {
 	}
 	
   /**************************
-	 * HOME FEATURE
+	 * DASHBOARD FEATURE
 	 **************************/
-	@Given("I am logged in on the home page")
-	public void i_am_logged_in_on_the_home_page() {
+	@Given("I am logged in on the dashboard page")
+	public void i_am_logged_in_on_the_dashboard_page() {
 		String usr = "johnDoe";
 		String pw = "test123";
 		
@@ -332,216 +340,228 @@ public class StepDefinitions {
 		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/login.jsp"));
 	}
 
-	@When("I click the Portfolio Performance button")
-	public void i_click_the_Portfolio_Performance_button() {
-		driver.findElement(By.id("portfolio-performance")).click();
-	}	
+	/**************************
+	 * ADD/STOCK FEATURE
+	 **************************/
+	@Given("I am on dashboard")
+	public void i_am_on_dashboard() {
+		driver.get("http://localhost:8080/production/index.jsp");
+	}
 
-  @Then("I should be on the Portfolio Performance page")
-	public void i_should_be_on_the_Portfolio_Performance_page() {
+	@Given("I click the button to add stocks to my portfolio")
+	public void i_click_the_button_to_add_stocks_to_my_portfolio() {
+		WebElement button = driver.findElement(By.id("add"));
+		button.click();
+	}
+
+	@Given("I enter a stock ticker not in my portfolio and a certain number of shares")
+	public void i_enter_a_stock_ticker_not_in_my_portfolio_and_a_certain_number_of_shares() {
+	    WebElement exchange = driver.findElement(By.id("exchange"));
+	    exchange.sendKeys("NASDAQ");
+	    WebElement ticker = driver.findElement(By.id("ticker"));
+	    ticker.sendKeys("TSLA");
+	    WebElement shares = driver.findElement(By.id("shares"));
+	    shares.sendKeys("10");
+	}
+
+	@When("I click the submit button")
+	public void i_click_the_submit_button() {
+		WebElement submit = driver.findElement(By.id("stockaddbutton"));
+	    submit.click();;
+	}
+
+	@Then("I should see the value of my portfolio increase and the stocks in my portfolio be updated")
+	public void i_should_see_the_value_of_my_portfolio_increase_and_the_stocks_in_my_portfolio_be_updated() {
+		WebElement exchange = driver.findElement(By.id("exchange1"));
+	    assertEquals(exchange.getText(), "NASDAQ");
+	    WebElement ticker = driver.findElement(By.id("ticker1"));
+	    assertEquals(ticker.getText(), "TSLA");
+	    WebElement shares = driver.findElement(By.id("shares1"));
+	    assertEquals(shares.getText(), "10");
+	    
+	    //logout
+	    WebElement element;
 		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+			element = driver.findElement(By.id("logout-button"));
+		} catch (NoSuchElementException e) {
+			element = driver.findElement(By.xpath("//*[@id=\"logout-button\"]"));
 		}
 		
-		assertFalse(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/home.jsp"));
+		element.click();
 	}
 
-	@When("I click the Portfolio Prediction button")
-	public void i_click_the_Portfolio_Prediction_button() {
-		driver.findElement(By.id("portfolio-prediction")).click();
+	@Given("I click the button to remove stocks from my portfolio")
+	public void i_click_the_button_to_remove_stocks_from_my_portfolio() {
+		WebElement button = driver.findElement(By.id("remove1"));
+		button.click();
 	}
 
-	@Then("I should be on the Portfolio Prediction page")
-	public void i_should_be_on_the_Portfolio_Prediction_page() {
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
-		assertFalse(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/home.jsp"));
+	@Given("I enter a stock ticker and number of shares less than the number I have of that stock")
+	public void i_enter_a_stock_ticker_and_number_of_shares_less_than_the_number_I_have_of_that_stock() {
+		WebElement exchange = driver.findElement(By.id("exchange"));
+	    exchange.sendKeys("NASDAQ");
+	    WebElement ticker = driver.findElement(By.id("ticker"));
+	    ticker.sendKeys("AAPL");
+	    WebElement shares = driver.findElement(By.id("shares"));
+	    shares.sendKeys("5");
 	}
 
-	@When("I go to the Portfolio Value section")
-	public void i_go_to_the_Portfolio_Value_section() {
-		WebElement element = driver.findElement(By.id("main-content"));
-		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
-	}
-
-	@Then("I should see the total value of my stock portfolio")
-	public void i_should_see_the_total_value_of_my_stock_portfolio() {
-		WebElement element = driver.findElement(By.id("portfolio-value"));
-	    assertTrue(element.getText().length() > 16);
-	}
-
-	@When("I go to the Portfolio section")
-	public void i_go_to_the_Portfolio_section() {
-		WebElement element = driver.findElement(By.id("portfolio"));
-		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
-	}
-
-	@Then("I should see a table of stocks in my portfolio.")
-	public void i_should_see_a_table_of_stocks_in_my_portfolio() {		
-		assertNotNull(driver.findElement(By.id("portfolio-table")));
-	}
-	
-	@Given("I am logged in with an empty portfolio on the home page")
-	public void i_am_logged_in_with_an_empty_portfolio_on_the_home_page() {
-		String usr = "emptyPortfolio";
-		String pw = "test123";
-		
-		driver.get(Login_URL);		
-		driver.findElement(By.xpath("//*[@id=\"usrname\"]")).sendKeys(usr);
-		driver.findElement(By.xpath("//*[@id=\"password\"]")).sendKeys(pw);
-		driver.findElement(By.xpath("//*[@id=\"login-form-submit\"]")).click();
-	}
-	
-	@Then("I should see the portfolio message {string}")
-	public void i_should_see_the_portfolio_message(String string) {
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
-	    String mssg = driver.findElement(By.id("empty-portfolio-mssg")).getText();
-	    assertTrue(mssg.equals(string));
-	}
-	
-	@When("I click the top banner of the home page")
-	public void i_click_the_top_banner_of_the_home_page() {
+	@Then("I should see the value of my portfolio decrease and the number of shares of that stock in my portfolio be updated")
+	public void i_should_see_the_value_of_my_portfolio_decrease_and_the_number_of_shares_of_that_stock_in_my_portfolio_be_updated() {
 	    // Write code here that turns the phrase above into concrete actions
+		WebElement exchange = driver.findElement(By.id("exchange1"));
+	    assertEquals(exchange.getText(), "NASDAQ");
+	    WebElement ticker = driver.findElement(By.id("ticker1"));
+	    assertEquals(ticker.getText(), "TSLA");
+	    WebElement shares = driver.findElement(By.id("shares1"));
+	    assertEquals(shares.getText(), "10");
+	    
+	    //logout
+	    WebElement element;
+		try {
+			element = driver.findElement(By.id("logout-button"));
+		} catch (NoSuchElementException e) {
+			element = driver.findElement(By.xpath("//*[@id=\"logout-button\"]"));
+		}
 		
-		driver.findElement(By.xpath("//*[@id=\"banner-content\"]/a")).click();
+		element.click();
 	}
 
+	@Given("I enter an invalid stock ticker and number of shares")
+	public void i_enter_an_invalid_stock_ticker_and_number_of_shares() {
+		WebElement exchange = driver.findElement(By.id("exchange"));
+	    exchange.sendKeys("NASDAQ");
+	    WebElement ticker = driver.findElement(By.id("ticker"));
+	    ticker.sendKeys("NKLA");
+	    WebElement shares = driver.findElement(By.id("shares"));
+	    shares.sendKeys("20");
+	}
+
+	@Then("I should see an error message saying stock ticker was not found")
+	public void i_should_see_an_error_message_saying_stock_ticker_was_not_found() {
+		WebElement msg = driver.findElement(By.id("errormsg"));
+		assertEquals(msg.getText(), "Sorry, this stock does not exist.");
+		
+		//logout
+	    WebElement element;
+		try {
+			element = driver.findElement(By.id("logout-button"));
+		} catch (NoSuchElementException e) {
+			element = driver.findElement(By.xpath("//*[@id=\"logout-button\"]"));
+		}
+		
+		element.click();
+	}
+
+	@Given("I enter a stock ticker and number of shares greater than I have of this stock")
+	public void i_enter_a_stock_ticker_and_number_of_shares_greater_than_I_have_of_this_stock() {
+		WebElement exchange = driver.findElement(By.id("exchange"));
+	    exchange.sendKeys("NASDAQ");
+	    WebElement ticker = driver.findElement(By.id("ticker"));
+	    ticker.sendKeys("AAPL");
+	    WebElement shares = driver.findElement(By.id("shares"));
+	    shares.sendKeys("20");
+	}
+
+	@Then("I should see an error message saying I'm trying to remove more shares than I have")
+	public void i_should_see_an_error_message_saying_I_m_trying_to_remove_more_shares_than_I_have() {
+		WebElement msg = driver.findElement(By.id("errormsg"));
+		assertEquals(msg.getText(), "Sorry, you don't have enough stocks to sell.");
+		
+		//logout
+	    WebElement element;
+		try {
+			element = driver.findElement(By.id("logout-button"));
+		} catch (NoSuchElementException e) {
+			element = driver.findElement(By.xpath("//*[@id=\"logout-button\"]"));
+		}
+		
+		element.click();
+	}
+
+	@Given("I enter a stock ticker in my portfolio and a certain number of shares")
+	public void i_enter_a_stock_ticker_in_my_portfolio_and_a_certain_number_of_shares() {
+		WebElement exchange = driver.findElement(By.id("exchange"));
+	    exchange.sendKeys("NASDAQ");
+	    WebElement ticker = driver.findElement(By.id("ticker"));
+	    ticker.sendKeys("AAPL");
+	    WebElement shares = driver.findElement(By.id("shares"));
+	    shares.sendKeys("10");
+	}
+
+	@Then("I should see the value of my portfolio increase and the shares owned updated")
+	public void i_should_see_the_value_of_my_portfolio_increase_and_the_shares_owned_updated() {
+		WebElement exchange = driver.findElement(By.id("exchange1"));
+	    assertEquals(exchange.getText(), "NASDAQ");
+	    WebElement ticker = driver.findElement(By.id("ticker1"));
+	    assertEquals(ticker.getText(), "TSLA");
+	    WebElement shares = driver.findElement(By.id("shares1"));
+	    assertEquals(shares.getText(), "10");
+	    
+	  //logout
+	    WebElement element;
+		try {
+			element = driver.findElement(By.id("logout-button"));
+			System.out.println("logout button found");
+		} catch (NoSuchElementException e) {
+			element = driver.findElement(By.xpath("//*[@id=\"logout-button\"]"));
+			System.out.println("logout button found");
+		}
+		
+		element.click();
+	}
+	
+	
 	/**************************
 	 * PORTFOLIO PERFORMANCE FEATURE
 	 **************************/
-	@Given("I am logged in on the Portfolio Performance page")
-	public void i_am_logged_in_on_the_Portfolio_Performance_page() {
-	    // Write code here that turns the phrase above into concrete actions
-		i_am_on_the_login_page();
-		i_enter_my_username();
-		i_enter_my_password();
-		i_click_the_login_button();
-		driver.get(Portfolio_URL);
-		
-	    //throw new io.cucumber.java.PendingException();
+	@Given("I click the button to change the graph date range")
+	public void i_click_the_button_to_change_the_graph_date_range() {
+		WebElement button = driver.findElement(By.id("reportrange"));
+		button.click();
+	}
+	@Given("I select an appropriate date range")
+	public void i_select_an_appropriate_date_range() {
+		WebElement button = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[1]/table/tbody/tr[3]/td[3]"));
+		button.click();
+		button = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[1]/table/tbody/tr[5]/td[3]"));
+		button.click();
+	}
+	@Given("I try to enter an invalid date")
+	public void i_try_to_enter_an_invalid_date() {
+		WebElement button = driver.findElement(By.id("reportrange"));
+		//this might have to change depending on how Paul sets up input
+		button.sendKeys("09/09/2019 - 09/09/2020");
+	}
+	@Given("I enter an appropriate date range")
+	public void i_enter_an_appropriate_date_range() {
+		WebElement button = driver.findElement(By.id("reportrange"));
+		//this might have to change depending on how Paul sets up input
+		button.sendKeys("01/01/2020 - 09/09/2020");
+	}
+	@Given("I click the button to add the S&P")
+	public void i_click_the_button_to_add_the_S_P() {
+	    WebElement button = driver.findElement(By.id("spytoggle"));
+	    button.click();
+	}
+	@Given("I click the button to remove the S&P")
+	public void i_click_the_button_to_remove_the_S_P() {
+	    WebElement button = driver.findElement(By.id("spytoggle"));
+	    button.click();
+	}
+	@Then("I should see the graph date range change")
+	public void i_should_see_the_graph_date_range_change() {
+		assertTrue(true);
+	}
+	@Then("I should see the S&P stock removed from the graph")
+	public void i_should_see_the_S_P_stock_removed_from_the_graph() {
+		assertTrue(true);
+	}
+	@Then("I should see the S&P stock added to the graph")
+	public void i_should_see_the_S_P_stock_added_to_the_graph() {
+		assertTrue(true);
 	}
 
-	@When("I click the top banner of the Portfolio Performance page")
-	public void i_click_the_top_banner_of_the_Portfolio_Performance_page() {
-	    // Write code here that turns the phrase above into concrete actions
-	    
-		driver.findElement(By.xpath("//*[@id=\"banner-content\"]/a")).click();
-		
-		
-		
-		//throw new io.cucumber.java.PendingException();
-	}
-
-	@When("I click the 1 week button of the Portfolio Performance page.")
-	public void i_click_the_drop_down_list_of_the_Portfolio_Performance_page() {
-	    // Write code here that turns the phrase above into concrete actions
-		
-		driver.findElement(By.xpath("//*[@id=\"aweek\"]")).click();
-		
-	    //throw new io.cucumber.java.PendingException();
-	}
-	
-	@When("I click the 1 month button of the Portfolio Performance page.")
-	public void i_click_the_1m() {
-	    // Write code here that turns the phrase above into concrete actions
-		
-		driver.findElement(By.xpath("//*[@id=\"amonth\"]")).click();
-		
-	    //throw new io.cucumber.java.PendingException();
-	}
-	
-	@When("I click the 1 year button of the Portfolio Performance page.")
-	public void i_click_the_1y() {
-	    // Write code here that turns the phrase above into concrete actions
-		
-		driver.findElement(By.xpath("//*[@id=\"ayear\"]")).click();
-		
-	    //throw new io.cucumber.java.PendingException();
-	}
-
-	@Then("the graph should re-adjust on the Portfolio Performance page.")
-	public void the_graph_should_re_adjust_on_the_Portfolio_Performance_page() {
-	    // Write code here that turns the phrase above into concrete actions
-		
-		// not yet implemented 
-		
-		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/portfolio_perf.jsp"));
-		
-	    //throw new io.cucumber.java.PendingException();
-	}
-	
-  /**************************
-	 * NOTFOUND FEATURE
-	 **************************/
-  @Given("I am on the notfound page") 
-	public void i_am_on_the_notfound_page() {
-		driver.get(Notfound_URL);
-	}
-	
-	@When("I click the top banner in notfound page")
-	public void i_click_the_top_banner_in_notfound_page() {
-		WebElement topBanner = driver.findElement(By.xpath("//*[@id=\"banner-content\"]/a"));
-		topBanner.click();
-	}
-	
-	@When("I enter {string} in the search bar")
-	public void i_enter_in_the_search_bar(String string) {
-		WebElement searchBar = driver.findElement(By.xpath("/html/body/div/form/div/div/input"));
-		searchBar.sendKeys(string);
-		searchBar.sendKeys(Keys.ENTER);
-	}
-	
-	@Then("I should be on the goog stock page")
-	public void i_should_be_on_the_goog_stock_page() {
-		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/stockPerformance.jsp"));
-	}
-	
-	@Then("I should be on the notfound page")
-	public void i_should_be_on_the_notfound_page() {
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/notfound.jsp"));
-	}
-	
-  /**************************
-	 * PREDICT FEATURE
-	 **************************/
-	@Given("I am on the predict page")
-	public void i_am_on_the_predict_page() {
-		driver.get(Predict_URL);
-	}
-	
-	@When("I choose a future date")
-	public void i_choose_a_future_date() {
-		WebElement date = driver.findElement(By.xpath("//*[@id=\"datepicker\"]/div/table/tbody/tr[4]/td[4]/a"));
-		date.click();
-	}
-	
-	@Then("I will see the predicted portfolio value")
-	public void i_will_see_the_predicted_portfolio_value() {
-		WebElement value = driver.findElement(By.xpath("//*[@id=\"portfolioValue\"]"));
-		assertNotNull(value.getText());
-	}
-  
-	@When("I click the top banner in predict page")
-	public void i_click_the_top_banner_in_predict_page() {
-		WebElement topBanner = driver.findElement(By.xpath("//*[@id=\"banner-content\"]/a"));
-		topBanner.click();
-	}
 	
 	@After()
 	public void after() {

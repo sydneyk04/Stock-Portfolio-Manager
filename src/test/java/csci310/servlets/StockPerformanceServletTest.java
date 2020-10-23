@@ -2,11 +2,16 @@ package csci310.servlets;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -21,6 +26,7 @@ import javax.servlet.http.HttpSession;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import com.google.firebase.FirebaseApp;
@@ -28,6 +34,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import csci310.servlets.SignUpServlet.MyCallback;
+import static org.hamcrest.Matchers.*;
 
 public class StockPerformanceServletTest extends Mockito {
 	static StockPerformanceServlet servlet;
@@ -40,7 +47,7 @@ public class StockPerformanceServletTest extends Mockito {
 	static FirebaseDatabase mockedFirebaseDatabase;
 	
 	@BeforeClass
-    public static void setup() {
+    public static void setup() throws IOException {
 		servlet = new StockPerformanceServlet();
 		request = mock(HttpServletRequest.class);
 		response = mock(HttpServletResponse.class);
@@ -50,19 +57,121 @@ public class StockPerformanceServletTest extends Mockito {
 		mockedDatabaseReference = Mockito.mock(DatabaseReference.class);
 		mockedFirebaseDatabase = Mockito.mock(FirebaseDatabase.class);
 		when(request.getSession()).thenReturn(session); 
+		when(response.getWriter()).thenReturn(printWriter);
+//		ArrayList<String> stock = new ArrayList<String>();
+//		String ticker = "TSLA";
+//		String name = "Tesla";
+//		String shares = "1";
+//		String dp = "2020-10-10";
+//		stock.add(ticker);
+//		stock.add(name);
+//		stock.add(shares);
+//		stock.add(dp);
+//		servlet.myStocks.add(stock);
     }
 	
 	@Test
-	public void testDoGet() throws IOException, ServletException {	
+	public void testDoGet() throws IOException, ServletException, InterruptedException, ParseException {	
+		when(session.getAttribute("username")).thenReturn("test");
+		StockPerformanceServlet spyServlet = spy(StockPerformanceServlet.class);
+		doNothing().when(spyServlet).getUserStock(anyString());
+		doNothing().when(spyServlet).buildStockJSONS(Calendar.getInstance(), Calendar.getInstance());
+		doNothing().when(spyServlet).buildGraph();
+		spyServlet.doGet(request, response);
+		
+		doThrow(InterruptedException.class).when(spyServlet).getUserStock(anyString());
+		spyServlet.doGet(request, response);
+		
+		doThrow(ParseException.class).when(spyServlet).buildStockJSONS(Calendar.getInstance(), Calendar.getInstance());
+		spyServlet.doGet(request, response);
+	}
+	
+	@Test
+	public void testDoPost() throws IOException, ServletException, InterruptedException, ParseException {	
+		servlet.getUserStock("johnDoe");
+		servlet.from = Calendar.getInstance();
+		servlet.from.add(Calendar.YEAR, -1);
+		servlet.now = Calendar.getInstance();
+		servlet.doPost(request, response);
+		
+		StockPerformanceServlet spyServlet = spy(StockPerformanceServlet.class);
+		spyServlet.from = Calendar.getInstance();
+		spyServlet.from.add(Calendar.YEAR, -1);
+		spyServlet.now = Calendar.getInstance();
+		doThrow(ParseException.class).when(spyServlet).buildStockJSONS(Calendar.getInstance(), Calendar.getInstance());
+		doNothing().when(response).sendRedirect(anyString());
+		spyServlet.getUserStock("johnDoe");
+		spyServlet.doPost(request, response);
+	}
+	
+	@Test
+	public void testAddPortfolioValues() throws IOException, ServletException, InterruptedException {	
+		servlet.portfolioValHistory.clear();
+		servlet.addPortfolioValues(0, 0.0, 0.0, "label", true);
+		assertTrue(servlet.portfolioValHistory.size() == 1);
+		
+		servlet.addPortfolioValues(1, 0.0, 0.0, "label", false);
+		assertTrue(servlet.portfolioValHistory.size() == 2);
+		
+		servlet.addPortfolioValues(1, 0.0, 0.0, "label", true);
+		assertTrue(servlet.portfolioValHistory.size() == 2);
+		
+		servlet.addPortfolioValues(1, 0.0, 0.0, "label", false);
+		assertTrue(servlet.portfolioValHistory.size() == 2);
+	}
+	
+	@Test
+	public void testBuildPortfolioJSON() throws IOException, ServletException, InterruptedException {	
+		servlet.buildPortfolioJSON();
 		assertTrue(true);
 	}
 	
 	@Test
-	public void testDoPost() throws IOException, ServletException, InterruptedException {	
-		when(request.getParameter("stockName")).thenReturn("TSLA");
-		when(response.getWriter()).thenReturn(printWriter);
-		servlet.doPost(request, response);
-		assertTrue(servlet.check==true);
+	public void testBuildStockJSONS() throws IOException, ServletException, InterruptedException, ParseException {	
+		Calendar from = Calendar.getInstance();
+		from.add(Calendar.YEAR, -1);
+		Calendar now = Calendar.getInstance();
+		servlet.getUserStock("johnDoe");
+		servlet.buildStockJSONS(from, now);
+		assertTrue(servlet.jsons.size() > 0);
+	}
+	
+//	@Test
+//	public void testBuildGraph() throws IOException, ServletException, InterruptedException, ParseException {	
+//		servlet.jsons.clear();
+//		servlet.myStocks.clear();
+//		Calendar from = Calendar.getInstance();
+//		from.add(Calendar.YEAR, -1);
+//		Calendar now = Calendar.getInstance();
+//		servlet.getUserStock("johnDoe");
+//		servlet.buildStockJSONS(from, now);
+//		System.out.println(servlet.myStocks.size() + "111");
+//		System.out.println(servlet.jsons.size() + "222");
+//		
+//		doNothing().when(session).setAttribute(anyString(), anyString());
+//		
+//		servlet.buildGraph();
+//	}
+	
+	@Test
+	public void testAddStock() {
+		assertTrue(true);
+	}
+	
+	@Test
+	public void testRemoveStock() throws IOException {
+		servlet.removeStock("none", "none");
+	}
+	
+	@Test
+	public void testGetUserStock() throws IOException, InterruptedException {
+		servlet.myStocks.clear();
+		servlet.getUserStock("johnDoe");
+		System.out.println(servlet.myStocks);
+		assertThat(servlet.myStocks, hasSize(3));
+		servlet.myStocks.clear();
+		servlet.getUserStock("none");
+		assertThat(servlet.myStocks, hasSize(0));
 	}
 }
 		
