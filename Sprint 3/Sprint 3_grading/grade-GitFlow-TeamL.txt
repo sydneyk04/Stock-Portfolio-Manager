@@ -1,0 +1,6 @@
+Best Practice GitFlow Report
+Owner: TeamL
+Grade: 9.5/10
+Comments: 
+
+	Pull did not follow base/head branch rules (-1) [master<-feature-uiupdates]: https://github.com/CSCI310/project-20203b-groupl-20203/pull/4
