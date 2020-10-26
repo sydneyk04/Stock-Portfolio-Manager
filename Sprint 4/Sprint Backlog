@@ -1,0 +1,25 @@
+Sprint backlog: 
+* user portfolio graph 
+    * Toggle for portfolio stocks for user to view on graph
+    * Reflect toggle changes on graph 
+* View and compare historical stock performance  
+    * “View stock” button
+    * Display historical performance of stock
+* Add/remove stocks
+    * CSV file upload for add/remove 
+* Web app works on chrome
+    * Resize browser maintains functionality 
+* Signup 
+    * Create user button
+    * Username error “username is already in use”
+* Application security and confidentiality 
+    * Https
+    * Login redirect 
+    * Hash function for password 
+    * 3 failed logins 
+* Connect backend to dashboard 
+* 100% cobertura coverage 
+* Acceptance tests
+* New frontend calendar 
+
+This sprint the group will work on completing all feature functionality and rounding out our acceptance tests so that we can get as many points as possible going into Sprint 5, the final sprint. We will focus the first half of the sprint on implementing the new requirements specified by the stakeholders and the second half of the sprint ensuring our acceptance tests pass. 
