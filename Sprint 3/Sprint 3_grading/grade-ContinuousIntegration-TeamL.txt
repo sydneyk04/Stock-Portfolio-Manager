@@ -1,0 +1,7 @@
+Best Practice ContinuousIntegration Report
+Owner: TeamL
+Grade: 9/10
+Comments: 
+Develop branch check failed: https://github.com/CSCI310/project-20203b-groupl-20203/commit/b2ad274ccdfcfbf78c781920d042de582ad2c485
+Total successful commits: 20
+Total failing commits: 1
