@@ -1,0 +1,37 @@
+Best Practice TDD Report
+Owner: TeamL
+Grade: 3.8/10
+Comments: 
+	No test method found for: stockperformanceservlet.initializefirebase
+		Commit: https://github.com/CSCI310/project-20203b-groupl-20203/commit/e739834a17cc3c08a13d85341141a1eecac7b4e4
+	No test method found for: stockperformanceservlet.ondatachange
+		Commit: https://github.com/CSCI310/project-20203b-groupl-20203/commit/e739834a17cc3c08a13d85341141a1eecac7b4e4
+	No test method found for: stockperformanceservlet.oncancelled
+		Commit: https://github.com/CSCI310/project-20203b-groupl-20203/commit/e739834a17cc3c08a13d85341141a1eecac7b4e4
+	No test method found for: signupservlet.doget
+		Commit: https://github.com/CSCI310/project-20203b-groupl-20203/commit/dcdf7312f39b1b0bf6efcd0af0fd5d8c745aae7e
+	No test method found for: signupservlet.dopost
+		Commit: https://github.com/CSCI310/project-20203b-groupl-20203/commit/dcdf7312f39b1b0bf6efcd0af0fd5d8c745aae7e
+	No test method found for: signupservlet.accountcreated
+		Commit: https://github.com/CSCI310/project-20203b-groupl-20203/commit/dcdf7312f39b1b0bf6efcd0af0fd5d8c745aae7e
+	No test method found for: signupservlet.checkuserinputs
+		Commit: https://github.com/CSCI310/project-20203b-groupl-20203/commit/dcdf7312f39b1b0bf6efcd0af0fd5d8c745aae7e
+	No test method found for: signupservlet.createuser
+		Commit: https://github.com/CSCI310/project-20203b-groupl-20203/commit/dcdf7312f39b1b0bf6efcd0af0fd5d8c745aae7e
+	No test method found for: signupservlet.ondatachange
+		Commit: https://github.com/CSCI310/project-20203b-groupl-20203/commit/dcdf7312f39b1b0bf6efcd0af0fd5d8c745aae7e
+	No test method found for: signupservlet.oncancelled
+		Commit: https://github.com/CSCI310/project-20203b-groupl-20203/commit/dcdf7312f39b1b0bf6efcd0af0fd5d8c745aae7e
+	No test method found for: signupservlet.initializefirebase
+		Commit: https://github.com/CSCI310/project-20203b-groupl-20203/commit/dcdf7312f39b1b0bf6efcd0af0fd5d8c745aae7e
+	No test method found for: stockperformanceservlet.onchildadded
+		Commit: https://github.com/CSCI310/project-20203b-groupl-20203/commit/98a3d35a8ef2bdb4e12acadaa8462456d0c5194f
+	No test method found for: stockperformanceservlet.onchildchanged
+		Commit: https://github.com/CSCI310/project-20203b-groupl-20203/commit/98a3d35a8ef2bdb4e12acadaa8462456d0c5194f
+	No test method found for: stockperformanceservlet.onchildremoved
+		Commit: https://github.com/CSCI310/project-20203b-groupl-20203/commit/98a3d35a8ef2bdb4e12acadaa8462456d0c5194f
+	No test method found for: stockperformanceservlet.onchildmoved
+		Commit: https://github.com/CSCI310/project-20203b-groupl-20203/commit/98a3d35a8ef2bdb4e12acadaa8462456d0c5194f
+Correct TDD methods: 9
+Incorrect TDD methods: 15
+Total methods evaluated for TDD: 24
