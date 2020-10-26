@@ -1,0 +1,18 @@
+Best Practice Refactor Report
+Owner: TeamL
+Grade: 7.9/10
+Comments: 
+Issue 27
+	NutFound satisfied 7 of 7 requirements for this issue.
+Issue 26
+	The comment is empty
+	kendallmayo satisfied 6 of 7 requirements for this issue.
+Issue 21
+	sydneyk04 satisfied 7 of 7 requirements for this issue.
+Issue 13
+	The comment is empty
+	annashott satisfied 6 of 7 requirements for this issue.
+Issue 3
+	cheungsa satisfied 7 of 7 requirements for this issue.
+
+The following students did not create an issue: {'graceoro'}
