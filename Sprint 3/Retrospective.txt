@@ -1,0 +1,14 @@
+Participants: Sydney Nguyen, Anna Shott, Kendall Mayo, Sarah Cheung, Hao Sun
+
+What process aspects will be changed? Why?
+•	Since we got points off for TDD, we will follow the TDD steps (e.g. shell methods and unit tests) more strictly.
+•	Due to many unexpected merge conflicts and issues on the master and develop branch, we will work more closely together through group Zoom meetings.
+•	We will also focus more time on creating and passing both unit and acceptance tests, because several of them were unimplemented or failing.
+
+What tasks will be added to the product backlog as a result of review
+feedback?
+•	Ability to add or remove stocks from the portfolio
+•	Track and visualize changes in value over time of user’s portfolio
+•	View and compare the historical performance of a stock
+•	Works on the Chrome web browser and mobile devices
+•	The application must be secure and protect confidentiality of users’ data
