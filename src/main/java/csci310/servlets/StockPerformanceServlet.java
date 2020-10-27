@@ -113,21 +113,36 @@ public class StockPerformanceServlet extends HttpServlet {
 		session = request.getSession();
 		System.out.println("Hello from doPost");
 		
-		//code for when user changes time period
-		//just need to grab the two dates from the front end in calendar format
+//		//code for when user changes time period
+//		//just need to grab the two dates from the front end in calendar format
+//		Calendar from = request.getParameter("from");
+//		Calendar now = request.getParameter("now");
+//		
+//		//pass the new dates into build stock jsons
+//		try {
+//			buildStockJSONS(from, now);
+//		} catch (ParseException e) {
+//			
+//		}
+//		
+//		buildGraph();
+//		response.sendRedirect("production/index.jsp");
 		
-		//Calendar from = request.getParameter("from");
-		//Calendar now = request.getParameter("now");
 		
-		//pass the new dates into build stock jsons
-		try {
-			buildStockJSONS(from, now);
-		} catch (ParseException e) {
-			
-		}
-		
-		buildGraph();
-		response.sendRedirect("production/index.jsp");
+//		//code for when user hides a specific stock
+//		//grab that frontend variable
+//		String symbol = request.getParameter("symbol");
+//		//either "show" or "hidden"
+//		String status = request.getParameter("status");
+//		//update it in the mystock array for whatever stock is being hidden or shown
+//		for(int i=0; i<myStocks.size(); i++) {
+//			ArrayList<String> stock = myStocks.get(i);
+//			//by default every new stock you add is hidden
+//			if(stock.get(0).equals(symbol)){
+//				stock.set(5, status);
+//				myStocks.set(i, stock);
+//			}
+//		}
 		
 	}
 	
@@ -205,15 +220,24 @@ public class StockPerformanceServlet extends HttpServlet {
 				Double shares = Double.parseDouble((String) myStocks.get(s).get(2));
 				
 				//check if user owned stock during this point in time add to portfolio value
-				String holder = year + "-" + (month + 1) + "-" + day;
-				DateFormat formatter = new SimpleDateFormat("YYYY-MM-DD"); 
+				month+=1;
+				String m;
+				if(month<10) {
+					m = "0" + Integer.toString(month);
+				}
+				else {
+					m = Integer.toString(month);
+				}
+				String holder = year + "-" + m + "-" + day;
+				DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd"); 
 				Date datePurchased = (Date)formatter.parse((String)myStocks.get(s).get(3));
 				Date sellDate = (Date)formatter.parse((String)myStocks.get(s).get(4));
 				Date historicalDate = (Date)formatter.parse(holder);
 				boolean owned = false;
-				owned = sellDate.after(historicalDate);
-				owned = datePurchased.before(historicalDate);
-			
+				if(sellDate.after(historicalDate) && datePurchased.before(historicalDate)){
+					owned = true;
+				}
+				
 				//create portfolio value at that index
 				addPortfolioValues(i, close, shares, label, owned);
 			
@@ -231,7 +255,6 @@ public class StockPerformanceServlet extends HttpServlet {
 	}
 	
 	void buildGraph() throws IOException {
-		System.out.println("buildgraph func");
 		//chart to display different stocks
 		//i know this looks wacky but it will actually work hahah
 		String theChart =  "<script type=\"text/javascript\">\n" + 
@@ -258,13 +281,16 @@ public class StockPerformanceServlet extends HttpServlet {
 		
 		
 		for(int i=0; i<jsons.size(); i++) {
-			theChart += "{\n" +
-							"type: \"line\",\n" + 
-							"name: \"" + myStocks.get(i).get(0) + "\",\n" +
-							"showInLegend: true,\n" +
-							"yValueFormatString: \"$##0.00\",\n" + 
-							"dataPoints :" + jsons.get(i) +
-						"},\n";	
+			//check if stock has been hidden or is being shown
+			if(myStocks.get(i).get(5).equals("show")) {
+				theChart += "{\n" +
+								"type: \"line\",\n" + 
+								"name: \"" + myStocks.get(i).get(0) + "\",\n" +
+								"showInLegend: true,\n" +
+								"yValueFormatString: \"$##0.00\",\n" + 
+								"dataPoints :" + jsons.get(i) +
+							"},\n";	
+			}
 		}
 		
 		//add the portfolio
@@ -349,6 +375,8 @@ public class StockPerformanceServlet extends HttpServlet {
 						stock.add(shares);
 						stock.add(from);
 						stock.add(to);
+						//whether or not it should be shown on graph
+						stock.add("hidden");
 						//add to big array
 						myStocks.add(stock);
 					}
