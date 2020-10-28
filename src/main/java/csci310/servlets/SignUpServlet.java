@@ -68,7 +68,8 @@ public class SignUpServlet extends HttpServlet {
 			}
 			
 			if (createdUser) {
-				response.sendRedirect("/production/index.jsp");
+				//response.sendRedirect("/production/index.jsp");
+				response.sendRedirect("login.jsp");
 				return;
 			} else {
 				request.getRequestDispatcher("signup.jsp").include(request, response);
@@ -102,10 +103,12 @@ public class SignUpServlet extends HttpServlet {
             public void onDataChange(DataSnapshot snapshot) {
 				//if username already exists
                 if (snapshot.child(username).exists()) {
+                	createdUser = false;
                 	return;
                 } else {
                 	ref.child(username).push();
                 	ref.child(username).child("password").setValueAsync(password);
+                	ref.child(username).child("portfolio").setValueAsync("none");
                 	myCallback.accountCreated();
                 	return;
                 }

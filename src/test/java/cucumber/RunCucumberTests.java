@@ -10,7 +10,7 @@ import org.junit.runner.RunWith;
  * Run all the cucumber tests in the current package.
  */
 @RunWith(Cucumber.class)
-@CucumberOptions(strict = true)
+@CucumberOptions(features={"src/test/resources/cucumber/signup.feature"}, strict = true)
 public class RunCucumberTests {
 
 	@BeforeClass
