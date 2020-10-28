@@ -4,6 +4,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.regex.Pattern;
 
 import javax.servlet.RequestDispatcher;
@@ -52,7 +55,13 @@ public class SignUpServlet extends HttpServlet {
 					+ "document.getElementById('error').style.visibility='visible';</script>");
 		} else {
 			//Create User
-			createUser(username, password, new MyCallback() {
+			String hashPw = password;
+			try{
+				hashPw = hashPassword(password);
+			} catch (NoSuchAlgorithmException e) {
+				e.printStackTrace();
+			}
+			createUser(username, hashPw, new MyCallback() {
 				@Override
 			    public void accountCreated() {
 			    	createdUser = true;
@@ -81,11 +90,17 @@ public class SignUpServlet extends HttpServlet {
 		
 	}
 	
-	public static String hashPassword(String pw) {
-		
-		//shell function
-		
-		return pw ;
+	public static String hashPassword(String pw) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+		MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+		byte[] hash = messageDigest.digest(pw.getBytes("UTF-8"));
+		StringBuffer hexString = new StringBuffer();
+		for (int i = 0; i < hash.length; i++) {
+			String hex = Integer.toHexString(0xff & hash[i]);
+			if (hex.length() == 1)
+				hexString.append('0');
+			hexString.append(hex);
+		}
+		return (hexString.toString());
 	}
 	
 	public String checkUserInputs(String username, String password, String password2) {

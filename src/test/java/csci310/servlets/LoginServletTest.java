@@ -96,10 +96,12 @@ public class LoginServletTest extends Mockito {
   
 		when(response.getWriter()).thenReturn(out);
 		when(request.getParameter("username")).thenReturn("johnDoe");
-		when(request.getParameter("password")).thenReturn("test123");     
+		when(request.getParameter("password")).thenReturn("test123");   
+		
 
 		servlet.doPost(request, response);  
 		String result = writer.getBuffer().toString();
+		
         
 		Assert.assertEquals("login success", result);
 		

@@ -4,6 +4,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.RequestDispatcher;
@@ -47,6 +50,7 @@ public class LoginServlet extends HttpServlet {
 			dataFetched = false;
 			String username = request.getParameter("username");
 			String password = request.getParameter("password");
+			String hashPw = hashPassword(password);
 			
 			if(username != null) {
 				if(username.contains(".") || username.contains("$") || 
@@ -54,18 +58,26 @@ public class LoginServlet extends HttpServlet {
 					onAuthenticate(null);
 				}
 			}
-			authenticate(username, password);
+			authenticate(username, hashPw);
 					
 		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public static String hashPassword(String pw) {
-		
-		//shell function
-		
-		return pw ;
+	public static String hashPassword(String pw) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+		MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+		byte[] hash = messageDigest.digest(pw.getBytes("UTF-8"));
+		StringBuffer hexString = new StringBuffer();
+		for (int i = 0; i < hash.length; i++) {
+			String hex = Integer.toHexString(0xff & hash[i]);
+			if (hex.length() == 1)
+				hexString.append('0');
+			hexString.append(hex);
+		}
+		return (hexString.toString());
 	}
 	
 	public void authenticate(final String username, final String password) throws InterruptedException, IOException {
