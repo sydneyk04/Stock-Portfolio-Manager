@@ -61,6 +61,13 @@ public class LoginServlet extends HttpServlet {
 		}
 	}
 	
+	public static String hashPassword(String pw) {
+		
+		//shell function
+		
+		return pw ;
+	}
+	
 	public void authenticate(final String username, final String password) throws InterruptedException, IOException {
 		initializeFirebase("stock16-serviceaccount.json");
 		final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(username);

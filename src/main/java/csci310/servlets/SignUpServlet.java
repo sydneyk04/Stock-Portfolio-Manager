@@ -81,6 +81,13 @@ public class SignUpServlet extends HttpServlet {
 		
 	}
 	
+	public static String hashPassword(String pw) {
+		
+		//shell function
+		
+		return pw ;
+	}
+	
 	public String checkUserInputs(String username, String password, String password2) {
 		if(username.contentEquals("") || password.contentEquals("") || password2.contentEquals("")) {
 			return "Please fill out empty fields.";
