@@ -131,6 +131,12 @@ public class StepDefinitions {
 	    driver.findElement(By.xpath("//*[@id=\"login-form-submit\"]")).click();
 	}
 	
+	@When("I enter an incorrect password")
+	public void i_enter_an_incorrect_password() {
+	  String usr = "test1234";
+		driver.findElement(By.xpath("//*[@id=\"password\"]")).sendKeys(usr);
+	}
+	
 	@Then("I should be on the dashboard page")
 	public void i_should_be_on_the_dashboard_page() {
 	    try {
@@ -142,6 +148,19 @@ public class StepDefinitions {
 		assertTrue(driver.getCurrentUrl().equalsIgnoreCase(Dashboard_URL));
 	}
 
+	@Then("I should see the incorrect login error message {string}")
+	public void i_should_see_the_incorrect_login_error_message(String string) {
+	  try {
+			Thread.sleep(1000);
+			
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		String info = driver.findElement(By.id("login_error")).getText();
+		
+		assertTrue(info.equalsIgnoreCase(string));
+	}
 	
 	/**************************
 	 * SIGNUP FEATURE
@@ -155,6 +174,11 @@ public class StepDefinitions {
 	public void i_enter_a_username() {
 		String testUser = getSaltString();
 		driver.findElement(By.xpath("//*[@id=\"username\"]")).sendKeys(testUser);
+	}
+	
+	@When("I enter an existing username")
+	public void i_enter_an_existing_username() {
+		driver.findElement(By.xpath("//*[@id=\"username\"]")).sendKeys("johnDoe");
 	}
 
 	@When("I enter the first hidden password field")
@@ -209,25 +233,17 @@ public class StepDefinitions {
 		
 		driver.findElement(By.xpath("//*[@id=\"password2\"]")).sendKeys(temp_pass);
 	}
-
-	@When("I enter an incorrect password")
-	public void i_enter_an_incorrect_password() {
-	  String usr = "test1234";
-		driver.findElement(By.xpath("//*[@id=\"password\"]")).sendKeys(usr);
-	}
 	
-	@Then("I should the error message {string}")
-	public void i_should_the_error_message(String string) {
-	  try {
-			Thread.sleep(1000);
-			
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+	@Then("I should see an existing username error message {string}")
+	public void i_should_see_a_message_saying_that_my_username_is_already_taken(String string) {
+		WebElement element;
+		try {
+			element = driver.findElement(By.id("error"));
+		} catch (NoSuchElementException e) {
+			element = driver.findElement(By.xpath("//*[@id=\"error\"]"));
 		}
 		
-		String info = driver.findElement(By.id("login_error")).getText();
-		
-		assertTrue(info.equalsIgnoreCase(string));
+		assertTrue(element.getText().equalsIgnoreCase(string));
 	}
 	
 	@Then("I should see an alert {string}")
