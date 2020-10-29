@@ -22,8 +22,8 @@
 	<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-	<link rel="stylesheet" href="styles/home.css">
-	
+	<link rel="stylesheet" href="../styles/home.css">
+
 	<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap" rel="stylesheet">
     <!-- Bootstrap -->
     <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -45,10 +45,92 @@
     <link href="../build/css/custom.min.css" rel="stylesheet">
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  </head>
+
+  	<!-- Insert these scripts at the bottom of the HTML, but before you use any Firebase services -->
+
+  	<!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+  	<script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-app.js"></script>
+
+  	<!-- If you enabled Analytics in your project, add the Firebase SDK for Analytics -->
+  	<script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-analytics.js"></script>
+
+  	<!-- Add Firebase products that you want to use -->
+  	<script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-auth.js"></script>
+  	<script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-firestore.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-database.js"></script>
+
+		<script>
+			var firebaseConfig = {
+		    apiKey: "AIzaSyD2UNIj11jvzjzhxZE_q_-J6sghVpqKc14",
+		    authDomain: "stock16-e451e.firebaseapp.com",
+		    databaseURL: "https://stock16-e451e.firebaseio.com",
+		    projectId: "stock16-e451e",
+		    storageBucket: "stock16-e451e.appspot.com",
+		    messagingSenderId: "326942561287",
+		    appId: "1:326942561287:web:c74346b57d023ab4b086a2",
+		    measurementId: "G-FZ5DY7SBDT"
+	  	};
+
+	    // Initialize Firebase
+	    firebase.initializeApp(firebaseConfig);
+  	</script>
+
+		<script>
+		console.log("init importCSV");
+
+		$(document).ready(function() {
+
+				// The event listener for the file upload
+				document.getElementById('txtFileUpload').addEventListener('change', upload, false);
+
+				// Method that checks that the browser supports the HTML5 File API
+				function browserSupportFileUpload() {
+						var isCompatible = false;
+						if (window.File && window.FileReader && window.FileList && window.Blob) {
+						isCompatible = true;
+						}
+						return isCompatible;
+				}
+
+				// Method that reads and processes the selected file
+				function upload(evt) {
+					console.log("called");
+				if (!browserSupportFileUpload()) {
+						alert('The File APIs are not fully supported in this browser!');
+						} else {
+								var data = null;
+								var file = evt.target.files[0];
+								var reader = new FileReader();
+								reader.readAsText(file);
+								reader.onload = function(event) {
+										var lines = event.target.result.split('\r\n');
+										for(i = 1; i < lines.length; ++i)
+										{
+											var lineElements = lines[i].split(",");
+											var symbol = lineElements[1];
+											var newData = {
+												name: lineElements[2],
+												from: lineElements[3],
+												to: lineElements[4],
+												shares: lineElements[5]
+											}
+											var ref = firebase.database().ref().child('users').child(lineElements[0]).child('portfolio').child(symbol);
+											ref.update(newData);
+											console.log("updated");
+										}
+								};
+								reader.onerror = function() {
+										alert('Unable to read ' + file.fileName);
+								};
+						}
+				}
+		});
+
+		</script>
+	</head>
 
   <body class="nav-md">
-  
+
     <div class="container body">
       <div class="main_container">
         <!-- top navigation -->
@@ -56,11 +138,11 @@
   			<nav id="banner" class="navbar navbar-dark bg-secondary navbar-static-top justify-content-left">
 		      	<div id="banner-content" class="navbar-brand" style="color:white;font-size:45px;font-family: 'Raleway', sans-serif;">
 		      		<a href="index.jsp" style="text-decoration: none; color:white;" >
-				    	USC CS 310 Stock Portfolio Management 
+				    	USC CS 310 Stock Portfolio Management
 					</a>
 		      	</div>
 		      	<div>
-		      	<!-- 
+		      	<!--
 		      	<a href="../login.jsp" style="text-decoration: none; color:white;" >
 				    Logout
 				 </a>
@@ -69,7 +151,7 @@
 						<input type="hidden" name="action" value="logout">
 						<button id="logout-button" type="submit" class="btn btn-primary btn-md justify-content-start">
 							Logout <i class="icon-signout"></i>
-						</button>	       
+						</button>
 					</form>
 		      	</div>
 	   		</nav>
@@ -118,7 +200,7 @@
                     <h3>Your Stock Portfolio Performance</h3>
                   </div>
                   <div class="col-md-6">
-                  <!--   
+                  <!--
                     <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
                       <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
                       <span>December 30, 2014 - January 28, 2015</span> <b class="caret"></b>
@@ -152,7 +234,7 @@
           </div>
           <br />
 
-          <div class="row">    
+          <div class="row">
 
             <!-- Start to do list -->
             <div class="col-md-4 col-sm-4 ">
@@ -254,6 +336,13 @@
                     <div class="addstockbutton">
                     <button type="button" class="addstockbutton" data-toggle="modal" data-target="#addStockModal">Add Stock</button>
                     </div>
+
+										<div id="dvImportSegments" class="fileupload">
+											<fieldset>
+												<legend>Upload your CSV file</legend>
+												<input type="file" name="File Upload" id="txtFileUpload" accept=".csv" />
+											</fieldset>
+										</div>
 
                     <!-- Modal For Add Stock-->
                     <div class="modal fade" id="addStockModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -382,15 +471,15 @@
                         }
 
                       }
-                      
+
                       function getCookie(name) {
                   		// Split cookie string and get all individual name=value pairs in an array
                    	    var cookieArr = document.cookie.split(";");
-                   	    
+
                    	    // Loop through the array elements
                    	    for(var i = 0; i < cookieArr.length; i++) {
                    	        var cookiePair = cookieArr[i].split("=");
-                   	        
+
                    	        /* Removing whitespace at the beginning of the cookie name
                    	        and compare it with the given string */
                    	        if(name == cookiePair[0].trim()) {
@@ -398,16 +487,16 @@
                    	            return decodeURIComponent(cookiePair[1]);
                    	        }
                    	    }
-                   	    
+
                    	    // Return null if not found
                    	    return null;
                    	  }
-                      
+
                       function getTotalPortfolioValue() {
                    	    // Get cookie using our custom function
                    	    var portfolioValue = getCookie("portfolioValue");
                    	 	console.log("Total portfolio value: " + portfolioValue);
-                   	    
+
                    	    if (portfolioValue == null) {
                    	    	document.getElementById("totalPortfolio").innerHTML = "$0.00";
                    	    } else {
@@ -440,8 +529,8 @@
                           })
                           .catch(function (error) {
                             console.log(error);
-                          });                    
-                        
+                          });
+
                       }
 
 
@@ -558,7 +647,7 @@
 
 
         </div>
-      
+
         <!-- /page content -->
 
         <!-- footer content -->
