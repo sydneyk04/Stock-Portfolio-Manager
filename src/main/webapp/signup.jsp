@@ -40,8 +40,8 @@
 
 			<div id="error" name ="error"></div>
 			
-			<button type="submit" class="btn btn-lg btn-primary btn-block">create account</button>
-			<button onclick="location.href='/login.jsp'" type="button" class="btn btn-lg btn-secondary btn-block">cancel</button>
+			<button type="submit" class="btn btn-lg btn-primary btn-block">Create User</button>
+			<button onclick="location.href='/login.jsp'" type="button" class="btn btn-lg btn-secondary btn-block">Cancel</button>
 		</form>
 		</div>
 	</body>
