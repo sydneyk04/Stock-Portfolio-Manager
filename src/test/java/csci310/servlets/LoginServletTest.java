@@ -6,6 +6,9 @@ import static org.junit.Assert.assertNull;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
@@ -45,6 +48,25 @@ public class LoginServletTest extends Mockito {
      
     	when(request.getSession()).thenReturn(session);        
 	}
+	
+	@Test
+	public void testHashPassword() throws NoSuchAlgorithmException, UnsupportedEncodingException {
+		String pw = "randompassword";
+		String hashedPw = LoginServlet.hashPassword(pw);
+
+		// hashing method
+		MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+		byte[] hash = messageDigest.digest(pw.getBytes("UTF-8"));
+		StringBuffer hexString = new StringBuffer();
+		for (int i = 0; i < hash.length; i++) {
+			String hex = Integer.toHexString(0xff & hash[i]);
+			if (hex.length() == 1)
+				hexString.append('0');
+			hexString.append(hex);
+		}
+
+		Assert.assertTrue(hashedPw.contentEquals(hexString));
+	}
     
     @Test
     public void testInitializeFirebaseNotNull() throws IOException {
@@ -74,10 +96,12 @@ public class LoginServletTest extends Mockito {
   
 		when(response.getWriter()).thenReturn(out);
 		when(request.getParameter("username")).thenReturn("johnDoe");
-		when(request.getParameter("password")).thenReturn("test123");     
+		when(request.getParameter("password")).thenReturn("test123");   
+		
 
 		servlet.doPost(request, response);  
 		String result = writer.getBuffer().toString();
+		
         
 		Assert.assertEquals("login success", result);
 		
