@@ -138,7 +138,7 @@ public class StockPerformanceServletTest extends Mockito {
 	
 	@Test
 	public void testViewStock() throws IOException, ServletException, InterruptedException, ParseException {	
-		servlet.viewStock();
+		servlet.viewStock("TSLA");
 		assertTrue(servlet.jsons.size() > 0);
 	}
 	

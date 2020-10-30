@@ -70,6 +70,7 @@ public class DashboardServlet extends HttpServlet {
 		//reset variables in graph servlet
 		session.setAttribute("myStocks", null);
 		stockperformanceServlet.myStocks = new ArrayList<ArrayList>();
+		stockperformanceServlet.view = new ArrayList<ArrayList>();
 		stockperformanceServlet.jsons = new ArrayList<String>();
 		stockperformanceServlet.portfolioValHistory = new ArrayList<ArrayList>();
 		stockperformanceServlet.portfolioJSON = "";
