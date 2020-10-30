@@ -14,6 +14,7 @@
 	
 	String chart = (String) session.getAttribute("chart");
 	String invalid_error = (String) session.getAttribute("invalid_error");
+	String portfolioVal = (String) session.getAttribute("portfolioVal");
 	List<ArrayList> view = (List<ArrayList>) session.getAttribute("view");
 	List<ArrayList> myStocks = (List<ArrayList>) session.getAttribute("myStocks");
 %>
@@ -290,11 +291,9 @@
 			</div>
                 <div class="col-md-3 col-sm-3  bg-white">
                   <div class="x_title">
-                    <h2>Toggle Graph</h2>
+                    <h2>Portfolio Value Today: $<%if(portfolioVal != null){%><%=portfolioVal%><%}%></h2>
                     <div class="clearfix"></div>
                   </div>
-
-                  <button type="button" class="btn btn-primary" id="spytoggle" style="color:#007bff;background:#fff;">Remove S&P</button>
                 </div>
 
                 <div class="clearfix"></div>

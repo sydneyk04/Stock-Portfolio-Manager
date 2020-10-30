@@ -30,6 +30,7 @@ import java.net.*;
 import java.io.*;
 import java.text.DateFormat;
 import java.text.DateFormatSymbols;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -75,6 +76,7 @@ public class StockPerformanceServlet extends HttpServlet {
 		myStocks.clear();
 		jsons.clear();
 		portfolioValHistory.clear();
+		view.clear();
 		
 		String username = session.getAttribute("username").toString();
 		
@@ -105,7 +107,10 @@ public class StockPerformanceServlet extends HttpServlet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-					
+			DecimalFormat f = new DecimalFormat("##.00");
+			ArrayList<String> holder = portfolioValHistory.get(portfolioValHistory.size()-1);
+			Double val = Double.parseDouble(holder.get(1));
+			session.setAttribute("portfolioVal", f.format(val));		
 			//build the graph using the list of stocks
 			buildGraph();
 		}
@@ -119,10 +124,6 @@ public class StockPerformanceServlet extends HttpServlet {
 		response.setStatus(HttpServletResponse.SC_OK);
 		session = request.getSession();
 		System.out.println("Hello from doPost");
-
-		myStocks.clear();
-		jsons.clear();
-		portfolioValHistory.clear();
 		
 		String action = request.getParameter("action");
 		//if user wants to toggle hide/show on graph - DONE
@@ -326,7 +327,6 @@ public class StockPerformanceServlet extends HttpServlet {
 			}
 			
 		}
-		
 	}
 	
 	
@@ -385,7 +385,12 @@ public class StockPerformanceServlet extends HttpServlet {
 				boolean owned = false;
 				if(sellDate.after(historicalDate) && datePurchased.before(historicalDate)){
 					owned = true;
+				} else if(sellDate.equals(historicalDate) && datePurchased.before(historicalDate)) {
+					owned = true;
+				} else if(sellDate.after(historicalDate) && datePurchased.equals(historicalDate)) {
+					owned = true;
 				}
+					
 				//create portfolio value at that index
 				addPortfolioValues(i, close, shares, label, owned);
 			
