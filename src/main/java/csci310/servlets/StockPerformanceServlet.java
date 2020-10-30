@@ -130,10 +130,22 @@ public class StockPerformanceServlet extends HttpServlet {
 			buildGraph();
 		} else if(action != null && action.equals("viewStock")) {
 			//add a random stock to graph but don't add it to your portfolio
-			
-			
+			String ticker = request.getParameter("ticker");
+			for(int i=0; i<myStocks.size(); i++) {
+				if(myStocks.get(i).get(0).equals(ticker)){
+					if(myStocks.get(i).get(5).equals("Hidden")) {
+						myStocks.get(i).set(5, "Visible");
+					}else {
+						myStocks.get(i).set(5, "Hidden");
+					}
+				}
+			}
+			buildGraph();
 		} else if(action != null && action.equals("addStock")) {
 			//add a stock to your portfolio
+			
+			//if stock is already in "view" array list remove it
+			
 			
 			
 		} else if(action != null && action.equals("changeTimePeriod")){
@@ -167,6 +179,10 @@ public class StockPerformanceServlet extends HttpServlet {
 			
 			
 		}
+		
+	}
+	
+	void viewStock() {
 		
 	}
 	

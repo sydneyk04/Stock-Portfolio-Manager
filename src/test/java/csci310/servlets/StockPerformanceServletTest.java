@@ -136,6 +136,12 @@ public class StockPerformanceServletTest extends Mockito {
 		assertTrue(servlet.jsons.size() > 0);
 	}
 	
+	@Test
+	public void testViewStock() throws IOException, ServletException, InterruptedException, ParseException {	
+		servlet.viewStock();
+		assertTrue(servlet.jsons.size() > 0);
+	}
+	
 //	@Test
 //	public void testBuildGraph() throws IOException, ServletException, InterruptedException, ParseException {	
 //		servlet.jsons.clear();
