@@ -171,7 +171,7 @@
                     <ul id="stock_list" class="to_do">
                     
                     
-                      <%for(int i=0; i<myStocks.size(); i++){ %>
+                      <%if(myStocks!=null){for(int i=0; i<myStocks.size(); i++){ %>
 	                      <li>
 	                          <div style="display:inline; float: left; width: 15%;">
 	                            <button type="button" style="background:lightgrey; border:none; border-radius:5px; color:white;" class="flat" data-toggle="modal" data-target="#removeStockModal">X</button><br>
@@ -227,7 +227,7 @@
 	
 	
 	                      </li>
-					   <% } %>
+					   <% } }%>
                       
                     </ul>
 
@@ -522,7 +522,7 @@
 					</form> -->
 					<h2>View stocks</h2>
 					<small>maybe we want this in a modal?</small>
-					<%for(int i=0; i<view.size(); i++) {%>
+					<%if(myStocks!=null){for(int i=0; i<view.size(); i++) {%>
 						<div style="float: left; width: 85%;">
                            <div style="display:inline;">
                              <p style="text-align:left;display:inline;">   Ticker: </p><p style="text-align:left; display:inline; font-weight:bold;"><%=view.get(i).get(0) %></p>
@@ -536,7 +536,7 @@
                            </div>
 	                    </div>
 					
-					<%}%>
+					<%}}%>
 					<form name="formname" action="/dashboard" method="POST">
 						<input type="text" name="ticker" placeholder="Enter a stock you want to view">
 						<input type="hidden" name="action" value="viewStock">
