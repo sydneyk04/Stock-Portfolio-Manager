@@ -239,13 +239,17 @@ public class StockPerformanceServlet extends HttpServlet {
 			//there is no frontend for this yet....
 			
 			//these are of type "Calendar"
-			//from = request.getParameter("from");
-			//now = request.getParameter("now");
+			String fromString = request.getParameter("from");
+			String toString = request.getParameter("to");
 			
-			//hardcode for testing, passes!
-			from = Calendar.getInstance();
-		    from.add(Calendar.MONTH, -2);
-			now = Calendar.getInstance();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			try {
+				from.setTime(sdf.parse(fromString));
+				now.setTime(sdf.parse(toString));
+			} catch (ParseException e1) {
+				e1.printStackTrace();
+			}
+			
 			
 			jsons = new ArrayList<String>();
 			portfolioValHistory = new ArrayList<ArrayList>();

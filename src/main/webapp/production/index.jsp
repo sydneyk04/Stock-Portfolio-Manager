@@ -294,15 +294,22 @@
 
 									<div class="col-md-3 col-sm-6" id="performanceRangePicker">
 										<p>Choose a range for display</p>
-										<form method="post">
+										<form id="performanceRangeForm" action="/dashboard" method="post">
+											<input type="hidden" name="action" value="changeTimePeriod">
+											<input type="hidden" id="rangeFrom" name="from" value="">
+											<input type="hidden" id="rangeTo" name="to" value="">
+
 											<div class="input-datarange input-group date">
 												<input type="text" class="input-sm form-control" id="datepicker" />
 											</div>
+											<button type="submit" class="btn btn-primary btn-md" name="button">Confirm</button>
 										</form>
 									</div>
 
 									<script type="text/javascript">
 										$('#datepicker').daterangepicker({
+											startDate: moment().subtract(1, 'year'),
+											endDate: moment(),
 											maxDate: moment(),
 											ranges: {
 												'Last Week': [moment().subtract(6, 'days'), moment()],
@@ -310,9 +317,12 @@
 												'Last 3 Months': [moment().subtract(3, 'month'), moment()],
 												'Last Year': [moment().subtract(1, 'year'), moment()]
 											}
-										}, function(start, end) {
-											console.log(start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
 										});
+
+										$('#datepicker').on('apply.daterangepicker', function(ev, picker) {
+											$('input[name=from]').val(picker.startDate.format('YYYY-MM-DD'));
+											$('input[name=to]').val(picker.endDate.format('YYYY-MM-DD'));
+										})
 									</script>
 
 								</div>
