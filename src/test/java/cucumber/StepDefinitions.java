@@ -1,16 +1,13 @@
 package cucumber;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
@@ -18,6 +15,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 import io.cucumber.java.After;
+import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -47,6 +45,16 @@ public class StepDefinitions {
         return saltStr;
 
     }
+	
+	@Before()
+	public void before() {
+		driver.manage().window().maximize();
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	/**************************
 	 * LANDING PAGE FEATURE
@@ -192,12 +200,12 @@ public class StepDefinitions {
 
 	@When("I enter the second hidden password field")
 	public void i_enter_the_second_hidden_password_field() {
-	  driver.findElement(By.xpath("//*[@id=\"password2\"]")).sendKeys(entered_pass);
+		driver.findElement(By.xpath("//*[@id=\"password2\"]")).sendKeys(entered_pass);
 	}
 
 	@When("I click the sign up button")
 	public void i_click_the_sign_up_button() {
-	  driver.findElement(By.xpath("/html/body/div/form/button")).click();
+		driver.findElement(By.xpath("/html/body/div/form/button")).click();
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
@@ -345,6 +353,15 @@ public class StepDefinitions {
 		}
 		
 		element.click();
+	}
+	
+	@When("I am on the dashboard page for two minutes")
+	public void i_am_on_the_dashboard_page_for_two_minutes() {
+		try {
+			Thread.sleep(120000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Then("I should be on the login page")
@@ -597,7 +614,13 @@ public class StepDefinitions {
 		int height = size.getHeight();
 		int width = size.getWidth();
 		driver.manage().window().setPosition(new Point(0, 0));
-		driver.manage().window().setSize(new Dimension(width/2, height/2));
+		driver.manage().window().setSize(new Dimension(width/2, height));
+		
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@After()
