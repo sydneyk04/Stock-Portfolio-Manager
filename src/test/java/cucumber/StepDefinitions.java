@@ -1,21 +1,21 @@
 package cucumber;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 import io.cucumber.java.After;
+import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -45,6 +45,16 @@ public class StepDefinitions {
         return saltStr;
 
     }
+	
+	@Before()
+	public void before() {
+		driver.manage().window().maximize();
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	/**************************
 	 * LANDING PAGE FEATURE
@@ -131,6 +141,12 @@ public class StepDefinitions {
 	    driver.findElement(By.xpath("//*[@id=\"login-form-submit\"]")).click();
 	}
 	
+	@When("I enter an incorrect password")
+	public void i_enter_an_incorrect_password() {
+	  String usr = "test1234";
+		driver.findElement(By.xpath("//*[@id=\"password\"]")).sendKeys(usr);
+	}
+	
 	@Then("I should be on the dashboard page")
 	public void i_should_be_on_the_dashboard_page() {
 	    try {
@@ -142,6 +158,19 @@ public class StepDefinitions {
 		assertTrue(driver.getCurrentUrl().equalsIgnoreCase(Dashboard_URL));
 	}
 
+	@Then("I should see the incorrect login error message {string}")
+	public void i_should_see_the_incorrect_login_error_message(String string) {
+	  try {
+			Thread.sleep(1000);
+			
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		String info = driver.findElement(By.id("login_error")).getText();
+		
+		assertTrue(info.equalsIgnoreCase(string));
+	}
 	
 	/**************************
 	 * SIGNUP FEATURE
@@ -156,6 +185,11 @@ public class StepDefinitions {
 		String testUser = getSaltString();
 		driver.findElement(By.xpath("//*[@id=\"username\"]")).sendKeys(testUser);
 	}
+	
+	@When("I enter an existing username")
+	public void i_enter_an_existing_username() {
+		driver.findElement(By.xpath("//*[@id=\"username\"]")).sendKeys("johnDoe");
+	}
 
 	@When("I enter the first hidden password field")
 	public void i_enter_the_first_hidden_password_field() {
@@ -166,12 +200,12 @@ public class StepDefinitions {
 
 	@When("I enter the second hidden password field")
 	public void i_enter_the_second_hidden_password_field() {
-	  driver.findElement(By.xpath("//*[@id=\"password2\"]")).sendKeys(entered_pass);
+		driver.findElement(By.xpath("//*[@id=\"password2\"]")).sendKeys(entered_pass);
 	}
 
 	@When("I click the sign up button")
 	public void i_click_the_sign_up_button() {
-	  driver.findElement(By.xpath("/html/body/div/form/button")).click();
+		driver.findElement(By.xpath("/html/body/div/form/button")).click();
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
@@ -209,25 +243,17 @@ public class StepDefinitions {
 		
 		driver.findElement(By.xpath("//*[@id=\"password2\"]")).sendKeys(temp_pass);
 	}
-
-	@When("I enter an incorrect password")
-	public void i_enter_an_incorrect_password() {
-	  String usr = "test1234";
-		driver.findElement(By.xpath("//*[@id=\"password\"]")).sendKeys(usr);
-	}
 	
-	@Then("I should the error message {string}")
-	public void i_should_the_error_message(String string) {
-	  try {
-			Thread.sleep(1000);
-			
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+	@Then("I should see an existing username error message {string}")
+	public void i_should_see_a_message_saying_that_my_username_is_already_taken(String string) {
+		WebElement element;
+		try {
+			element = driver.findElement(By.id("error"));
+		} catch (NoSuchElementException e) {
+			element = driver.findElement(By.xpath("//*[@id=\"error\"]"));
 		}
 		
-		String info = driver.findElement(By.id("login_error")).getText();
-		
-		assertTrue(info.equalsIgnoreCase(string));
+		assertTrue(element.getText().equalsIgnoreCase(string));
 	}
 	
 	@Then("I should see an alert {string}")
@@ -327,6 +353,15 @@ public class StepDefinitions {
 		}
 		
 		element.click();
+	}
+	
+	@When("I am on the dashboard page for two minutes")
+	public void i_am_on_the_dashboard_page_for_two_minutes() {
+		try {
+			Thread.sleep(120000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Then("I should be on the login page")
@@ -520,6 +555,7 @@ public class StepDefinitions {
 		WebElement button = driver.findElement(By.id("reportrange"));
 		button.click();
 	}
+	
 	@Given("I select an appropriate date range")
 	public void i_select_an_appropriate_date_range() {
 		WebElement button = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[1]/table/tbody/tr[3]/td[3]"));
@@ -527,42 +563,66 @@ public class StepDefinitions {
 		button = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[1]/table/tbody/tr[5]/td[3]"));
 		button.click();
 	}
+	
 	@Given("I try to enter an invalid date")
 	public void i_try_to_enter_an_invalid_date() {
 		WebElement button = driver.findElement(By.id("reportrange"));
 		//this might have to change depending on how Paul sets up input
 		button.sendKeys("09/09/2019 - 09/09/2020");
 	}
+	
 	@Given("I enter an appropriate date range")
 	public void i_enter_an_appropriate_date_range() {
 		WebElement button = driver.findElement(By.id("reportrange"));
 		//this might have to change depending on how Paul sets up input
 		button.sendKeys("01/01/2020 - 09/09/2020");
 	}
+	
 	@Given("I click the button to add the S&P")
 	public void i_click_the_button_to_add_the_S_P() {
 	    WebElement button = driver.findElement(By.id("spytoggle"));
 	    button.click();
 	}
+	
 	@Given("I click the button to remove the S&P")
 	public void i_click_the_button_to_remove_the_S_P() {
 	    WebElement button = driver.findElement(By.id("spytoggle"));
 	    button.click();
 	}
+	
 	@Then("I should see the graph date range change")
 	public void i_should_see_the_graph_date_range_change() {
 		assertTrue(true);
 	}
+	
 	@Then("I should see the S&P stock removed from the graph")
 	public void i_should_see_the_S_P_stock_removed_from_the_graph() {
 		assertTrue(true);
 	}
+	
 	@Then("I should see the S&P stock added to the graph")
 	public void i_should_see_the_S_P_stock_added_to_the_graph() {
 		assertTrue(true);
 	}
-
 	
+	/**************************
+	 * APP COMPATIBILITY FEATURE
+	 **************************/
+	@When("I resize the window to {int}%")
+	public void i_resize_the_window_to(Integer int1) {
+		Dimension size = driver.manage().window().getSize();
+		int height = size.getHeight();
+		int width = size.getWidth();
+		driver.manage().window().setPosition(new Point(0, 0));
+		driver.manage().window().setSize(new Dimension(width/2, height));
+		
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
 	@After()
 	public void after() {
 		driver.quit();

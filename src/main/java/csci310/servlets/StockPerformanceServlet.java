@@ -72,6 +72,10 @@ public class StockPerformanceServlet extends HttpServlet {
 		out = response.getWriter();
 		System.out.println("Hello from doGet");
 		
+		myStocks.clear();
+		jsons.clear();
+		portfolioValHistory.clear();
+		
 		String username = session.getAttribute("username").toString();
 		
 		if(username != null) {
@@ -115,6 +119,10 @@ public class StockPerformanceServlet extends HttpServlet {
 		response.setStatus(HttpServletResponse.SC_OK);
 		session = request.getSession();
 		System.out.println("Hello from doPost");
+
+		myStocks.clear();
+		jsons.clear();
+		portfolioValHistory.clear();
 		
 		String action = request.getParameter("action");
 		//if user wants to toggle hide/show on graph - DONE
@@ -253,7 +261,14 @@ public class StockPerformanceServlet extends HttpServlet {
 			
 		} else {
 			
-			
+//		
+//			//pass the new dates into build stock jsons
+//			try {
+//				buildStockJSONS(from, now);
+//			} catch (ParseException e) {
+//				//jhello
+//				e.printStackTrace();
+//			}
 		}
 		
 	}
