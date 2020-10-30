@@ -7,11 +7,11 @@
 	response.setHeader("Cache-Control", "no-cache, no-store");
 	response.setHeader("Pragma","no-cache");
 	response.setDateHeader ("Expires", 0);
-	
+
 	if (session.getAttribute("username") == null) {
 		response.sendRedirect("../login.jsp");
 	}
-	
+
 	String chart = (String) session.getAttribute("chart");
 	String invalid_error = (String) session.getAttribute("invalid_error");
 	String portfolioVal = (String) session.getAttribute("portfolioVal");
@@ -55,7 +55,6 @@
     <!-- Custom Theme Style -->
     <link href="../build/css/custom.min.css" rel="stylesheet">
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
   	<!-- Insert these scripts at the bottom of the HTML, but before you use any Firebase services -->
 
@@ -68,7 +67,11 @@
   	<!-- Add Firebase products that you want to use -->
   	<script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-auth.js"></script>
   	<script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-firestore.js"></script>
-	<script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-database.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-database.js"></script>
+
+		<!-- bootstrap-daterangepicker -->
+    <script src="../vendors/moment/min/moment.min.js"></script>
+    <script src="../vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
 
 	<script>
 		var firebaseConfig = {
@@ -91,7 +94,7 @@
 		if (window.performance && window.performance.navigation.type == window.performance.navigation.TYPE_BACK_FORWARD) {
 	    	window.location.replace("../login.jsp");
 		}
-	
+
 		console.log("init importCSV");
 
 		$(document).ready(function() {
@@ -99,16 +102,16 @@
 			var startTime = new Date().getTime();
 			setInterval(function() {
 				sessionStorage.clear();
-				window.location.replace("../login.jsp"); 				
+				window.location.replace("../login.jsp");
 			}, 120000);
-			
+
 			// logout after inactive for 2 min
 			/* $('body').bind('click mousemove keypress scroll resize', function() {
            		lastActiveTime = new Date().getTime();
            	});
-			
+
            	setInterval(checkIdleTime, 30000); // 30 sec
-           	
+
            	function checkIdleTime() {
                 var diff = new Date().getTime() - lastActiveTime;
                 if (diff > 120000) {
@@ -166,16 +169,16 @@
 							};
 					}
 			}
-			
+
 			function resizeTopNav() {
 				$('#top_nav').each(function(){
 				    var inner = $(this).find('nav');
 				    $(this).height(inner.outerHeight(true));
 				});
 			}
-			
+
 			/*
-			 * Window resize: UI changes 
+			 * Window resize: UI changes
 			*/
 			$(window).resize(function() {
 			    if(this.resizeTO) clearTimeout(this.resizeTO);
@@ -187,9 +190,9 @@
 			$(window).bind('resizeEnd', function() {
 				resizeTopNav();
 			});
-			
+
 			/*
-			 * App security: Back button pressed 
+			 * App security: Back button pressed
 			*/
 			$(window).bind("pageshow", function(event) {
 			    if (event.originalEvent.persisted) {
@@ -284,11 +287,35 @@
                 	<!--   <div id="chart_plot_01" class="demo-placeholder"></div> -->
                   <!-- <canvas id="chartContainer" width="1000" height="400"></canvas> -->
                   <div id="chartContainer" style="width: 1000px; height: 400px" ></div>
-                  <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
-				  <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+                  <%-- <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script> --%>
+				  				<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
                   <%= chart%>
                   </script>
-			</div>
+
+									<div class="col-md-3 col-sm-6" id="performanceRangePicker">
+										<p>Choose a range for display</p>
+										<form method="post">
+											<div class="input-datarange input-group date">
+												<input type="text" class="input-sm form-control" id="datepicker" />
+											</div>
+										</form>
+									</div>
+
+									<script type="text/javascript">
+										$('#datepicker').daterangepicker({
+											maxDate: moment(),
+											ranges: {
+												'Last Week': [moment().subtract(6, 'days'), moment()],
+												'Last Month': [moment().subtract(29, 'days'), moment()],
+												'Last 3 Months': [moment().subtract(3, 'month'), moment()],
+												'Last Year': [moment().subtract(1, 'year'), moment()]
+											}
+										}, function(start, end) {
+											console.log(start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+										});
+									</script>
+
+								</div>
                 <div class="col-md-3 col-sm-3  bg-white">
                   <div class="x_title">
                     <h2>Portfolio Value Today: $<%if(portfolioVal != null){%><%=portfolioVal%><%}%></h2>
@@ -303,8 +330,8 @@
           </div>
           <br />
 
-          <div class="row">    
-	
+          <div class="row">
+
 		 	<!-- Start to do list -->
             <div class="col-md-4 col-sm-4 ">
               <div class="x_panel">
@@ -316,8 +343,8 @@
 
                   <div class="">
                     <ul id="stock_list" class="to_do">
-                    
-                    
+
+
                       <%if(myStocks!=null){for(int i=0; i<myStocks.size(); i++){ %>
 	                      <li>
 	                          <div style="display:inline; float: left; width: 15%;">
@@ -371,18 +398,18 @@
 	                        <br>
 	                        <br>
 	                        <br>
-	
-	
+
+
 	                      </li>
 					   <% } }%>
-                      
+
                     </ul>
 
 					<form name="formname" action="/dashboard" method="POST">
 						<input type="hidden" name="action" value="changeTimePeriod">
 						 <button type="submit"class="btn btn-light btn-sm"> CLICK THIS BUTTON TO TEST CHANGING THE GRAPH TO DIF TIME PERIOD (2months ago, today)</button>
 				    </form>
-					
+
                     <!-- Button trigger modal --><br><br>
                     <div class="addstockbutton">
                     <button type="button" class="addstockbutton" data-toggle="modal" data-target="#addStockModal">Add Stock</button>
@@ -407,8 +434,8 @@
                           </div>
                           <div class="modal-body">
                             <div class="inputrow">
-                            
-                            
+
+
                             <form name="formname" action="/dashboard" method="POST">
 	                            <input type="hidden" name="action" value="addStock">
 		                              <div style="float: left; width: 30%; overflow: scroll; margin-right:2.5%; margin-left:2.5%; display:table-cell;">
@@ -447,17 +474,17 @@
 		                          </div>
 		                          <div class="modal-footer">
 		                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            
+
 		                        <button type="submit" class="btn btn-primary" id="stockaddbutton">Add to my portfolio</button>
                             </form>
-                            
-                            
-                            
+
+
+
                           </div>
                         </div>
                       </div>
                     </div>
-                    
+
 					 <style>
                       .stockinput{
                         border: none;
@@ -576,15 +603,15 @@
                           });
 
                       }
-                      
-                      
+
+
                       //updatePorfolio();
                       setTimeout(
                         function()
                         {
                           updateDoughnut();
                         }, 5000);
-                        
+
                       // Adding a stock JS
                       $("#stockaddbutton").click(function(){
                         console.log("stock add attempt")
@@ -669,7 +696,7 @@
               </div>
             </div>
             <!-- End to do list -->
-			      
+
 			  <div class="col-md-5 col-sm-5s  bg-white">
 			  		<!-- <form name="formname" action="/dashboard" method="POST">
 						<input type="hidden" name="action" value="viewstock">
@@ -692,21 +719,21 @@
                              <br>
                            </div>
 	                    </div>
-					
+
 					<%}}%>
 					<form name="formname" action="/dashboard" method="POST">
 						<input type="text" name="ticker" placeholder="Enter a stock you want to view">
 						<input type="hidden" name="action" value="viewStock">
 						<button type="submit" class="btn btn-primary btn-md justify-content-start">
 							submit
-						</button>	
+						</button>
 						<div id="login-error-container">
 				      		<strong id="login_error" style="color:red"><%if(invalid_error != null){ %> <%= invalid_error%> <% } %></strong>
-           				</div>     
+           				</div>
 					</form>
                  </div>
-                    
-                   <!--  
+
+                   <!--
                     <div class="modal fade" id="stockPerformanceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                       <div class="modal-dialog" role="document">
                         <div class="modal-content">
@@ -717,14 +744,14 @@
                             </button>
                           </div>
                           <div class="modal-body">
-                          
+
                           </div>
                            <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                           </div>
                       </div>
                     </div>
-                    
+
  -->
           </div>
 
@@ -779,9 +806,7 @@
     <script src="../vendors/jqvmap/dist/jquery.vmap.js"></script>
     <script src="../vendors/jqvmap/dist/maps/jquery.vmap.world.js"></script>
     <script src="../vendors/jqvmap/examples/js/jquery.vmap.sampledata.js"></script>
-    <!-- bootstrap-daterangepicker -->
-    <script src="../vendors/moment/min/moment.min.js"></script>
-    <script src="../vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+
 
     <!-- Custom Theme Scripts -->
     <script src="../build/js/custom.min.js"></script>
