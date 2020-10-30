@@ -54,10 +54,11 @@ public class StockPerformanceServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	static PrintWriter out;
 	private HttpSession session = null;
-	Calendar from ;
+	Calendar from;
 	Calendar now;
 	Boolean check = false;
 	List<ArrayList> myStocks = new ArrayList<ArrayList>();
+	List<ArrayList> view = new ArrayList<ArrayList>();
 	List<String> jsons = new ArrayList<String>();
 	List<ArrayList> portfolioValHistory = new ArrayList<ArrayList>();
 	String portfolioJSON;
@@ -113,40 +114,63 @@ public class StockPerformanceServlet extends HttpServlet {
 		session = request.getSession();
 		System.out.println("Hello from doPost");
 		
-//		//code for when user changes time period
-//		//just need to grab the two dates from the front end in calendar format
-//		Calendar from = request.getParameter("from");
-//		Calendar now = request.getParameter("now");
-//		
-//		//pass the new dates into build stock jsons
-//		try {
-//			buildStockJSONS(from, now);
-//		} catch (ParseException e) {
-//			
-//		}
-//		
-//		buildGraph();
-//		response.sendRedirect("production/index.jsp");
-		
-		
-//		//code for when user hides a specific stock
-//		//grab that frontend variable
-//		String symbol = request.getParameter("symbol");
-//		//either "show" or "hidden"
-//		String status = request.getParameter("status");
-//		//update it in the mystock array for whatever stock is being hidden or shown
-//		for(int i=0; i<myStocks.size(); i++) {
-//			ArrayList<String> stock = myStocks.get(i);
-//			//by default every new stock you add is hidden
-//			if(stock.get(0).equals(symbol)){
-//				stock.set(5, status);
-//				myStocks.set(i, stock);
-//			}
-//		}
+		String action = request.getParameter("action");
+		//if user wants to toggle hide/show on graph
+		if(action != null && action.equals("showOnGraph")) {
+			String ticker = request.getParameter("ticker");
+			for(int i=0; i<myStocks.size(); i++) {
+				if(myStocks.get(i).get(0).equals(ticker)){
+					if(myStocks.get(i).get(5).equals("Hidden")) {
+						myStocks.get(i).set(5, "Visible");
+					}else {
+						myStocks.get(i).set(5, "Hidden");
+					}
+				}
+			}
+			buildGraph();
+		} else if(action != null && action.equals("viewStock")) {
+			//add a random stock to graph but don't add it to your portfolio
+			
+			
+		} else if(action != null && action.equals("addStock")) {
+			//add a stock to your portfolio
+			
+			
+		} else if(action != null && action.equals("changeTimePeriod")){
+			System.out.println("Change time period");
+			//change calendar time period
+			//there is no frontend for this yet....
+			
+			//these are of type "Calendar"
+			//from = request.getParameter("from");
+			//now = request.getParameter("now");
+			
+			//hardcode for testing, passes!
+			from = Calendar.getInstance();
+		    from.add(Calendar.MONTH, -2);
+			now = Calendar.getInstance();
+			
+			jsons = new ArrayList<String>();
+			portfolioValHistory = new ArrayList<ArrayList>();
+			portfolioJSON = "";
+			
+			//pass the new dates into build stock jsons
+			try {
+				buildStockJSONS(from, now);
+			} catch (ParseException e) {
+				
+			}
+			
+			buildGraph();
+			
+		} else {
+			
+			
+		}
 		
 	}
 	
-	void addPortfolioValues(Integer i, Double close, Double shares, String label, Boolean after) throws IOException {
+	void addPortfolioValues(Integer i, Double close, Double shares, String label, Boolean owned) throws IOException {
 		Double portfolioValue = close * shares;
 		ArrayList<String> val = new ArrayList<String>();
 	
@@ -155,7 +179,7 @@ public class StockPerformanceServlet extends HttpServlet {
 			portfolioValHistory.get(i);
 			ArrayList<String> holder = portfolioValHistory.get(i);
 			//only add if purchased before this date
-			if(after == true) {
+			if(owned == true) {
 				portfolioValue += Double.parseDouble(holder.get(1));
 				val.add(label);
 				val.add(String.valueOf(portfolioValue));
@@ -164,7 +188,7 @@ public class StockPerformanceServlet extends HttpServlet {
 		} catch ( IndexOutOfBoundsException e ) {
 			//otherwise create new value
 			//if purchased before add value
-			if(after == true) {
+			if(owned == true) {
 				val.add(label);
 				val.add(String.valueOf(portfolioValue));
 				portfolioValHistory.add(i, val);
@@ -220,24 +244,23 @@ public class StockPerformanceServlet extends HttpServlet {
 				Double shares = Double.parseDouble((String) myStocks.get(s).get(2));
 				
 				//check if user owned stock during this point in time add to portfolio value
-				month+=1;
-				String m;
-				if(month<10) {
-					m = "0" + Integer.toString(month);
-				}
-				else {
-					m = Integer.toString(month);
-				}
-				String holder = year + "-" + m + "-" + day;
-				DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd"); 
-				Date datePurchased = (Date)formatter.parse((String)myStocks.get(s).get(3));
-				Date sellDate = (Date)formatter.parse((String)myStocks.get(s).get(4));
+				String holder = year + "-" + (month + 1) + "-" + day;
+				DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 				Date historicalDate = (Date)formatter.parse(holder);
+				Date datePurchased = (Date)formatter.parse((String)myStocks.get(s).get(3));
+				Date sellDate;
+				if(myStocks.get(s).get(4).equals("")) {
+					Calendar calendar = Calendar.getInstance();
+					calendar.add(Calendar.DAY_OF_YEAR, 1);
+					sellDate = calendar.getTime();
+					
+				} else {
+					sellDate = (Date)formatter.parse((String)myStocks.get(s).get(4));
+				}
 				boolean owned = false;
 				if(sellDate.after(historicalDate) && datePurchased.before(historicalDate)){
 					owned = true;
 				}
-				
 				//create portfolio value at that index
 				addPortfolioValues(i, close, shares, label, owned);
 			
@@ -255,6 +278,7 @@ public class StockPerformanceServlet extends HttpServlet {
 	}
 	
 	void buildGraph() throws IOException {
+	
 		//chart to display different stocks
 		//i know this looks wacky but it will actually work hahah
 		String theChart =  "<script type=\"text/javascript\">\n" + 
@@ -280,9 +304,8 @@ public class StockPerformanceServlet extends HttpServlet {
 				"					data: [\n";
 		
 		
-		for(int i=0; i<jsons.size(); i++) {
-			//check if stock has been hidden or is being shown
-			if(myStocks.get(i).get(5).equals("show")) {
+		for(int i=0; i<myStocks.size(); i++) {
+			if(myStocks.get(i).get(5).equals("Visible")) {
 				theChart += "{\n" +
 								"type: \"line\",\n" + 
 								"name: \"" + myStocks.get(i).get(0) + "\",\n" +
@@ -376,7 +399,7 @@ public class StockPerformanceServlet extends HttpServlet {
 						stock.add(from);
 						stock.add(to);
 						//whether or not it should be shown on graph
-						stock.add("hidden");
+						stock.add("Hidden");
 						//add to big array
 						myStocks.add(stock);
 					}

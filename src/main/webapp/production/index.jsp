@@ -1,4 +1,6 @@
 <%@ page import="csci310.*" %>
+<%@ page import ="java.util.ArrayList"%>
+<%@ page import ="java.util.List"%>
 <!DOCTYPE html>
 <%
 	//Disable Caching
@@ -6,6 +8,8 @@
 	response.setHeader("Pragma","no-cache");
 	response.setDateHeader ("Expires", 0);
 	String chart = (String) session.getAttribute("chart");
+	String invalid_error = (String) session.getAttribute("invalid_error");
+	List<ArrayList> myStocks = (List<ArrayList>) session.getAttribute("myStocks");
 %>
 <html lang="en">
   <head>
@@ -86,7 +90,6 @@
                     <a class="dropdown-item"  href="../login.jsp"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
                   </div>
                 </li>
-
              </ul>
             </nav>
           </div>
@@ -153,7 +156,7 @@
           <br />
 
           <div class="row">    
-
+	
             <!-- Start to do list -->
             <div class="col-md-4 col-sm-4 ">
               <div class="x_panel">
@@ -165,92 +168,74 @@
 
                   <div class="">
                     <ul id="stock_list" class="to_do">
-                      <li>
-                          <div style="display:inline; float: left; width: 15%;">
-                            <button type="button" style="background:lightgrey; border:none; border-radius:5px; color:white;" class="flat" data-toggle="modal" data-target="#removeStockModal">X</button><br>
-                            <!-- Modal for Remove Stock -->
-                            <div class="modal fade" id="removeStockModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                              <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                  <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Are you sure you want to remove this stock?</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                      <span aria-hidden="true">&times;</span>
-                                    </button>
-                                  </div>
-                                  <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                    <button type="button" class="btn btn-primary deletestock" id="stockremovebutton">Remove Stock</button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div style="float: left; width: 85%;">
-                            <div style="display:inline;">
-                              <p style="text-align:left;display:inline;">   Exchange: </p><p style="text-align:left; display:inline; font-weight:bold;">Exchange</p>
-                              <br>
-                            </div>
-                            <div style="display:inline;">
-                              <p style="text-align:left;display:inline;">   Ticker: </p><p style="text-align:left; display:inline; font-weight:bold;">Exchange</p>
-                              <br>
-                            </div>
-                            <div style="display:inline;">
-                              <p style="text-align:left;display:inline;">   # Shares: </p><p style="text-align:left; display:inline; font-weight:bold;">Exchange</p>
-                              <br>
-                            </div>
-                        </div>
-                        <br>
-                        <br>
-                        <br>
-
-
-                      </li>
-
-                      <li>
-                          <div style="display:inline; float: left; width: 15%;">
-                            <button type="button" style="background:lightgrey; border:none; border-radius:5px; color:white;" class="flat" data-toggle="modal" data-target="#removeStockModal">X</button><br>
-                            <!-- Modal for Remove Stock -->
-                            <div class="modal fade" id="removeStockModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                              <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                  <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Are you sure you want to remove this stock?</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                      <span aria-hidden="true">&times;</span>
-                                    </button>
-                                  </div>
-                                  <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                    <button type="button" class="btn btn-primary deletestock" id="stockremovebutton">Remove Stock</button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div style="float: left; width: 85%;">
-                            <div style="display:inline;">
-                              <p style="text-align:left;display:inline;">   Exchange: </p><p style="text-align:left; display:inline; font-weight:bold;">Exchange</p>
-                              <br>
-                            </div>
-                            <div style="display:inline;">
-                              <p style="text-align:left;display:inline;">   Ticker: </p><p style="text-align:left; display:inline; font-weight:bold;">Exchange</p>
-                              <br>
-                            </div>
-                            <div style="display:inline;">
-                              <p style="text-align:left;display:inline;">   # Shares: </p><p style="text-align:left; display:inline; font-weight:bold;">Exchange</p>
-                              <br>
-                            </div>
-                        </div>
-                        <br>
-                        <br>
-                        <br>
-
-
-                      </li>
+                    
+                    
+                      <%for(int i=0; i<myStocks.size(); i++){ %>
+	                      <li>
+	                          <div style="display:inline; float: left; width: 15%;">
+	                            <button type="button" style="background:lightgrey; border:none; border-radius:5px; color:white;" class="flat" data-toggle="modal" data-target="#removeStockModal">X</button><br>
+	                            <!-- Modal for Remove Stock -->
+	                            <div class="modal fade" id="removeStockModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	                              <div class="modal-dialog" role="document">
+	                                <div class="modal-content">
+	                                  <div class="modal-header">
+	                                    <h5 class="modal-title" id="exampleModalLabel">Are you sure you want to remove this stock?</h5>
+	                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                                      <span aria-hidden="true">&times;</span>
+	                                    </button>
+	                                  </div>
+	                                  <div class="modal-footer">
+	                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+	                                    <button type="button" class="btn btn-primary deletestock" id="stockremovebutton">Remove Stock</button>
+	                                  </div>
+	                                </div>
+	                              </div>
+	                            </div>
+	                          </div>
+	                          <div style="float: left; width: 85%;">
+	                            <div style="display:inline;">
+	                              <p style="text-align:left;display:inline;">   Ticker: </p><p style="text-align:left; display:inline; font-weight:bold;"><%=myStocks.get(i).get(0) %></p>
+	                              <br>
+	                            </div>
+	                            <div style="display:inline;">
+	                              <p style="text-align:left;display:inline;">   # Shares: </p><p style="text-align:left; display:inline; font-weight:bold;"><%=myStocks.get(i).get(2) %></p>
+	                              <br>
+	                            </div>
+	                            <div style="display:inline;">
+	                              <p style="text-align:left;display:inline;">   Purchase Date: </p><p style="text-align:left; display:inline; font-weight:bold;"><%=myStocks.get(i).get(3) %></p>
+	                              <br>
+	                            </div>
+	                            <div style="display:inline;">
+	                              <p style="text-align:left;display:inline;">   Sell Date: </p><p style="text-align:left; display:inline; font-weight:bold;"><%=myStocks.get(i).get(4) %></p>
+	                              <br>
+	                            </div>
+	                             <div style="display:inline;">
+	                              <p style="text-align:left;display:inline;">   Graph State: </p><p style="text-align:left; display:inline; font-weight:bold;">
+	                              	<form name="formname" action="/dashboard" method="POST">
+										<input type="hidden" name="action" value="showOnGraph">
+										<input type="hidden" name="ticker" value="<%=myStocks.get(i).get(0) %>">
+										 <button type="submit"class="btn btn-light btn-sm"><%=myStocks.get(i).get(5) %></button>
+				           			</form>
+	                              </p>
+	                              <br>
+	                            </div>
+	                        </div>
+	                        <br>
+	                        <br>
+	                        <br>
+	
+	
+	                      </li>
+					   <% } %>
+                      
                     </ul>
 
-                    <!-- Button trigger modal -->
+					<form name="formname" action="/dashboard" method="POST">
+						<input type="hidden" name="action" value="changeTimePeriod">
+						 <button type="submit"class="btn btn-light btn-sm"> CLICK THIS BUTTON TO TEST CHANGING THE GRAPH TO DIF TIME PERIOD (2months ago, today)</button>
+				    </form>
+					
+                    <!-- Button trigger modal --><br><br>
                     <div class="addstockbutton">
                     <button type="button" class="addstockbutton" data-toggle="modal" data-target="#addStockModal">Add Stock</button>
                     </div>
@@ -314,6 +299,7 @@
                         </div>
                       </div>
                     </div>
+                    
 					 <style>
                       .stockinput{
                         border: none;
@@ -331,7 +317,6 @@
                         justify-content: center;
                         align-items: center;
                         border: none;
-
                       }
                     </style>
                   </div>
@@ -343,10 +328,8 @@
                     //     $( "#stock_list" ).append("<li><p><div class=\"icheckbox_flat-green checked\" style=\"position: relative;\"><input type=\"checkbox\" class=\"flat\" style=\"position: absolute; opacity: 0;\"><ins class=\"iCheck-helper\" style=\"position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;\"></ins></div> Schedule meeting with new client </p></li>");
                     //     $( "#stock_list" ).append('<li><div style="display:inline;"><input type="checkbox" class="flat"><br></div><div style="display:inline;"><p style="text-align:left;display:inline;">   Exchange: </p><p style="text-align:left;display:inline;">Exchange</p><br> </div><div style="display:inline;"> <p style="text-align:left;display:inline;">   Ticker: </p><p style="text-align:left;display:inline;">Exchange</p><br> </div><div style="display:inline;"><p style="text-align:left;display:inline;">   # Shares: </p><p style="text-align:left;display:inline;">Exchange</p><br></div></li>');
                     //   });
-
                     // });
                     $(document).ready(function(){
-
                       function updateDoughnut(){
                         // if ("undefined" != typeof Chart && (console.log("init_chart_doughnut"),
                         // $(".canvasDoughnut"))) {
@@ -374,13 +357,10 @@
                         //     })
                         //}
                         var els = document.getElementsByClassName("canvasDoughnut");
-
                         for (var i = 0; i < els.length; i++) {
                           els[i].style.width = "280";
                           els[i].style.height = "280";
-
                         }
-
                       }
                       
                       function getCookie(name) {
@@ -414,13 +394,9 @@
                    	    	document.getElementById("totalPortfolio").innerHTML = "$" + portfolioValue;
                    	    }
                       }
-
                       function updatePorfolio() {
-
                         var apiLink = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=IBM&apikey=60096f09efmsh63c9a7515124324p1b4c57jsna3f56df4cc32";
-
                         console.log(apiLink)
-
                         axios.get(apiLink)
                           .then(function (response) {
                             var responseData = response.data;
@@ -434,7 +410,6 @@
                             console.log(valueJson);
                             valueJson = valueJson["4. close"];
                             var dollarValue = valueJson;
-
                             //document.getElementById("totalPortfolio").innerHTML = "$" + dollarValue;
                             //getTotalPortfolioValue();
                           })
@@ -443,17 +418,12 @@
                           });                    
                         
                       }
-
-
                       //updatePorfolio();
                       setTimeout(
                         function()
                         {
                           updateDoughnut();
                         }, 5000);
-
-
-
                       // Adding a stock JS
                       $("#stockaddbutton").click(function(){
                         console.log("stock add attempt")
@@ -503,20 +473,12 @@
                           <br>
                           <br>
                           <br>
-
-
                         </li>
-
                         `;
-
-
                         $( "#stock_list" ).append(appendingHTML);
-
                         $('#addStockModal').modal('hide');
-
                         // This deletes buttons when they click out of the stock
                         var els = document.getElementsByClassName("deletestock");
-
                         for (var i = 0; i < els.length; i++) {
                             els[i].addEventListener('click', function (e) {
                               $('#removeStockModal').modal('hide');
@@ -526,10 +488,8 @@
                             });
                         }
                       });
-
                       // This deletes buttons when they click out of the stock
                       var els = document.getElementsByClassName("deletestock");
-
                       for (var i = 0; i < els.length; i++) {
                           els[i].addEventListener('click', function (e) {
                               $('#removeStockModal').modal('hide');
@@ -538,10 +498,6 @@
                               e.target.closest('li').remove();
                           });
                       }
-
-
-
-
                     });
                     // $( document ).ready(function() {
                     //   $( "#stock_list" ).append("");
@@ -552,7 +508,49 @@
               </div>
             </div>
             <!-- End to do list -->
-
+			      
+			  <div class="col-md-5 col-sm-5s  bg-white">
+			  		<!-- <form name="formname" action="/dashboard" method="POST">
+						<input type="hidden" name="action" value="viewstock">
+						  <button type="button" class="btn btn-primary" id="spytoggle" style="color:#007bff;background:#fff;">
+						  	Click this to go to stock performance graph
+						  </button>
+					</form> -->
+					<h2>View stocks</h2>
+					<small>maybe we want this in a modal?</small>
+					<form name="formname" action="/dashboard" method="POST">
+						<input type="text" id="stock1" name="stock1" placeholder="Enter stock 1">
+						<input type="text" id="stock2" name="stock2" placeholder="Enter stock 2">
+						<input type="hidden" name="action" value="viewstock">
+						<button type="submit" class="btn btn-primary btn-md justify-content-start">
+							submit
+						</button>	
+						<div id="login-error-container">
+				      		<strong id="login_error" style="color:red"><%if(invalid_error != null){ %> <%= invalid_error%> <% } %></strong>
+           				</div>     
+					</form>
+                 </div>
+                    
+                   <!--  
+                    <div class="modal fade" id="stockPerformanceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Stock Performance Graph</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                          
+                          </div>
+                           <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                          </div>
+                      </div>
+                    </div>
+                    
+ -->
           </div>
 
 
