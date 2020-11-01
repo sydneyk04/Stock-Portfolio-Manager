@@ -90,18 +90,18 @@
 
 		$(document).ready(function() {
 			// auto-logout after 2 min
-			var startTime = new Date().getTime();
+			/* var startTime = new Date().getTime();
 			setInterval(function() {
 				sessionStorage.clear();
 				window.location.replace("../login.jsp"); 				
-			}, 120000);
+			}, 120000); */
 			
 			// logout after inactive for 2 min
-			/* $('body').bind('click mousemove keypress scroll resize', function() {
+			$('body').bind('click mousemove keypress scroll resize', function() {
            		lastActiveTime = new Date().getTime();
            	});
 			
-           	setInterval(checkIdleTime, 30000); // 30 sec
+           	setInterval(checkIdleTime, 1000); // 1 sec
            	
            	function checkIdleTime() {
                 var diff = new Date().getTime() - lastActiveTime;
@@ -114,7 +114,7 @@
                         window.location.reload();}
                     });
                 }
-           	} */
+           	}
 
 			// The event listener for the file upload
 			document.getElementById('txtFileUpload').addEventListener('change', upload, false);

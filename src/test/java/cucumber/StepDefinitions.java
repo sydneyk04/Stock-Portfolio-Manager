@@ -622,6 +622,14 @@ public class StepDefinitions {
 			e.printStackTrace();
 		}
 	}
+	
+	/**************************
+	 * APP SECURITY FEATURE
+	 **************************/
+	@When("I attempt to navigate to the dashboard page")
+	public void i_attempt_to_navigate_to_the_dashboard_page() {
+		driver.get(Dashboard_URL);
+	}
 
 	@After()
 	public void after() {
