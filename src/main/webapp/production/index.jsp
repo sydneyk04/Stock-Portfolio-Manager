@@ -193,6 +193,37 @@
                   <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
+                <!-- Button trigger modal -->
+					<button type="button"  style="background:lightgrey; border:none; border-radius:5px; color:#73879C;" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Add by CSV</button>
+
+					<!-- Modal -->
+					<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+					  <div class="modal-dialog" role="document">
+					    <div class="modal-content">
+					      <div class="modal-header">
+					        <h5 class="modal-title" id="exampleModalLabel">Upload a CSV File</h5>
+					        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					          <span aria-hidden="true">&times;</span>
+					        </button>
+					      </div>
+					      <div class="modal-body">
+					      	 <a href="exampleStockCSV.csv" download="example">
+					     	 <button type="button" style="background: darkgrey;" class="btn btn-primary">Download Example CSV</button>
+					     	 </a>
+						      <div id="dvImportSegments" class="fileupload">
+								<fieldset>
+									<legend>Upload your CSV file</legend>
+									<input type="file" name="File Upload" id="txtFileUpload" accept=".csv" />
+								</fieldset>
+							 </div>
+					      </div>
+					      <div class="modal-footer">
+					        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					        <button type="button" class="btn btn-primary">Upload</button>
+					      </div>
+					    </div>
+					  </div>
+					</div>
 
                   <div class="">
                     <ul id="stock_list" class="to_do">
@@ -288,37 +319,7 @@
 
 										
 
-					<!-- Button trigger modal -->
-					<button type="button"  style="background:lightgrey; border:none; border-radius:5px; color:#73879C;" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Add by CSV</button>
-
-					<!-- Modal -->
-					<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-					  <div class="modal-dialog" role="document">
-					    <div class="modal-content">
-					      <div class="modal-header">
-					        <h5 class="modal-title" id="exampleModalLabel">Upload a CSV File</h5>
-					        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					          <span aria-hidden="true">&times;</span>
-					        </button>
-					      </div>
-					      <div class="modal-body">
-					      	 <a href="exampleStockCSV.csv" download="example">
-					     	 <button type="button" style="background: darkgrey;" class="btn btn-primary">Download Example CSV</button>
-					     	 </a>
-						      <div id="dvImportSegments" class="fileupload">
-								<fieldset>
-									<legend>Upload your CSV file</legend>
-									<input type="file" name="File Upload" id="txtFileUpload" accept=".csv" />
-								</fieldset>
-							 </div>
-					      </div>
-					      <div class="modal-footer">
-					        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-					        <button type="button" class="btn btn-primary">Upload</button>
-					      </div>
-					    </div>
-					  </div>
-					</div>
+					
 					
                     <!-- Modal For Add Stock-->
                     <div class="modal fade" id="addStockModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
