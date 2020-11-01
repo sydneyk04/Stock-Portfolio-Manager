@@ -2,6 +2,7 @@ package csci310.servlets;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -122,6 +123,14 @@ public class StockPerformanceServletTest extends Mockito {
 		servlet.getUserStock("johnDoe");
 		servlet.buildStockJSONS(from, now);
 		assertTrue(servlet.jsons.size() > 0);
+		
+		servlet.myStocks.clear();
+		servlet.jsons.clear();
+		servlet.portfolioValHistory.clear();
+		servlet.getUserStock("testEmptyDate");
+		servlet.buildStockJSONS(from, now);
+		Double val = Double.parseDouble((String) servlet.portfolioValHistory.get(0).get(1));
+		assertTrue(val == 0);
 	}
 	
 //	@Test

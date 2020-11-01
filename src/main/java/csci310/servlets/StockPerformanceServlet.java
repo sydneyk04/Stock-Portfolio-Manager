@@ -214,18 +214,28 @@ public class StockPerformanceServlet extends HttpServlet {
 				
 				//check if user owned stock during this point in time add to portfolio value
 				String holder = year + "-" + (month + 1) + "-" + day;
-				DateFormat formatter = new SimpleDateFormat("YYYY-MM-DD"); 
-				Date datePurchased = (Date)formatter.parse((String)myStocks.get(s).get(3));
-				Date sellDate = (Date)formatter.parse((String)myStocks.get(s).get(4));
-				Date historicalDate = (Date)formatter.parse(holder);
+				DateFormat formatter = new SimpleDateFormat("YYYY-MM-DD");
+				Date datePurchased = null;
+				Date sellDate = null;
+				Date historicalDate = null;
 				boolean owned = false;
-				owned = sellDate.after(historicalDate);
-				owned = datePurchased.before(historicalDate);
-			
+				try {
+					datePurchased = (Date)formatter.parse((String)myStocks.get(s).get(3));
+					sellDate = (Date)formatter.parse((String)myStocks.get(s).get(4));
+					historicalDate = (Date)formatter.parse(holder);
+					
+					owned = sellDate.after(historicalDate);
+					owned = datePurchased.before(historicalDate);
+				} catch (ParseException pe) {
+					System.out.println("ERROR - Failed to format date: " + pe.getLocalizedMessage());
+				}
+	
 				//create portfolio value at that index
 				addPortfolioValues(i, close, shares, label, owned);
 			
-				map = new HashMap<Object,Object>(); map.put("label", label); map.put("y", close); 
+				map = new HashMap<Object,Object>(); 
+				map.put("label", label); 
+				map.put("y", close); 
 				list.add(map);
 			}
 			String stockHistory = new Gson().toJson(list);
