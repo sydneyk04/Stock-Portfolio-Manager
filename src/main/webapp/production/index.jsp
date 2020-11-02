@@ -415,11 +415,6 @@
 
                     </ul>
 
-					<form name="formname" action="/dashboard" method="POST">
-						<input type="hidden" name="action" value="changeTimePeriod">
-						 <button type="submit"class="btn btn-light btn-sm"> CLICK THIS BUTTON TO TEST CHANGING THE GRAPH TO DIF TIME PERIOD (2months ago, today)</button>
-				    </form>
-
                     <!-- Button trigger modal --><br><br>
                     <div class="addstockbutton">
                     <button type="button" class="addstockbutton" data-toggle="modal" data-target="#addStockModal">Add Stock</button>

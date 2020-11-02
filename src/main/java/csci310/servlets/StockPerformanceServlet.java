@@ -102,15 +102,19 @@ public class StockPerformanceServlet extends HttpServlet {
 			session.setAttribute("invalid_error", null);
 			
 			try {
-				buildStockJSONS(from, now);
+				calculatePortfolio();
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			DecimalFormat f = new DecimalFormat("##.00");
-			ArrayList<String> holder = portfolioValHistory.get(portfolioValHistory.size()-1);
-			Double val = Double.parseDouble(holder.get(1));
-			session.setAttribute("portfolioVal", f.format(val));		
+			
+			if(!portfolioValHistory.isEmpty()) {
+				DecimalFormat f = new DecimalFormat("##.00");
+				ArrayList<String> holder = portfolioValHistory.get(portfolioValHistory.size()-1);
+				Double val = Double.parseDouble(holder.get(1));
+				session.setAttribute("portfolioVal", f.format(val));	
+			}
+				
 			//build the graph using the list of stocks
 			buildGraph();
 		}
@@ -133,34 +137,28 @@ public class StockPerformanceServlet extends HttpServlet {
 				if(myStocks.get(i).get(0).equals(ticker)){
 					if(myStocks.get(i).get(5).equals("Yes")) {
 						myStocks.get(i).set(5, "No");
-						//remove it from the portfolio calculation
-						List<HistoricalQuote> history = YahooFinance.get(ticker, from, now, Interval.DAILY).getHistory();
-						
 					}else {
 						myStocks.get(i).set(5, "Yes");
-						List<HistoricalQuote> history = YahooFinance.get(ticker, from, now, Interval.DAILY).getHistory();
-						//add it to portfolio calculation
-//						for(int j=0; j< j++) {
-//							
-//						}
 					}
-					
 				}
+			}
+			
+			try {
+				calculatePortfolio();
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 			buildGraph();
 		} 
+		
 		//add a random stock to graph but don't add it to your portfolio - DONE
 		else if(action != null && action.equals("viewStock")) {
 			session.setAttribute("invalid_error", null);
 			String ticker = request.getParameter("ticker");
 			ticker = ticker.toUpperCase();
-			//make sure you dont already own it
-			for(int i=0; i<myStocks.size(); i++) {
-				if(myStocks.get(i).get(0).equals(ticker)){
-					session.setAttribute("invalid_error", "Please enter a stock you don't have in your portfolio");
-				}
-			}
-			//make sure youre not already looking at it
+			
+			//make sure you're not already looking at it
 			for(int i=0; i<view.size(); i++) {
 				if(view.get(i).get(0).equals(ticker)){
 					session.setAttribute("invalid_error", "Please enter a stock you're not already viewing");
@@ -185,6 +183,7 @@ public class StockPerformanceServlet extends HttpServlet {
 			} 
 			session.setAttribute("view", view);
 		}
+		
 		//this is just case where user views stock and decides they dont want to see it on the graph anymore
 		else if(action != null && action.equals("removeViewStock")) {
 			System.out.println("remove stock function");
@@ -199,6 +198,7 @@ public class StockPerformanceServlet extends HttpServlet {
 			}
 			session.setAttribute("view", view);
 			buildGraph();
+			
 		} else if(action != null && action.equals("addStock")) {
 			//code to add a stock to your portfolio
 			System.out.println("add stock function");
@@ -231,9 +231,9 @@ public class StockPerformanceServlet extends HttpServlet {
 			portfolioValHistory = new ArrayList<ArrayList>();
 			portfolioJSON = "";
 			
-			//rebuild the graph
+			//recalculate the portfolio
 			try {
-				buildStockJSONS(from, now);
+				calculatePortfolio();
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -266,7 +266,7 @@ public class StockPerformanceServlet extends HttpServlet {
 			
 			//pass the new dates into build stock jsons
 			try {
-				buildStockJSONS(from, now);
+				calculatePortfolio();
 			} catch (ParseException e) {
 				
 			}
@@ -336,22 +336,12 @@ public class StockPerformanceServlet extends HttpServlet {
 	}
 	
 	void calculatePortfolio() throws IOException, ParseException {
-		
-		
-	}
-	
-	void buildStockJSONS(Calendar from, Calendar now) throws IOException, ParseException {
-		//Below is the code to build/format json for graph
+		portfolioValHistory = new ArrayList<ArrayList>();
 		//for loop to run through list of users stocks
 		for(int s=0; s<myStocks.size(); s++) {
-			
-			//this is where we need to deal with time period (Done!)
 			String ticker = (String) myStocks.get(s).get(0);
 			List<HistoricalQuote> history = YahooFinance.get(ticker, from, now, Interval.DAILY).getHistory();
 			
-			//this is for formatting it for the graph that i am using
-			Map<Object,Object> map = null;
-			List<Map<Object,Object>> list = new ArrayList<Map<Object,Object>>();
 			for(int i=0; i<history.size(); i++) {
 				Calendar date = history.get(i).getDate();
 				int year = date.get(Calendar.YEAR);
@@ -364,22 +354,19 @@ public class StockPerformanceServlet extends HttpServlet {
 				
 				//check if user owned stock during this point in time add to portfolio value
 				String holder = year + "-" + (month + 1) + "-" + day;
+				
 				boolean owned = ownedCheck(holder, (String)myStocks.get(s).get(3), (String)myStocks.get(s).get(4));
 					
 				//create portfolio value at that index
-				addPortfolioValues(i, close, shares, label, owned);
-			
-				map = new HashMap<Object,Object>(); map.put("label", label); map.put("y", close); 
-				list.add(map);
+				//if stock is supposed to be calculated in the portfolio
+				if(myStocks.get(s).get(5).equals("Yes")) {
+					addPortfolioValues(i, close, shares, label, owned);
+				}
 			}
-			String stockHistory = new Gson().toJson(list);
-			System.out.println(stockHistory);
-			
-			//add to big list
-			jsons.add(stockHistory);
 		}
 		
 		buildPortfolioJSON();
+	
 	}
 	
 	void addPortfolioValues(Integer i, Double close, Double shares, String label, Boolean owned) throws IOException {
@@ -413,11 +400,6 @@ public class StockPerformanceServlet extends HttpServlet {
 			}
 			
 		}
-	}
-	
-	void removePortfolioValues(Integer i, Double close, Double shares, String label, Boolean owned) throws IOException {
-		
-		
 	}
 	
 	
@@ -463,19 +445,6 @@ public class StockPerformanceServlet extends HttpServlet {
 				"						dockInsidePlotArea: true,\n" + 
 				"					},\n" + 
 				"					data: [\n";
-		
-		
-//		for(int i=0; i<myStocks.size(); i++) {
-//			if(myStocks.get(i).get(5).equals("Visible")) {
-//				theChart += "{\n" +
-//								"type: \"line\",\n" + 
-//								"name: \"" + myStocks.get(i).get(0) + "\",\n" +
-//								"showInLegend: true,\n" +
-//								"yValueFormatString: \"$##0.00\",\n" + 
-//								"dataPoints :" + jsons.get(i) +
-//							"},\n";	
-//			}
-//		}
 		
 		//add the portfolio
 		theChart += "{\n" +

@@ -63,14 +63,14 @@ public class StockPerformanceServletTest extends Mockito {
 		when(session.getAttribute("username")).thenReturn("test");
 		StockPerformanceServlet spyServlet = spy(StockPerformanceServlet.class);
 		doNothing().when(spyServlet).getUserStock(anyString());
-		doNothing().when(spyServlet).buildStockJSONS(Calendar.getInstance(), Calendar.getInstance());
+		doNothing().when(spyServlet).calculatePortfolio();
 		doNothing().when(spyServlet).buildGraph();
 		spyServlet.doGet(request, response);
 		
 		doThrow(InterruptedException.class).when(spyServlet).getUserStock(anyString());
 		spyServlet.doGet(request, response);
 		
-		doThrow(ParseException.class).when(spyServlet).buildStockJSONS(Calendar.getInstance(), Calendar.getInstance());
+		doThrow(ParseException.class).when(spyServlet).calculatePortfolio();
 		spyServlet.doGet(request, response);
 	}
 	
@@ -86,7 +86,7 @@ public class StockPerformanceServletTest extends Mockito {
 		spyServlet.from = Calendar.getInstance();
 		spyServlet.from.add(Calendar.YEAR, -1);
 		spyServlet.now = Calendar.getInstance();
-		doThrow(ParseException.class).when(spyServlet).buildStockJSONS(Calendar.getInstance(), Calendar.getInstance());
+		doThrow(ParseException.class).when(spyServlet).calculatePortfolio();
 		doNothing().when(response).sendRedirect(anyString());
 		spyServlet.getUserStock("johnDoe");
 		spyServlet.doPost(request, response);
@@ -109,15 +109,6 @@ public class StockPerformanceServletTest extends Mockito {
 	}
 	
 	@Test
-	public void testRemovePortfolioValues() throws IOException, ServletException, InterruptedException {	
-		servlet.portfolioValHistory.clear();
-		servlet.addPortfolioValues(0, 0.0, 0.0, "label", true);
-		servlet.removePortfolioValues(0, 0.0, 0.0, "label", true);
-		assertTrue(true);
-		
-	}
-	
-	@Test
 	public void testBuildPortfolioJSON() throws IOException, ServletException, InterruptedException {	
 		servlet.buildPortfolioJSON();
 		assertTrue(true);
@@ -131,20 +122,14 @@ public class StockPerformanceServletTest extends Mockito {
 	
 	@Test
 	public void testCalculatePortfolio() throws IOException, ServletException, InterruptedException, ParseException {	
-		servlet.calculatePortfolio();
-		assertTrue(true);
-	}
-	
-	
-	@Test
-	public void testBuildStockJSONS() throws IOException, ServletException, InterruptedException, ParseException {	
 		Calendar from = Calendar.getInstance();
 		from.add(Calendar.YEAR, -1);
 		Calendar now = Calendar.getInstance();
 		servlet.getUserStock("johnDoe");
-		servlet.buildStockJSONS(from, now);
-		assertTrue(servlet.jsons.size() > 0);
+		servlet.calculatePortfolio();
+		assertTrue(true);
 	}
+	
 	
 	@Test
 	public void testViewStock() throws IOException, ServletException, InterruptedException, ParseException {	
