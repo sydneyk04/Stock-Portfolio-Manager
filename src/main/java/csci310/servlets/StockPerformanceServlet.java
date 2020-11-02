@@ -134,10 +134,11 @@ public class StockPerformanceServlet extends HttpServlet {
 					if(myStocks.get(i).get(5).equals("Yes")) {
 						myStocks.get(i).set(5, "No");
 						//remove it from the portfolio calculation
-						
+						List<HistoricalQuote> history = YahooFinance.get(ticker, from, now, Interval.DAILY).getHistory();
 						
 					}else {
 						myStocks.get(i).set(5, "Yes");
+						List<HistoricalQuote> history = YahooFinance.get(ticker, from, now, Interval.DAILY).getHistory();
 						//add it to portfolio calculation
 //						for(int j=0; j< j++) {
 //							
@@ -308,9 +309,35 @@ public class StockPerformanceServlet extends HttpServlet {
 		return stockHistory;
 	}
 	
-	Boolean ownedCheck(String holder, String dateePurchased, String sellDate) {
+	Boolean ownedCheck(String holder, String dp, String sd) throws ParseException {
+		boolean owned = false;
+		DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		Date historicalDate = (Date)formatter.parse(holder);
+		Date datePurchased = (Date)formatter.parse(dp);
+		Date sellDate;
+		if(sd.equals("")) {
+			Calendar calendar = Calendar.getInstance();
+			calendar.add(Calendar.DAY_OF_YEAR, 1);
+			sellDate = calendar.getTime();
+			
+		} else {
+			sellDate = (Date)formatter.parse(sd);
+		}
 		
-		return true;
+		if(sellDate.after(historicalDate) && datePurchased.before(historicalDate)){
+			owned = true;
+		} else if(sellDate.equals(historicalDate) && datePurchased.before(historicalDate)) {
+			owned = true;
+		} else if(sellDate.after(historicalDate) && datePurchased.equals(historicalDate)) {
+			owned = true;
+		}
+		
+		return owned;
+	}
+	
+	void calculatePortfolio() throws IOException, ParseException {
+		
+		
 	}
 	
 	void buildStockJSONS(Calendar from, Calendar now) throws IOException, ParseException {
@@ -337,26 +364,7 @@ public class StockPerformanceServlet extends HttpServlet {
 				
 				//check if user owned stock during this point in time add to portfolio value
 				String holder = year + "-" + (month + 1) + "-" + day;
-				DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-				Date historicalDate = (Date)formatter.parse(holder);
-				Date datePurchased = (Date)formatter.parse((String)myStocks.get(s).get(3));
-				Date sellDate;
-				if(myStocks.get(s).get(4).equals("")) {
-					Calendar calendar = Calendar.getInstance();
-					calendar.add(Calendar.DAY_OF_YEAR, 1);
-					sellDate = calendar.getTime();
-					
-				} else {
-					sellDate = (Date)formatter.parse((String)myStocks.get(s).get(4));
-				}
-				boolean owned = false;
-				if(sellDate.after(historicalDate) && datePurchased.before(historicalDate)){
-					owned = true;
-				} else if(sellDate.equals(historicalDate) && datePurchased.before(historicalDate)) {
-					owned = true;
-				} else if(sellDate.after(historicalDate) && datePurchased.equals(historicalDate)) {
-					owned = true;
-				}
+				boolean owned = ownedCheck(holder, (String)myStocks.get(s).get(3), (String)myStocks.get(s).get(4));
 					
 				//create portfolio value at that index
 				addPortfolioValues(i, close, shares, label, owned);

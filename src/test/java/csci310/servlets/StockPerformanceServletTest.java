@@ -129,6 +129,12 @@ public class StockPerformanceServletTest extends Mockito {
 		assertTrue(true);
 	}
 	
+	@Test
+	public void testCalculatePortfolio() throws IOException, ServletException, InterruptedException, ParseException {	
+		servlet.calculatePortfolio();
+		assertTrue(true);
+	}
+	
 	
 	@Test
 	public void testBuildStockJSONS() throws IOException, ServletException, InterruptedException, ParseException {	
