@@ -157,7 +157,9 @@ public class StockPerformanceServlet extends HttpServlet {
 			session.setAttribute("invalid_error", null);
 			String ticker = request.getParameter("ticker");
 			ticker = ticker.toUpperCase();
-			
+			String purchase = request.getParameter("datePurchased");
+			String sell = request.getParameter("dateSold");
+			String numOfShares = request.getParameter("numOfShares");
 			//make sure you're not already looking at it
 			for(int i=0; i<view.size(); i++) {
 				if(view.get(i).get(0).equals(ticker)){
@@ -167,9 +169,12 @@ public class StockPerformanceServlet extends HttpServlet {
 			if(session.getAttribute("invalid_error") == null) {
 				try {
 					ArrayList<String> holder = new ArrayList<String>();
-					String json = viewStock(ticker);
+					String json = viewStock(ticker, numOfShares, purchase, sell);
 					holder.add(ticker);
 					holder.add(json);
+					holder.add(numOfShares);
+					holder.add(purchase);
+					holder.add(sell);
 					view.add(holder);
 					
 					buildGraph();
@@ -179,6 +184,8 @@ public class StockPerformanceServlet extends HttpServlet {
 					session.setAttribute("invalid_error", "Please enter a valid ticker");
 				} catch(FileNotFoundException f) {
 					session.setAttribute("invalid_error", "Please enter a valid ticker");
+				} catch (ParseException e) {
+					e.printStackTrace();
 				}
 			} 
 			session.setAttribute("view", view);
@@ -287,7 +294,7 @@ public class StockPerformanceServlet extends HttpServlet {
 		
 	}
 	
-	String viewStock(String ticker) throws IOException {
+	String viewStock(String ticker, String numOfShares, String purchase, String sell) throws IOException, ParseException {
 		List<HistoricalQuote> history = YahooFinance.get(ticker, from, now, Interval.DAILY).getHistory();
 		//this is for formatting it for the graph that i am using
 		Map<Object,Object> map = null;
@@ -300,9 +307,22 @@ public class StockPerformanceServlet extends HttpServlet {
 			DateFormatSymbols symbols = new DateFormatSymbols();
 			String label = day + " " + symbols.getShortMonths()[month] + " " + year;
 			Double close = history.get(i).getClose().doubleValue();
+			Double shares = Double.parseDouble(numOfShares);
+			close = close * shares;
 			
-			map = new HashMap<Object,Object>(); map.put("label", label); map.put("y", close); 
-			list.add(map);
+			//check if user owned stock during this point in time before showing on the graph
+			String holder = year + "-" + (month + 1) + "-" + day;
+			boolean owned = ownedCheck(holder, purchase, sell);
+			if(owned == true) {
+				map = new HashMap<Object,Object>(); map.put("label", label); map.put("y", close); 
+				list.add(map);
+			}
+			//otherwise add blank date
+			else {
+				map = new HashMap<Object,Object>(); map.put("label", label); map.put("y", 0.00); 
+				list.add(map);
+			}
+
 		}
 		String stockHistory = new Gson().toJson(list);
 		System.out.println(stockHistory);

@@ -420,12 +420,13 @@
                     <button type="button" class="addstockbutton" data-toggle="modal" data-target="#addStockModal">Add Stock</button>
                     </div>
 
-										<div id="dvImportSegments" class="fileupload">
-											<fieldset>
-												<legend>Upload your CSV file</legend>
-												<input type="file" name="File Upload" id="txtFileUpload" accept=".csv" />
-											</fieldset>
-										</div>
+					<div id="dvImportSegments" class="fileupload">
+						<fieldset>
+							<legend>Upload your CSV file</legend>
+							<input type="file" name="File Upload" id="txtFileUpload" accept=".csv" />
+						</fieldset>
+					</div>
+
 
                     <!-- Modal For Add Stock-->
                     <div class="modal fade" id="addStockModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -710,32 +711,109 @@
 						  </button>
 					</form> -->
 					<h2>View stocks</h2>
-					<small>maybe we want this in a modal?</small>
 					<%if(myStocks!=null){for(int i=0; i<view.size(); i++) {%>
 						<div style="float: left; width: 85%;">
                            <div style="display:inline;">
                              <p style="text-align:left;display:inline;">   Ticker: </p><p style="text-align:left; display:inline; font-weight:bold;"><%=view.get(i).get(0) %></p>
+                             <br><p style="text-align:left;display:inline;">   # Shares: </p><p style="text-align:left; display:inline; font-weight:bold;"><%=view.get(i).get(2) %></p>
+                             <br><p style="text-align:left;display:inline;">   Purchase Date: </p><p style="text-align:left; display:inline; font-weight:bold;"><%=view.get(i).get(3) %></p>
+                             <br><p style="text-align:left;display:inline;">   Sell Date: </p><p style="text-align:left; display:inline; font-weight:bold;"><%=view.get(i).get(4) %></p>
+                             
                              <form name="formname" action="/dashboard" method="POST">
 	                            <input type="hidden" name="action" value="removeViewStock">
 	                            <input type="hidden" name="removeTicker" value="<%=view.get(i).get(0) %>">
 	                            <button style="text-align:left; display:inline; font-weight:bold;">Remove</button>
 	                         </form>
-	                       	 <button type="button" class="addstockbutton" data-toggle="modal" data-target="#addStockModal" style="text-align:left; display:inline; font-weight:bold;">Add Stock</button>
+	                         <form name="formname" action="/dashboard" method="POST">
+	                            <input type="hidden" name="action" value="removeViewStock">
+	                       	 	<button type="submit" class="addstockbutton" style="text-align:left; display:inline; font-weight:bold;">Add to Portfolio</button>
+                             </form>
                              <br>
                            </div>
 	                    </div>
 
 					<%}}%>
-					<form name="formname" action="/dashboard" method="POST">
+					
+					<!-- Button trigger modal --><br><br>
+                    <button type="button" class="addstockbutton" data-toggle="modal" data-target="#viewStockModal">Add Stock to Graph</button>
+                   
+					
+					 <!-- Modal To Add Stock to Graph but Not Portfolio-->
+                    <div class="modal fade" id="viewStockModal" tabindex="-1" role="dialog"aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title">Add a Stock to your Graph</h5>
+                            <strong id="login_error" style="color:red"><%if(invalid_error != null){ %> <%= invalid_error%> <% } %></strong>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                            <div class="inputrow">
+
+
+                            <form name="formname" action="/dashboard" method="POST">
+	                            <input type="hidden" name="action" value="viewStock">
+		                              <div style="float: left; width: 30%; overflow: scroll; margin-right:2.5%; margin-left:2.5%; display:table-cell;">
+		                                <div style="margin-right:5px;">
+		                                  <p style="text-align:center;">Ticker*</p>
+		                                  <input class="stockinput" type="text" id="ticker" name="ticker" required>
+		                                </div>
+		                              </div>
+		                              <div style="float: left; width: 30%; overflow: scroll; margin-left:2.5%; display:table-cell;">
+		                                <div style="margin-right:5px;">
+		                                  <p style="text-align:center;"># Shares*</p>
+		                                  <input class="stockinput" type="text" id="shares" name="numOfShares" required>
+		                                </div>
+		                              </div>
+		                            </div>
+		                            <br>
+		                            <div class="inputrow">
+		                              <div style="float: left; width: 30%; overflow: scroll; margin-right:2.5%; display:table-cell;">
+		                                <div style="margin-right:5px;">
+		                                  <p style="text-align:center;">Date Purchased*</p>
+		                                  <input class="stockinput" type="date" id="datePurchased" name="datePurchased" required>
+		                                </div>
+		                              </div>
+		                              <div style="float: left; width: 30%; overflow: scroll; margin-right:2.5%; margin-left:2.5%; display:table-cell;">
+		                                <div style="margin-right:5px;">
+		                                  <p style="text-align:center;">Date Sold</p>
+		                                  <input class="stockinput" type="date" id="dateSold" name="dateSold">
+		                                </div>
+		                              </div>
+		                              <div style="float: left; width: 30%; overflow: scroll; margin-left:2.5%; display:table-cell;">
+		                                <div style="margin-right:5px;">
+		                                  <p style="text-align:center;">Note: date must be in mm/dd/YYYY</p>
+		                                </div>
+		                              </div>
+		                            </div>
+		                          </div>
+		                          <div class="modal-footer">
+		                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+		                        <button type="submit" class="btn btn-primary">Add to my Graph</button>
+		                        <br><strong id="login_error" style="color:red"><%if(invalid_error != null){ %> <%= invalid_error%> <% } %></strong>
+                            </form>
+
+
+
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+					
+					
+					<!-- <form name="formname" action="/dashboard" method="POST">
 						<input type="text" name="ticker" placeholder="Enter a stock you want to view">
 						<input type="hidden" name="action" value="viewStock">
 						<button type="submit" class="btn btn-primary btn-md justify-content-start">
 							submit
 						</button>
 						<div id="login-error-container">
-				      		<strong id="login_error" style="color:red"><%if(invalid_error != null){ %> <%= invalid_error%> <% } %></strong>
+				      		
            				</div>
-					</form>
+					</form> -->
                  </div>
 
                    <!--

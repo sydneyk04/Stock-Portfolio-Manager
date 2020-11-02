@@ -46,6 +46,12 @@ public class StockPerformanceServletTest extends Mockito {
 		mockedFirebaseDatabase = Mockito.mock(FirebaseDatabase.class);
 		when(request.getSession()).thenReturn(session); 
 		when(response.getWriter()).thenReturn(printWriter);
+		
+		Calendar from = Calendar.getInstance();
+		from.add(Calendar.YEAR, -1);
+		Calendar now = Calendar.getInstance();
+		when(session.getAttribute("from")).thenReturn(from); 
+		when(session.getAttribute("now")).thenReturn(now);
 //		ArrayList<String> stock = new ArrayList<String>();
 //		String ticker = "TSLA";
 //		String name = "Tesla";
@@ -60,11 +66,17 @@ public class StockPerformanceServletTest extends Mockito {
 	
 	@Test
 	public void testDoGet() throws IOException, ServletException, InterruptedException, ParseException {	
+		when(session.getAttribute("username")).thenReturn(null);
+		servlet.doGet(request, response);
+		
 		when(session.getAttribute("username")).thenReturn("test");
 		StockPerformanceServlet spyServlet = spy(StockPerformanceServlet.class);
 		doNothing().when(spyServlet).getUserStock(anyString());
 		doNothing().when(spyServlet).calculatePortfolio();
 		doNothing().when(spyServlet).buildGraph();
+		spyServlet.doGet(request, response);
+		
+		doThrow(IOException.class).when(spyServlet).getUserStock(anyString());
 		spyServlet.doGet(request, response);
 		
 		doThrow(InterruptedException.class).when(spyServlet).getUserStock(anyString());
@@ -118,13 +130,16 @@ public class StockPerformanceServletTest extends Mockito {
 	public void testOwnedCheck() throws IOException, ServletException, InterruptedException, ParseException {	
 		servlet.ownedCheck("2020-04-22", "2020-01-22", "");
 		assertTrue(true);
+		
+		servlet.ownedCheck("2020-04-22", "2020-01-22", "2020-04-22");
+		assertTrue(true);
+		
+		servlet.ownedCheck("2020-04-22", "2020-04-22", "");
+		assertTrue(true);
 	}
 	
 	@Test
 	public void testCalculatePortfolio() throws IOException, ServletException, InterruptedException, ParseException {	
-		Calendar from = Calendar.getInstance();
-		from.add(Calendar.YEAR, -1);
-		Calendar now = Calendar.getInstance();
 		servlet.getUserStock("johnDoe");
 		servlet.calculatePortfolio();
 		assertTrue(true);
@@ -133,7 +148,7 @@ public class StockPerformanceServletTest extends Mockito {
 	
 	@Test
 	public void testViewStock() throws IOException, ServletException, InterruptedException, ParseException {	
-		servlet.viewStock("TSLA");
+		servlet.viewStock("TSLA", "1", "2020-01-22", "");
 		assertTrue(servlet.jsons.size() > 0);
 	}
 	
