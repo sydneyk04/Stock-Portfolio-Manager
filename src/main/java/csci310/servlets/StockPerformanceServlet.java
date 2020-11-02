@@ -71,6 +71,10 @@ public class StockPerformanceServlet extends HttpServlet {
 		out = response.getWriter();
 		System.out.println("Hello from doGet");
 		
+		myStocks.clear();
+		jsons.clear();
+		portfolioValHistory.clear();
+		
 		String username = session.getAttribute("username").toString();
 		
 		if(username != null) {
@@ -112,6 +116,10 @@ public class StockPerformanceServlet extends HttpServlet {
 		response.setStatus(HttpServletResponse.SC_OK);
 		session = request.getSession();
 		System.out.println("Hello from doPost");
+		
+		myStocks.clear();
+		jsons.clear();
+		portfolioValHistory.clear();
 		
 		//code for when user changes time period
 		//just need to grab the two dates from the front end in calendar format
