@@ -75,9 +75,8 @@ public class StockPerformanceServlet extends HttpServlet {
 		jsons.clear();
 		portfolioValHistory.clear();
 		
-		String username = session.getAttribute("username").toString();
-		
-		if(username != null) {
+		if (session.getAttribute("username") != null) {
+			String username = session.getAttribute("username").toString();
 			//default time period is 1Y
 			from = Calendar.getInstance();
 			from.add(Calendar.YEAR, -1);

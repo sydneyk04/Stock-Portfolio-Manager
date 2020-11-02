@@ -73,6 +73,9 @@ public class StockPerformanceServletTest extends Mockito {
 		
 		doThrow(ParseException.class).when(spyServlet).buildStockJSONS(Calendar.getInstance(), Calendar.getInstance());
 		spyServlet.doGet(request, response);
+		
+		when(session.getAttribute("username")).thenReturn(null);
+		spyServlet.doGet(request, response);
 	}
 	
 	@Test
