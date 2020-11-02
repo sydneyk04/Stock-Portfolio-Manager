@@ -29,13 +29,14 @@ $(document).ready(function() {
                 for(i = 1; i < lines.length; ++i)
                 {
                   var lineElements = lines[i].split(",");
+                  var symbol = lineElements[1];
                   var newData = {
-                    symbol: lineElements[1],
-                    from: lineElements[2],
-                    to: lineElements[3],
-                    shares: lineElements[4]
+                    name: lineElements[2],
+                    from: lineElements[3],
+                    to: lineElements[4],
+                    shares: lineElements[5]
                   }
-                  var ref = firebase.database().ref().child('users').child(lineElements[0]).child('portfolio');
+                  var ref = firebase.database().ref().child('users').child(lineElements[0]).child('portfolio').child(symbol);
                   ref.update(newData);
                   console.log("updated");
                 }
