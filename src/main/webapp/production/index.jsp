@@ -79,121 +79,9 @@
 	    // Initialize Firebase
 	    firebase.initializeApp(firebaseConfig);
   	</script>
-
-	<script>
-		// Back button pressed
-		if (window.performance && window.performance.navigation.type == window.performance.navigation.TYPE_BACK_FORWARD) {
-	    	window.location.replace("../login.jsp");
-		}
-	
-		console.log("init importCSV");
-
-		$(document).ready(function() {
-			// auto-logout after 2 min
-			/* var startTime = new Date().getTime();
-			setInterval(function() {
-				sessionStorage.clear();
-				window.location.replace("../login.jsp"); 				
-			}, 120000); */
-			
-			// logout after inactive for 2 min
-			$('body').bind('click mousemove keypress scroll resize', function() {
-           		lastActiveTime = new Date().getTime();
-           	});
-			
-           	setInterval(checkIdleTime, 1000); // 1 sec
-           	
-           	function checkIdleTime() {
-                var diff = new Date().getTime() - lastActiveTime;
-                if (diff > 120000) {
-                 window.location.href ="../login.jsp"
-                }
-                else {
-                    $.ajax({url: 'index.jsp', error: function(data, status, xhr){
-                        alert("Unable to refresh session on server: "+xhr);
-                        window.location.reload();}
-                    });
-                }
-           	}
-
-			// The event listener for the file upload
-			document.getElementById('txtFileUpload').addEventListener('change', upload, false);
-
-			// Method that checks that the browser supports the HTML5 File API
-			function browserSupportFileUpload() {
-					var isCompatible = false;
-					if (window.File && window.FileReader && window.FileList && window.Blob) {
-					isCompatible = true;
-					}
-					return isCompatible;
-			}
-
-			// Method that reads and processes the selected file
-			function upload(evt) {
-				console.log("called");
-			if (!browserSupportFileUpload()) {
-					alert('The File APIs are not fully supported in this browser!');
-					} else {
-							var data = null;
-							var file = evt.target.files[0];
-							var reader = new FileReader();
-							reader.readAsText(file);
-							reader.onload = function(event) {
-									var lines = event.target.result.split('\r\n');
-									for(i = 1; i < lines.length; ++i)
-									{
-										var lineElements = lines[i].split(",");
-										var symbol = lineElements[1];
-										var newData = {
-											name: lineElements[2],
-											from: lineElements[3],
-											to: lineElements[4],
-											shares: lineElements[5]
-										}
-										var ref = firebase.database().ref().child('users').child(lineElements[0]).child('portfolio').child(symbol);
-										ref.update(newData);
-										console.log("updated");
-									}
-							};
-							reader.onerror = function() {
-									alert('Unable to read ' + file.fileName);
-							};
-					}
-			}
-			
-			function resizeTopNav() {
-				$('#top_nav').each(function(){
-				    var inner = $(this).find('nav');
-				    $(this).height(inner.outerHeight(true));
-				});
-			}
-			
-			/*
-			 * Window resize: UI changes 
-			*/
-			$(window).resize(function() {
-			    if(this.resizeTO) clearTimeout(this.resizeTO);
-			    this.resizeTO = setTimeout(function() {
-			        $(this).trigger('resizeEnd');
-			    }, 500);
-			});
-
-			$(window).bind('resizeEnd', function() {
-				resizeTopNav();
-			});
-			
-			/*
-			 * App security: Back button pressed 
-			*/
-			$(window).bind("pageshow", function(event) {
-			    if (event.originalEvent.persisted) {
-			        Alert("User clicked on back button!");
-			    }
-			});
-		});
-
-	</script>
-  </head>
+    
+		<script src="../production/js/csv/importCSV.js"></script>
+	</head>
 
   <body class="nav-md">
 
@@ -310,6 +198,37 @@
                   <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
+                <!-- Button trigger modal -->
+					<button type="button"  style="background:lightgrey; border:none; border-radius:5px; color:#73879C;" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Add by CSV</button>
+
+					<!-- Modal -->
+					<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+					  <div class="modal-dialog" role="document">
+					    <div class="modal-content">
+					      <div class="modal-header">
+					        <h5 class="modal-title" id="exampleModalLabel">Upload a CSV File</h5>
+					        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					          <span aria-hidden="true">&times;</span>
+					        </button>
+					      </div>
+					      <div class="modal-body">
+					      	 <a href="exampleStockCSV.csv" download="example">
+					     	 <button type="button" style="background: darkgrey;" class="btn btn-primary">Download Example CSV</button>
+					     	 </a>
+						      <div id="dvImportSegments" class="fileupload">
+								<fieldset>
+									<legend>Upload your CSV file</legend>
+									<input type="file" name="File Upload" id="txtFileUpload" accept=".csv" />
+								</fieldset>
+							 </div>
+					      </div>
+					      <div class="modal-footer">
+					        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					        <button type="button" class="btn btn-primary">Upload</button>
+					      </div>
+					    </div>
+					  </div>
+					</div>
 
                   <div class="">
                     <ul id="stock_list" class="to_do">
@@ -403,13 +322,10 @@
                     <button type="button" class="addstockbutton" data-toggle="modal" data-target="#addStockModal">Add Stock</button>
                     </div>
 
-										<div id="dvImportSegments" class="fileupload">
-											<fieldset>
-												<legend>Upload your CSV file</legend>
-												<input type="file" name="File Upload" id="txtFileUpload" accept=".csv" />
-											</fieldset>
-										</div>
+										
 
+					
+					
                     <!-- Modal For Add Stock-->
                     <div class="modal fade" id="addStockModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                       <div class="modal-dialog" role="document">
