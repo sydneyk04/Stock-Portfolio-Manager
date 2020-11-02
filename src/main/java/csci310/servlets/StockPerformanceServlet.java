@@ -127,15 +127,23 @@ public class StockPerformanceServlet extends HttpServlet {
 		
 		String action = request.getParameter("action");
 		//if user wants to toggle hide/show on graph - DONE
-		if(action != null && action.equals("showOnGraph")) {
+		if(action != null && action.equals("portfolioState")) {
 			String ticker = request.getParameter("ticker");
 			for(int i=0; i<myStocks.size(); i++) {
 				if(myStocks.get(i).get(0).equals(ticker)){
-					if(myStocks.get(i).get(5).equals("Hidden")) {
-						myStocks.get(i).set(5, "Visible");
+					if(myStocks.get(i).get(5).equals("Yes")) {
+						myStocks.get(i).set(5, "No");
+						//remove it from the portfolio calculation
+						
+						
 					}else {
-						myStocks.get(i).set(5, "Hidden");
+						myStocks.get(i).set(5, "Yes");
+						//add it to portfolio calculation
+//						for(int j=0; j< j++) {
+//							
+//						}
 					}
+					
 				}
 			}
 			buildGraph();
@@ -300,54 +308,9 @@ public class StockPerformanceServlet extends HttpServlet {
 		return stockHistory;
 	}
 	
-	void addPortfolioValues(Integer i, Double close, Double shares, String label, Boolean owned) throws IOException {
-		Double portfolioValue = close * shares;
-		ArrayList<String> val = new ArrayList<String>();
-	
-		//if there is already a value at that index, add to it
-		try {
-			portfolioValHistory.get(i);
-			ArrayList<String> holder = portfolioValHistory.get(i);
-			//only add if purchased before this date
-			if(owned == true) {
-				portfolioValue += Double.parseDouble(holder.get(1));
-				val.add(label);
-				val.add(String.valueOf(portfolioValue));
-				portfolioValHistory.set(i, val);
-			}
-		} catch ( IndexOutOfBoundsException e ) {
-			//otherwise create new value
-			//if purchased before add value
-			if(owned == true) {
-				val.add(label);
-				val.add(String.valueOf(portfolioValue));
-				portfolioValHistory.add(i, val);
-			} 
-			//otherwise initialize the value at the index so it can be displayed on same graph
-			else {
-				val.add(label);
-				val.add(String.valueOf(0));
-				portfolioValHistory.add(i, val);
-			}
-			
-		}
-	}
-	
-	
-	void buildPortfolioJSON() throws IOException {
-		Map<Object,Object> map = null;
-		List<Map<Object,Object>> list = new ArrayList<Map<Object,Object>>();
-		//for loop to run through portfolio values
-		for(int s=0; s<portfolioValHistory.size(); s++) {
-			ArrayList<String> val = portfolioValHistory.get(s);
-			String label = val.get(0);
-			Double y = Double.parseDouble(val.get(1));
-			map = new HashMap<Object,Object>(); map.put("label", label); map.put("y", y);
-			list.add(map);
-		}
+	Boolean ownedCheck(String holder, String dateePurchased, String sellDate) {
 		
-		portfolioJSON = new Gson().toJson(list);
-		System.out.println(portfolioJSON);
+		return true;
 	}
 	
 	void buildStockJSONS(Calendar from, Calendar now) throws IOException, ParseException {
@@ -411,6 +374,62 @@ public class StockPerformanceServlet extends HttpServlet {
 		buildPortfolioJSON();
 	}
 	
+	void addPortfolioValues(Integer i, Double close, Double shares, String label, Boolean owned) throws IOException {
+		Double portfolioValue = close * shares;
+		ArrayList<String> val = new ArrayList<String>();
+	
+		//if there is already a value at that index, add to it
+		try {
+			portfolioValHistory.get(i);
+			ArrayList<String> holder = portfolioValHistory.get(i);
+			//only add if purchased before this date
+			if(owned == true) {
+				portfolioValue += Double.parseDouble(holder.get(1));
+				val.add(label);
+				val.add(String.valueOf(portfolioValue));
+				portfolioValHistory.set(i, val);
+			}
+		} catch ( IndexOutOfBoundsException e ) {
+			//otherwise create new value
+			//if purchased before add value
+			if(owned == true) {
+				val.add(label);
+				val.add(String.valueOf(portfolioValue));
+				portfolioValHistory.add(i, val);
+			} 
+			//otherwise initialize the value at the index so it can be displayed on same graph
+			else {
+				val.add(label);
+				val.add(String.valueOf(0));
+				portfolioValHistory.add(i, val);
+			}
+			
+		}
+	}
+	
+	void removePortfolioValues(Integer i, Double close, Double shares, String label, Boolean owned) throws IOException {
+		
+		
+	}
+	
+	
+	void buildPortfolioJSON() throws IOException {
+		Map<Object,Object> map = null;
+		List<Map<Object,Object>> list = new ArrayList<Map<Object,Object>>();
+		//for loop to run through portfolio values
+		for(int s=0; s<portfolioValHistory.size(); s++) {
+			ArrayList<String> val = portfolioValHistory.get(s);
+			String label = val.get(0);
+			Double y = Double.parseDouble(val.get(1));
+			map = new HashMap<Object,Object>(); map.put("label", label); map.put("y", y);
+			list.add(map);
+		}
+		
+		portfolioJSON = new Gson().toJson(list);
+		System.out.println(portfolioJSON);
+	}
+	
+	
 	void buildGraph() throws IOException {
 	
 		//chart to display different stocks
@@ -438,17 +457,17 @@ public class StockPerformanceServlet extends HttpServlet {
 				"					data: [\n";
 		
 		
-		for(int i=0; i<myStocks.size(); i++) {
-			if(myStocks.get(i).get(5).equals("Visible")) {
-				theChart += "{\n" +
-								"type: \"line\",\n" + 
-								"name: \"" + myStocks.get(i).get(0) + "\",\n" +
-								"showInLegend: true,\n" +
-								"yValueFormatString: \"$##0.00\",\n" + 
-								"dataPoints :" + jsons.get(i) +
-							"},\n";	
-			}
-		}
+//		for(int i=0; i<myStocks.size(); i++) {
+//			if(myStocks.get(i).get(5).equals("Visible")) {
+//				theChart += "{\n" +
+//								"type: \"line\",\n" + 
+//								"name: \"" + myStocks.get(i).get(0) + "\",\n" +
+//								"showInLegend: true,\n" +
+//								"yValueFormatString: \"$##0.00\",\n" + 
+//								"dataPoints :" + jsons.get(i) +
+//							"},\n";	
+//			}
+//		}
 		
 		//add the portfolio
 		theChart += "{\n" +
@@ -545,7 +564,7 @@ public class StockPerformanceServlet extends HttpServlet {
 						stock.add(from);
 						stock.add(to);
 						//whether or not it should be shown on graph
-						stock.add("Hidden");
+						stock.add("Yes");
 						//add to big array
 						myStocks.add(stock);
 					}

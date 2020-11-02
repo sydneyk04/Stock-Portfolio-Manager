@@ -395,9 +395,9 @@
 	                              <br>
 	                            </div>
 	                             <div style="display:inline;">
-	                              <p style="text-align:left;display:inline;">   Graph State: </p><p style="text-align:left; display:inline; font-weight:bold;">
+	                              <p style="text-align:left;display:inline;">   Calculate in Portfolio: </p><p style="text-align:left; display:inline; font-weight:bold;">
 	                              	<form name="formname" action="/dashboard" method="POST">
-										<input type="hidden" name="action" value="showOnGraph">
+										<input type="hidden" name="action" value="portfolioState">
 										<input type="hidden" name="ticker" value="<%=myStocks.get(i).get(0) %>">
 										 <button style="text-align:left;display:inline;" type="submit"class="btn btn-light btn-sm"><%=myStocks.get(i).get(5) %></button>
 				           			</form>

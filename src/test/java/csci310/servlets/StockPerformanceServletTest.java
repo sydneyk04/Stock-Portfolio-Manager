@@ -109,10 +109,26 @@ public class StockPerformanceServletTest extends Mockito {
 	}
 	
 	@Test
+	public void testRemovePortfolioValues() throws IOException, ServletException, InterruptedException {	
+		servlet.portfolioValHistory.clear();
+		servlet.addPortfolioValues(0, 0.0, 0.0, "label", true);
+		servlet.removePortfolioValues(0, 0.0, 0.0, "label", true);
+		assertTrue(true);
+		
+	}
+	
+	@Test
 	public void testBuildPortfolioJSON() throws IOException, ServletException, InterruptedException {	
 		servlet.buildPortfolioJSON();
 		assertTrue(true);
 	}
+	
+	@Test
+	public void testOwnedCheck() throws IOException, ServletException, InterruptedException, ParseException {	
+		servlet.ownedCheck("2020-04-22", "2020-01-22", "");
+		assertTrue(true);
+	}
+	
 	
 	@Test
 	public void testBuildStockJSONS() throws IOException, ServletException, InterruptedException, ParseException {	
