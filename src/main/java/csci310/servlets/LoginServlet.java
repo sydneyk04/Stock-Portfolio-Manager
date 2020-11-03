@@ -92,37 +92,83 @@ public class LoginServlet extends HttpServlet {
 			public void onDataChange(DataSnapshot snapshot) {
 				if (snapshot.exists() && snapshot.child("password").getValue(String.class).equals(password)) {
 					//authentic log in
-					if(!lockedout(snapshot)) {
+					if(!lockedout(snapshot, username)) {
 						//not locked out
+						System.out.println("not locked out");
 						onAuthenticate(username);
 					}
 					else {
 						//locked out
-						onAuthenticate(null);
+						System.out.println("locked out");
+						onAuthenticate("lockout");
 					}
 				}
 				else if(!snapshot.exists()) {
 					//no matching username
+					System.out.println("invalid username");
 					onAuthenticate(null);
 				}
 				else {
 					//invalid password 
-					addLockout(snapshot);
+					System.out.println("invalid password, add lockout");
+					addLockout(snapshot, username);
 					onAuthenticate(null);
 				}
 			}
 	
-			private void addLockout(DataSnapshot snapshot) {
-				// TODO Auto-generated method stub                  
-				
-				
-				
+			private void addLockout(DataSnapshot snapshot, String username) {
+				// TODO Auto-generated method stub    
+				Integer loginAttempts = snapshot.child("loginAttempts").getValue(Integer.class);
+				if(loginAttempts == 0) {
+					Long currentTime = System.currentTimeMillis();
+					FirebaseDatabase.getInstance().getReference().child("users").child(username).child("loginTime").setValueAsync(currentTime);
+					FirebaseDatabase.getInstance().getReference().child("users").child(username).child("loginAttempts").setValueAsync(loginAttempts + 1);
+				}
+				else{
+					Long databaseTime = snapshot.child("loginTime").getValue(Long.class);
+					Timestamp userTimestamp = new Timestamp(databaseTime);
+					Timestamp lockedOutUntil = new Timestamp(databaseTime + 60000);
+					if(userTimestamp.before(lockedOutUntil)) {
+						//less than one minute and < 3 attempts keep time and add attempt
+						if(loginAttempts < 3) {
+							FirebaseDatabase.getInstance().getReference().child("users").child(username).child("loginAttempts").setValueAsync(loginAttempts + 1);
+						}
+					}
+					else {
+						//reset time and attempts
+						Long currentTime = System.currentTimeMillis();
+						FirebaseDatabase.getInstance().getReference().child("users").child(username).child("loginTime").setValueAsync(currentTime);
+						FirebaseDatabase.getInstance().getReference().child("users").child(username).child("loginAttempts").setValueAsync(1);
+					}
+				}
 			}
 
-			private boolean lockedout(DataSnapshot snapshot) {
-				// TODO Auto-generated method stub
+			private boolean lockedout(DataSnapshot snapshot, String username) {
 				
-				return false;
+				Long userTimestamp = snapshot.child("loginTime").getValue(Long.class);
+				Long lockedOutUntil = userTimestamp + 60000;
+				Long currentTimestamp = System.currentTimeMillis();
+				
+				if(snapshot.child("loginAttempts").getValue(Integer.class).equals(3)) {
+					//3 lock outs
+					if(lockedOutUntil > currentTimestamp) {
+						//locked out still
+						System.out.println("Lockout started at " + userTimestamp + " and user is locked out until: " + lockedOutUntil);
+						return true;
+						
+					}
+					else {
+						//no longer locked out, reset loginAttempts to 0
+						System.out.println("login attempts = 3 but after lockout time");
+						FirebaseDatabase.getInstance().getReference().child("users").child(username).child("loginAttempts").setValueAsync(0);
+						return false;
+					}
+				}
+				else {
+					//not locked out
+					System.out.println("login attempts < 3");
+					return false;
+				}
 			}
 
 			@Override
@@ -166,12 +212,18 @@ public class LoginServlet extends HttpServlet {
 			dataFetched = true;
 			out = response.getWriter();
 			
-			if (username != null) {
+			if(username == "lockout") {
+				out.print("login fail");
+				session.setAttribute("login_error_message", "Account locked for 1 minute");
+				response.sendRedirect(LOGINPG);
+			}
+			else if (username != null) {
 				out.print("login success");
 				session.setAttribute("username", username);
 				//response.sendRedirect(HOMESERVLET);
 				response.sendRedirect(DASHBOARDSERVLET);
-			} else {
+			} 
+			else {
 				out.print("login fail");
 				session.setAttribute("login_error_message", "Invalid login and/or password");
 				response.sendRedirect(LOGINPG);

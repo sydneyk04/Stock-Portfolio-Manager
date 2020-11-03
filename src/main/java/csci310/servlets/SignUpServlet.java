@@ -7,7 +7,9 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Timestamp;
 import java.util.regex.Pattern;
+import java.time.LocalDateTime;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -124,6 +126,8 @@ public class SignUpServlet extends HttpServlet {
 			@Override
             public void onDataChange(DataSnapshot snapshot) {
 				//if username already exists
+				Long systemTime = System.currentTimeMillis();
+				
                 if (snapshot.child(username).exists()) {
                 	createdUser = false;
                 	return;
@@ -131,7 +135,7 @@ public class SignUpServlet extends HttpServlet {
                 	ref.child(username).push();
                 	ref.child(username).child("password").setValueAsync(password);
                 	ref.child(username).child("portfolio").setValueAsync("none");
-                	ref.child(username).child("loginTime").setValueAsync(null);
+                	ref.child(username).child("loginTime").setValueAsync(systemTime);
                 	ref.child(username).child("loginAttempts").setValueAsync(0);
                 	myCallback.accountCreated();
                 	return;
