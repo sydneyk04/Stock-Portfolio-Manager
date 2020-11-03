@@ -193,20 +193,19 @@ public class StockPerformanceServlet extends HttpServlet {
 		
 		//this is just case where user views stock and decides they dont want to see it on the graph anymore
 		else if(action != null && action.equals("removeViewStock")) {
-			System.out.println("remove stock function");
 			String ticker = request.getParameter("removeTicker");
 			for(int i=0; i<view.size(); i++) {
-				System.out.println(ticker);
-				System.out.println(view.get(i).get(0));
 				if(view.get(i).get(0).equals(ticker)){
-					System.out.println("found u bih");
 					view.remove(i);
 				}
 			}
 			session.setAttribute("view", view);
 			buildGraph();
 			
-		} else if(action != null && action.equals("addStock")) {
+		} 
+		
+		//this is for adding stock to database
+		else if(action != null && action.equals("addStock")) {
 			//code to add a stock to your portfolio
 			System.out.println("add stock function");
 			
@@ -249,10 +248,10 @@ public class StockPerformanceServlet extends HttpServlet {
 			//build the graph using the list of stocks
 			buildGraph();
 			
-		} else if(action != null && action.equals("changeTimePeriod")){
+		}
+		//change calendar time period
+		else if(action != null && action.equals("changeTimePeriod")){
 			System.out.println("Change time period");
-			//change calendar time period
-			//there is no frontend for this yet....
 			
 			//these are of type "Calendar"
 			String fromString = request.getParameter("from");
@@ -274,6 +273,13 @@ public class StockPerformanceServlet extends HttpServlet {
 			//pass the new dates into build stock jsons
 			try {
 				calculatePortfolio();
+				for(int i=0; i<view.size(); i++) {
+					ArrayList<String> holder = view.get(i);
+					String json = viewStock(holder.get(0), holder.get(2), holder.get(3), holder.get(4));
+					holder.set(1, json);
+					view.set(i, holder);
+				}
+				session.setAttribute("view", view);
 			} catch (ParseException e) {
 				
 			}

@@ -778,7 +778,7 @@
 					<%}}%>
 					
 					<!-- Button trigger modal --><br><br>
-                    <button type="button" class="addstockbutton" data-toggle="modal" data-target="#viewStockModal">Add Stock to Graph</button>
+                    <button type="button" data-toggle="modal" data-target="#viewStockModal">Add Stock to Graph</button>
                    
 					
 					 <!-- Modal To Add Stock to Graph but Not Portfolio-->
