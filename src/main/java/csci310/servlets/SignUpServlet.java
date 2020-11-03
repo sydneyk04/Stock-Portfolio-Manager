@@ -131,6 +131,8 @@ public class SignUpServlet extends HttpServlet {
                 	ref.child(username).push();
                 	ref.child(username).child("password").setValueAsync(password);
                 	ref.child(username).child("portfolio").setValueAsync("none");
+                	ref.child(username).child("loginTime").setValueAsync(null);
+                	ref.child(username).child("loginAttempts").setValueAsync(0);
                 	myCallback.accountCreated();
                 	return;
                 }

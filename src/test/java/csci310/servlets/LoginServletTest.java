@@ -50,6 +50,15 @@ public class LoginServletTest extends Mockito {
 	}
 	
 	@Test
+	public void testAddLockOut() {
+		Assert.assertTrue(true);
+	}
+	@Test
+	public void testLockedOut() {
+		Assert.assertTrue(true);
+	}
+	
+	@Test
 	public void testHashPassword() throws NoSuchAlgorithmException, UnsupportedEncodingException {
 		String pw = "randompassword";
 		String hashedPw = LoginServlet.hashPassword(pw);

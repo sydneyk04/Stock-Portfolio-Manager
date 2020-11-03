@@ -7,7 +7,10 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalTime;
 import java.util.concurrent.TimeUnit;
+import java.sql.Timestamp;
+import java.util.Date;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -88,13 +91,40 @@ public class LoginServlet extends HttpServlet {
 			@Override
 			public void onDataChange(DataSnapshot snapshot) {
 				if (snapshot.exists() && snapshot.child("password").getValue(String.class).equals(password)) {
-					onAuthenticate(username);
+					//authentic log in
+					if(!lockedout(snapshot)) {
+						//not locked out
+						onAuthenticate(username);
+					}
+					else {
+						//locked out
+						onAuthenticate(null);
+					}
+				}
+				else if(!snapshot.exists()) {
+					//no matching username
+					onAuthenticate(null);
 				}
 				else {
+					//invalid password 
+					addLockout(snapshot);
 					onAuthenticate(null);
 				}
 			}
 	
+			private void addLockout(DataSnapshot snapshot) {
+				// TODO Auto-generated method stub                  
+				
+				
+				
+			}
+
+			private boolean lockedout(DataSnapshot snapshot) {
+				// TODO Auto-generated method stub
+				
+				return false;
+			}
+
 			@Override
 			public void onCancelled(DatabaseError error) {
 				System.out.println(error.getMessage());
