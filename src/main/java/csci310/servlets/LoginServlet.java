@@ -94,23 +94,19 @@ public class LoginServlet extends HttpServlet {
 					//authentic log in
 					if(!lockedout(snapshot, username)) {
 						//not locked out
-						System.out.println("not locked out");
 						onAuthenticate(username);
 					}
 					else {
 						//locked out
-						System.out.println("locked out");
 						onAuthenticate("lockout");
 					}
 				}
 				else if(!snapshot.exists()) {
 					//no matching username
-					System.out.println("invalid username");
 					onAuthenticate(null);
 				}
 				else {
 					//invalid password 
-					System.out.println("invalid password, add lockout");
 					addLockout(snapshot, username);
 					onAuthenticate(null);
 				}
@@ -153,20 +149,17 @@ public class LoginServlet extends HttpServlet {
 					//3 lock outs
 					if(lockedOutUntil > currentTimestamp) {
 						//locked out still
-						System.out.println("Lockout started at " + userTimestamp + " and user is locked out until: " + lockedOutUntil);
 						return true;
 						
 					}
 					else {
 						//no longer locked out, reset loginAttempts to 0
-						System.out.println("login attempts = 3 but after lockout time");
 						FirebaseDatabase.getInstance().getReference().child("users").child(username).child("loginAttempts").setValueAsync(0);
 						return false;
 					}
 				}
 				else {
 					//not locked out
-					System.out.println("login attempts < 3");
 					return false;
 				}
 			}

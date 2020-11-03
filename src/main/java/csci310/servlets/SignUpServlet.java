@@ -125,7 +125,6 @@ public class SignUpServlet extends HttpServlet {
 		ref.addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override
             public void onDataChange(DataSnapshot snapshot) {
-				//if username already exists
 				Long systemTime = System.currentTimeMillis();
 				
                 if (snapshot.child(username).exists()) {

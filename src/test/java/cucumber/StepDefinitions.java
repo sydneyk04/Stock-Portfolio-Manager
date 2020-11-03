@@ -628,16 +628,5 @@ public class StepDefinitions {
 		driver.quit();
 	}
 	
-	/**************************
-	 * HASH SECURITY FEATURE
-	 **************************/
-	
-	/**************************
-	 * LOCK OUT SECURITY FEATURE
-	 **************************/
-	
-	/**************************
-	 * REDIRECT SECURITY FEATURE
-	 **************************/
 	
 }
