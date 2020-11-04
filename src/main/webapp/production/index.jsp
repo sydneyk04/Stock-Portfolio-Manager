@@ -224,8 +224,8 @@
 							 </div>
 					      </div>
 					      <div class="modal-footer">
-					        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-					        <button type="button" class="btn btn-primary">Upload</button>
+					        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+					        <button type="button" class="btn btn-primary" data-dismiss="modal" id="csvAddButton">Upload File</button>
 					      </div>
 					    </div>
 					  </div>
@@ -257,13 +257,8 @@
                           </div>
                           <div class="modal-body">
                             <div class="inputrow">
+
                               <div style="float: left; width: 30%; overflow: scroll; margin-right:2.5%; display:table-cell;">
-                                <div style="margin-right:5px;">
-                                  <p style="text-align:center;">Exchange*</p>
-                                  <input class="stockinput" type="text" id="exchange" name="fname" required>
-                                </div>
-                              </div>
-                              <div style="float: left; width: 30%; overflow: scroll; margin-right:2.5%; margin-left:2.5%; display:table-cell;">
                                 <div style="margin-right:5px;">
                                   <p style="text-align:center;">Ticker*</p>
                                   <input class="stockinput" type="text" id="ticker" name="fname" required>
@@ -298,8 +293,8 @@
                             </div>
                           </div>
                           <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" data-dismiss="modal" id="stockaddbutton">Add to my portfolio</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal" id="stockaddbutton">Add Stock</button>
                           </div>
                         </div>
                       </div>
@@ -473,10 +468,7 @@
 		                              </div>
 		                            </div>
 		                            <div style="float: left; width: 85%;">
-		                              <div style="display:inline;">
-		                                <p style="text-align:left;display:inline;">   Exchange: </p><p style="text-align:left; display:inline; font-weight:bold;">`+ name + `</p>
-		                                <br>
-		                              </div>
+
 		                              <div style="display:inline;">
 		                                <p style="text-align:left;display:inline;">   Ticker: </p><p style="text-align:left; display:inline; font-weight:bold;">${ticker}</p>
 		                                <br>
@@ -597,10 +589,7 @@
 		                              </div>
 		                            </div>
 		                            <div style="float: left; width: 85%;">
-		                              <div style="display:inline;">
-		                                <p style="text-align:left;display:inline;">   Exchange: </p><p style="text-align:left; display:inline; font-weight:bold;">`+ name + `</p>
-		                                <br>
-		                              </div>
+
 		                              <div style="display:inline;">
 		                                <p style="text-align:left;display:inline;">   Ticker: </p><p style="text-align:left; display:inline; font-weight:bold;">`+ ticker + `</p>
 		                                <br>
@@ -634,7 +623,6 @@
 																var username = '<%=username%>';
 																var ref = firebase.database().ref().child('users').child(username).child('portfolio').child(ticker);
 																ref.remove();
-																console.log(e.target);
 																e.target.closest('li').remove();
 		                        });
 													}
@@ -659,7 +647,6 @@
 															var ticker = e.target.closest('li').getElementsByTagName('p')[3].innerHTML;
 															var ref = firebase.database().ref().child('users').child(username).child('portfolio').child(ticker);
 															ref.remove();
-															console.log(e.target);
 															e.target.closest('li').remove();
                           });
                       }
