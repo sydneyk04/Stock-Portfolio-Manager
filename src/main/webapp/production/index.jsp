@@ -319,7 +319,7 @@
 
                     <!-- Button trigger modal -->
                     <div class="addstockbutton">
-                    <button type="button" class="addstockbutton" data-toggle="modal" data-target="#addStockModal">Add Stock</button>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addStockModal">Add Stock</button>
                     </div>
 
 										
