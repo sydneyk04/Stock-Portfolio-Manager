@@ -5,12 +5,13 @@
 	response.setHeader("Cache-Control", "no-cache, no-store");
 	response.setHeader("Pragma","no-cache");
 	response.setDateHeader ("Expires", 0);
-	
+
 	if (session.getAttribute("username") == null) {
 		response.sendRedirect("../login.jsp");
 	}
-	
+
 	String chart = (String) session.getAttribute("chart");
+	String username = (String) session.getAttribute("username");
 %>
 <html lang="en">
   <head>
@@ -79,6 +80,7 @@
 	    // Initialize Firebase
 	    firebase.initializeApp(firebaseConfig);
   	</script>
+
     
 	<script>
 		/*
@@ -288,8 +290,8 @@
 							 </div>
 					      </div>
 					      <div class="modal-footer">
-					        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-					        <button type="button" class="btn btn-primary">Upload</button>
+					        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+					        <button type="button" class="btn btn-primary" data-dismiss="modal" id="csvAddButton">Upload File</button>
 					      </div>
 					    </div>
 					  </div>
@@ -297,89 +299,7 @@
 
                   <div class="">
                     <ul id="stock_list" class="to_do">
-                      <li>
-                          <div style="display:inline; float: left; width: 15%;">
-                            <button type="button" style="background:lightgrey; border:none; border-radius:5px; color:white;" class="flat" data-toggle="modal" data-target="#removeStockModal">X</button><br>
-                            <!-- Modal for Remove Stock -->
-                            <div class="modal fade" id="removeStockModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                              <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                  <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Are you sure you want to remove this stock?</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                      <span aria-hidden="true">&times;</span>
-                                    </button>
-                                  </div>
-                                  <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                    <button type="button" class="btn btn-primary deletestock" id="stockremovebutton">Remove Stock</button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div style="float: left; width: 85%;">
-                            <div style="display:inline;">
-                              <p style="text-align:left;display:inline;">   Exchange: </p><p style="text-align:left; display:inline; font-weight:bold;">Exchange</p>
-                              <br>
-                            </div>
-                            <div style="display:inline;">
-                              <p style="text-align:left;display:inline;">   Ticker: </p><p style="text-align:left; display:inline; font-weight:bold;">Exchange</p>
-                              <br>
-                            </div>
-                            <div style="display:inline;">
-                              <p style="text-align:left;display:inline;">   # Shares: </p><p style="text-align:left; display:inline; font-weight:bold;">Exchange</p>
-                              <br>
-                            </div>
-                        </div>
-                        <br>
-                        <br>
-                        <br>
 
-
-                      </li>
-
-                      <li>
-                          <div style="display:inline; float: left; width: 15%;">
-                            <button type="button" style="background:lightgrey; border:none; border-radius:5px; color:white;" class="flat" data-toggle="modal" data-target="#removeStockModal">X</button><br>
-                            <!-- Modal for Remove Stock -->
-                            <div class="modal fade" id="removeStockModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                              <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                  <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Are you sure you want to remove this stock?</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                      <span aria-hidden="true">&times;</span>
-                                    </button>
-                                  </div>
-                                  <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                    <button type="button" class="btn btn-primary deletestock" id="stockremovebutton">Remove Stock</button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div style="float: left; width: 85%;">
-                            <div style="display:inline;">
-                              <p style="text-align:left;display:inline;">   Exchange: </p><p style="text-align:left; display:inline; font-weight:bold;">Exchange</p>
-                              <br>
-                            </div>
-                            <div style="display:inline;">
-                              <p style="text-align:left;display:inline;">   Ticker: </p><p style="text-align:left; display:inline; font-weight:bold;">Exchange</p>
-                              <br>
-                            </div>
-                            <div style="display:inline;">
-                              <p style="text-align:left;display:inline;">   # Shares: </p><p style="text-align:left; display:inline; font-weight:bold;">Exchange</p>
-                              <br>
-                            </div>
-                        </div>
-                        <br>
-                        <br>
-                        <br>
-
-
-                      </li>
                     </ul>
 
                     <!-- Button trigger modal -->
@@ -387,10 +307,10 @@
                     <button type="button" class="addstockbutton" data-toggle="modal" data-target="#addStockModal">Add Stock</button>
                     </div>
 
-										
 
-					
-					
+
+
+
                     <!-- Modal For Add Stock-->
                     <div class="modal fade" id="addStockModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                       <div class="modal-dialog" role="document">
@@ -403,13 +323,8 @@
                           </div>
                           <div class="modal-body">
                             <div class="inputrow">
+
                               <div style="float: left; width: 30%; overflow: scroll; margin-right:2.5%; display:table-cell;">
-                                <div style="margin-right:5px;">
-                                  <p style="text-align:center;">Exchange*</p>
-                                  <input class="stockinput" type="text" id="exchange" name="fname" required>
-                                </div>
-                              </div>
-                              <div style="float: left; width: 30%; overflow: scroll; margin-right:2.5%; margin-left:2.5%; display:table-cell;">
                                 <div style="margin-right:5px;">
                                   <p style="text-align:center;">Ticker*</p>
                                   <input class="stockinput" type="text" id="ticker" name="fname" required>
@@ -427,13 +342,13 @@
                               <div style="float: left; width: 30%; overflow: scroll; margin-right:2.5%; display:table-cell;">
                                 <div style="margin-right:5px;">
                                   <p style="text-align:center;">Date Purchased*</p>
-                                  <input class="stockinput" type="date" id="exchange" name="fname" required>
+                                  <input class="stockinput" type="date" id="buyDate" name="fname" required>
                                 </div>
                               </div>
                               <div style="float: left; width: 30%; overflow: scroll; margin-right:2.5%; margin-left:2.5%; display:table-cell;">
                                 <div style="margin-right:5px;">
                                   <p style="text-align:center;">Date Sold</p>
-                                  <input class="stockinput" type="date" id="ticker" name="fname">
+                                  <input class="stockinput" type="date" id="sellDate" name="fname" required>
                                 </div>
                               </div>
                               <div style="float: left; width: 30%; overflow: scroll; margin-left:2.5%; display:table-cell;">
@@ -444,8 +359,8 @@
                             </div>
                           </div>
                           <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" id="stockaddbutton">Add to my portfolio</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal" id="stockaddbutton">Add Stock</button>
                           </div>
                         </div>
                       </div>
@@ -589,78 +504,201 @@
                         }, 5000);
 
 
+											// Adding stock lists
+											var username = '<%=username%>';
+											var ref = firebase.database().ref().child('users').child(username).child('portfolio');
+											ref.once("value")
+												.then(function(snapshot) {
+												if(snapshot.val() != null) {
+													for (const ticker in snapshot.val()) {
+														var appendingHTML = `
+		                        <li id="li-${ticker}">
+		                            <div style="display:inline; float: left; width: 15%;">
+		                              <button type="button" style="background:lightgrey; border:none; border-radius:5px; color:white;" class="flat" data-toggle="modal" data-target="#removeStockModal${ticker}">X</button><br>
+		                              <!-- Modal for Remove Stock -->
+		                              <div class="modal fade" id="removeStockModal${ticker}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		                                <div class="modal-dialog" role="document">
+		                                  <div class="modal-content">
+		                                    <div class="modal-header">
+		                                      <h5 class="modal-title" id="exampleModalLabel">Are you sure you want to remove this stock?</h5>
+		                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		                                        <span aria-hidden="true">&times;</span>
+		                                      </button>
+		                                    </div>
+		                                    <div class="modal-footer">
+		                                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+		                                      <button type="button" id="fk" class="btn btn-primary deletestock" data-dismiss="modal" id="stockremovebutton">Remove Stock</button>
+		                                    </div>
+		                                  </div>
+		                                </div>
+		                              </div>
+		                            </div>
+		                            <div style="float: left; width: 85%;">
+
+		                              <div style="display:inline;">
+		                                <p style="text-align:left;display:inline;">   Ticker: </p><p style="text-align:left; display:inline; font-weight:bold;">${ticker}</p>
+		                                <br>
+		                              </div>
+		                              <div style="display:inline;">
+		                                <p style="text-align:left;display:inline;">   # Shares: </p><p style="text-align:left; display:inline; font-weight:bold;">${snapshot.val()[ticker]["shares"]}</p>
+		                                <br>
+		                              </div>
+		                          </div>
+		                          <br>
+		                          <br>
+		                          <br>
+
+
+		                        </li>
+
+		                        `;
+														$( "#stock_list" ).append(appendingHTML);
+
+														var els = document.getElementsByClassName("deletestock");
+
+		                        els[els.length-1].addEventListener('click', function (e) {
+		                            $('#removeStockModal').modal('hide');
+		                            console.log("delete stock")
+		                            e.preventDefault();
+																var username = '<%=username%>';
+																var ref = firebase.database().ref().child('users').child(username).child('portfolio').child(ticker);
+																ref.remove();
+																console.log(e.target);
+																e.target.closest('li').remove();
+		                        });
+													}
+												}
+											});
+
 
                       // Adding a stock JS
                       $("#stockaddbutton").click(function(){
                         console.log("stock add attempt")
-                        var exchange = $("#exchange").val();
+                        var name = $("#exchange").val();
                         var ticker = $("#ticker").val();
                         var shares = $("#shares").val();
-                        $("#exchange").val("");
+												var buyDate = $("#buyDate").val();
+												var sellDate = $("#sellDate").val();
+												var d1 = Date.parse(buyDate);
+												var d2 = Date.parse(sellDate);
+
+												$("#exchange").val("");
                         $("#ticker").val("");
                         $("#shares").val("");
+
+												console.log(ticker);
+												if(ticker == "") {
+													alert("ticker is empty");
+													return;
+												}
+												if(shares == "") {
+													alert("number of shares is empty");
+													return;
+												}
+												if(buyDate == "") {
+													alert("buy date is empty");
+													return;
+												}
+												if(sellDate == "") {
+													alert("sell date is empty");
+													return;
+												}
+												if(d1 >= d2) {
+													alert("buy date must precede sell date!");
+												}
+
+												var newData = {
+													name: name,
+													from: buyDate,
+													to: sellDate,
+													shares: shares
+												};
+												var username = '<%=username%>';
+
+												// Update existing node if ticker/from/to match, else add new one
+												var flagToAppendHTML = true;
+												var ref = firebase.database().ref().child('users').child(username).child('portfolio').child(ticker);
+												ref.once("value")
+													.then(function(snapshot) {
+													if(snapshot.val() == null) {
+														ref.update(newData);
+													} else if(snapshot.val()["from"] == buyDate && snapshot.val()["to"] == sellDate) {
+														newData["shares"] = (parseFloat(newData["shares"]) + parseFloat(snapshot.val()["shares"])).toString();
+														ref.update(newData);
+														document.querySelector("#li-"+ticker).getElementsByTagName('p')[5].innerHTML = newData["shares"];
+														flagToAppendHTML = false;
+													} else {
+														ref.update(newData);
+													}
+												}).then(() => {
+													if(flagToAppendHTML) {
+														var appendingHTML = `
+		                        <li id="li-`+ ticker +`">
+		                            <div style="display:inline; float: left; width: 15%;">
+		                              <button type="button" style="background:lightgrey; border:none; border-radius:5px; color:white;" class="flat" data-toggle="modal" data-target="#removeStockModal`+ticker+shares+buyDate+sellDate+`">X</button><br>
+		                              <!-- Modal for Remove Stock -->
+		                              <div class="modal fade" id="removeStockModal`+ticker+shares+buyDate+sellDate+`" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		                                <div class="modal-dialog" role="document">
+		                                  <div class="modal-content">
+		                                    <div class="modal-header">
+		                                      <h5 class="modal-title" id="exampleModalLabel">Are you sure you want to remove this stock?</h5>
+		                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		                                        <span aria-hidden="true">&times;</span>
+		                                      </button>
+		                                    </div>
+		                                    <div class="modal-footer">
+		                                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+		                                      <button type="button" class="btn btn-primary deletestock" data-dismiss="modal" id="stockremovebutton">Remove Stock</button>
+		                                    </div>
+		                                  </div>
+		                                </div>
+		                              </div>
+		                            </div>
+		                            <div style="float: left; width: 85%;">
+
+		                              <div style="display:inline;">
+		                                <p style="text-align:left;display:inline;">   Ticker: </p><p style="text-align:left; display:inline; font-weight:bold;">`+ ticker + `</p>
+		                                <br>
+		                              </div>
+		                              <div style="display:inline;">
+		                                <p style="text-align:left;display:inline;">   # Shares: </p><p style="text-align:left; display:inline; font-weight:bold;">`+ shares + `</p>
+		                                <br>
+		                              </div>
+		                          </div>
+		                          <br>
+		                          <br>
+		                          <br>
+
+
+		                        </li>
+
+		                        `;
+
+
+		                        $( "#stock_list" ).append(appendingHTML);
+
+		                        $('#addStockModal').modal('hide');
+
+		                        // This deletes buttons when they click out of the stock
+		                        var els = document.getElementsByClassName("deletestock");
+
+		                        els[els.length-1].addEventListener('click', function (e) {
+		                            $('#removeStockModal').modal('hide');
+		                            console.log("delete stock")
+		                            e.preventDefault();
+																var username = '<%=username%>';
+																var ref = firebase.database().ref().child('users').child(username).child('portfolio').child(ticker);
+																ref.remove();
+																e.target.closest('li').remove();
+		                        });
+													}
+												});
+
+
+
+
                         // var appendingHTML = '<li><div style="display:inline;"><button type="button" id="delete1" style="background:lightgrey; border:none; border-radius:5px;" class="flat">X</button><br></div><div style="display:inline;"><p style="text-align:left;display:inline;">   Exchange: </p><p style="text-align:left;display:inline;font-weight: bold;">' + exchange + '</p><br> </div><div style="display:inline;"> <p style="text-align:left;display:inline;">   Ticker: </p><p style="text-align:left;display:inline;font-weight: bold;">' + ticker + '</p><br> </div><div style="display:inline;"><p style="text-align:left;display:inline;">   # Shares: </p><p style="text-align:left;display:inline;font-weight: bold;">' + shares + '</p><br></div></li>';
-                        var appendingHTML = `
-                        <li>
-                            <div style="display:inline; float: left; width: 15%;">
-                              <button type="button" style="background:lightgrey; border:none; border-radius:5px; color:white;" class="flat" data-toggle="modal" data-target="#removeStockModal">X</button><br>
-                              <!-- Modal for Remove Stock -->
-                              <div class="modal fade" id="removeStockModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                  <div class="modal-content">
-                                    <div class="modal-header">
-                                      <h5 class="modal-title" id="exampleModalLabel">Are you sure you want to remove this stock?</h5>
-                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                      </button>
-                                    </div>
-                                    <div class="modal-footer">
-                                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                      <button type="button" class="btn btn-primary deletestock" id="stockremovebutton">Remove Stock</button>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div style="float: left; width: 85%;">
-                              <div style="display:inline;">
-                                <p style="text-align:left;display:inline;">   Exchange: </p><p style="text-align:left; display:inline; font-weight:bold;">`+ exchange + `</p>
-                                <br>
-                              </div>
-                              <div style="display:inline;">
-                                <p style="text-align:left;display:inline;">   Ticker: </p><p style="text-align:left; display:inline; font-weight:bold;">`+ ticker + `</p>
-                                <br>
-                              </div>
-                              <div style="display:inline;">
-                                <p style="text-align:left;display:inline;">   # Shares: </p><p style="text-align:left; display:inline; font-weight:bold;">`+ shares + `</p>
-                                <br>
-                              </div>
-                          </div>
-                          <br>
-                          <br>
-                          <br>
 
-
-                        </li>
-
-                        `;
-
-
-                        $( "#stock_list" ).append(appendingHTML);
-
-                        $('#addStockModal').modal('hide');
-
-                        // This deletes buttons when they click out of the stock
-                        var els = document.getElementsByClassName("deletestock");
-
-                        for (var i = 0; i < els.length; i++) {
-                            els[i].addEventListener('click', function (e) {
-                              $('#removeStockModal').modal('hide');
-                                console.log("delete stock")
-                                e.preventDefault();
-                                e.target.closest('li').remove();
-                            });
-                        }
                       });
 
                       // This deletes buttons when they click out of the stock
@@ -671,7 +709,11 @@
                               $('#removeStockModal').modal('hide');
                               console.log("delete stock")
                               e.preventDefault();
-                              e.target.closest('li').remove();
+															var username = '<%=username%>';
+															var ticker = e.target.closest('li').getElementsByTagName('p')[3].innerHTML;
+															var ref = firebase.database().ref().child('users').child(username).child('portfolio').child(ticker);
+															ref.remove();
+															e.target.closest('li').remove();
                           });
                       }
 
