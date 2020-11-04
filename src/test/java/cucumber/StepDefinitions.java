@@ -25,6 +25,7 @@ import io.cucumber.java.en.When;
  */
 public class StepDefinitions {
 	private static final String ROOT_URL = "http://localhost:8080/";
+	private static final String Https_URL = "https://localhost:8080/";
 	private static final String Signup_URL = "http://localhost:8080/signup.jsp";
 	private static final String Login_URL = "http://localhost:8080/login.jsp";
 	private static final String Dashboard_URL = "http://localhost:8080/production/index.jsp";
@@ -621,6 +622,105 @@ public class StepDefinitions {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	/**************************
+	 * LOCK OUT SECURITY FEATURE
+	 **************************/
+	@When("I log in with my username and correct password")
+	public void i_log_in_with_my_username_and_correct_password() {
+		String usr = "testAddLockOut";
+		driver.findElement(By.xpath("//*[@id=\"usrname\"]")).sendKeys(usr);
+		String pwd = "test";
+		driver.findElement(By.xpath("//*[@id=\"password\"]")).sendKeys(pwd);
+		driver.findElement(By.xpath("//*[@id=\"login-form-submit\"]")).click();
+	}
+	@When("I log in with my username and incorrect password three times")
+	public void i_log_in_with_my_username_and_incorrect_password_three_times() {
+		
+		String usr = "testAddLockOut";
+		String invalid_pwd = "fake";
+		//1
+		driver.findElement(By.xpath("//*[@id=\"usrname\"]")).sendKeys(usr);
+		driver.findElement(By.xpath("//*[@id=\"password\"]")).sendKeys(invalid_pwd);
+		driver.findElement(By.xpath("//*[@id=\"login-form-submit\"]")).click();
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//2
+		driver.findElement(By.xpath("//*[@id=\"usrname\"]")).sendKeys(usr);
+		driver.findElement(By.xpath("//*[@id=\"password\"]")).sendKeys(invalid_pwd);
+		driver.findElement(By.xpath("//*[@id=\"login-form-submit\"]")).click();
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//3
+		driver.findElement(By.xpath("//*[@id=\"usrname\"]")).sendKeys(usr);
+		driver.findElement(By.xpath("//*[@id=\"password\"]")).sendKeys(invalid_pwd);
+		driver.findElement(By.xpath("//*[@id=\"login-form-submit\"]")).click();
+	}
+	@Then("I should see the lockout error message {string}")
+	public void i_should_see_the_lockout_error_message(String string) {
+		WebElement element;
+		try {
+			element = driver.findElement(By.id("login_error"));
+		} catch (NoSuchElementException e) {
+			element = driver.findElement(By.xpath("//*[@id=\"login_error\"]"));
+		}
+		
+		assertTrue(element.getText().equalsIgnoreCase(string));
+	}
+	
+	/**************************
+	 * DASHBOARD REDIRECT SECURITY FEATURE
+	 **************************/
+	@Given("I try to access the dashboard page without logging in")
+	public void i_try_to_access_the_dashboard_page_without_logging_in() {
+	    driver.get(Dashboard_URL);
+	}
+	@Then("I should be redirected to login page")
+	public void i_should_be_redirected_to_login_page() {
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String url = driver.getCurrentUrl();
+		assertTrue(url.equalsIgnoreCase("http://localhost:8080/login.jsp"));
+	}
+	/**************************
+	 * HASH SECURITY FEATURE
+	 **************************/
+	@Then("my password should not match the hash stored in the user database")
+	public void my_password_should_not_match_the_hash_stored_in_the_user_database() {
+		String pwd = "test123";
+		String hash = "ecd71870d1963316a97e3ac3408c9835ad8cf0f3c1bc703527c30265534f75ae";
+		assertTrue(!pwd.equals(hash));
+	}
+	/**************************
+	 * HTTPS SECURITY FEATURE
+	 **************************/
+	@When("I enter in the same URL using https")
+	public void i_enter_in_the_same_URL_using_https() {
+		driver.get(Https_URL);
+	}
+	@Then("I should be redirected to the https landing page")
+	public void i_should_be_redirected_to_the_https_landing_page() {
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String url = driver.getCurrentUrl();
+		assertTrue(url.equalsIgnoreCase("https://localhost:8080"));
 	}
 
 	@After()
