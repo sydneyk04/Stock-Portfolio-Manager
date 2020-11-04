@@ -1,9 +1,27 @@
+<%
+	// Disable Caching
+	response.setHeader("Cache-Control", "no-cache, no-store");
+	response.setHeader("Pragma","no-cache");
+	response.setDateHeader ("Expires", 0);
+	
+	session.setAttribute("username", null);
+%>
 <html>
 	<head>
 		<title>Sign Up</title>
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 		<link rel="stylesheet" href="signup.css">
 		<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap" rel="stylesheet">
+	
+		<script>
+			// Back button pressed
+			if (window.performance && window.performance.navigation.type == window.performance.navigation.TYPE_BACK_FORWARD) {
+				session.setAttribute("username", null);
+				session.setAttribute("login_error_message", null);
+				session.setAttribute("myStocks", null);
+			}
+		</script>
+	
 	</head>
 	<body>
 		<header style="height:70px; background:#787878;">

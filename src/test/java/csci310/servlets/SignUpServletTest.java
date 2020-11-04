@@ -7,6 +7,9 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -46,6 +49,25 @@ public class SignUpServletTest extends Mockito {
 		mockedDatabaseReference = Mockito.mock(DatabaseReference.class);
 		mockedFirebaseDatabase = Mockito.mock(FirebaseDatabase.class);
     }
+	
+	@Test
+	public void testHashPassword() throws NoSuchAlgorithmException, UnsupportedEncodingException {
+		String pw = "randompassword";
+		String hashedPw = SignUpServlet.hashPassword(pw);
+
+		// hashing method
+		MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+		byte[] hash = messageDigest.digest(pw.getBytes("UTF-8"));
+		StringBuffer hexString = new StringBuffer();
+		for (int i = 0; i < hash.length; i++) {
+			String hex = Integer.toHexString(0xff & hash[i]);
+			if (hex.length() == 1)
+				hexString.append('0');
+			hexString.append(hex);
+		}
+
+		assertTrue(hashedPw.contentEquals(hexString));
+	}
 	
 	@Test
 	public void testDoGet() throws IOException, ServletException {	

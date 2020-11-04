@@ -1,10 +1,15 @@
 <%@ page import="csci310.*" %>
 <!DOCTYPE html>
 <%
-	//Disable Caching
+	// Disable Caching
 	response.setHeader("Cache-Control", "no-cache, no-store");
 	response.setHeader("Pragma","no-cache");
 	response.setDateHeader ("Expires", 0);
+	
+	if (session.getAttribute("username") == null) {
+		response.sendRedirect("../login.jsp");
+	}
+	
 	String chart = (String) session.getAttribute("chart");
 %>
 <html lang="en">
@@ -57,10 +62,10 @@
   	<!-- Add Firebase products that you want to use -->
   	<script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-auth.js"></script>
   	<script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-firestore.js"></script>
-		<script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-database.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-database.js"></script>
 
-		<script>
-			var firebaseConfig = {
+	<script>
+		var firebaseConfig = {
 		    apiKey: "AIzaSyD2UNIj11jvzjzhxZE_q_-J6sghVpqKc14",
 		    authDomain: "stock16-e451e.firebaseapp.com",
 		    databaseURL: "https://stock16-e451e.firebaseio.com",
@@ -74,7 +79,7 @@
 	    // Initialize Firebase
 	    firebase.initializeApp(firebaseConfig);
   	</script>
-
+    
 		<script src="../production/js/csv/importCSV.js"></script>
 	</head>
 
@@ -83,7 +88,7 @@
     <div class="container body">
       <div class="main_container">
         <!-- top navigation -->
-         <header style="height:70px; background:#787878;">
+         <header id="top_nav" style="height:60px; background:#787878;">
   			<nav id="banner" class="navbar navbar-dark bg-secondary navbar-static-top justify-content-left">
 		      	<div id="banner-content" class="navbar-brand" style="color:white;font-size:45px;font-family: 'Raleway', sans-serif;">
 		      		<a href="index.jsp" style="text-decoration: none; color:white;" >

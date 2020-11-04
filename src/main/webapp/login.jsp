@@ -5,6 +5,8 @@
 	response.setHeader("Cache-Control", "no-cache, no-store");
 	response.setHeader("Pragma","no-cache");
 	response.setDateHeader ("Expires", 0);
+	
+	session.setAttribute("username", null);
 
 	String error_message = (String) session.getAttribute("login_error_message");
 %>
@@ -20,6 +22,16 @@
 	  <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
     <link rel="stylesheet" href="styles/login.css">
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap" rel="stylesheet">  </head>
+  
+  	<script>
+		// Back button pressed
+		if (window.performance && window.performance.navigation.type == window.performance.navigation.TYPE_BACK_FORWARD) {
+			session.setAttribute("username", null);
+			session.setAttribute("login_error_message", null);
+			session.setAttribute("myStocks", null);
+		}
+	</script>
+  
   <body>
     <header style="height:70px; background:#787878;">
   			<nav id="banner" class="navbar navbar-dark bg-secondary navbar-static-top justify-content-left">
