@@ -22,10 +22,7 @@ Feature: Security
     When I enter my username
     And I enter my password
     Then my password should not match the hash stored in the user database
-  Scenario: Use https
-    Given I am on the landing page
-    When I enter in the same URL using https
-    Then I should be redirected to the https landing page
+
 
   
     
