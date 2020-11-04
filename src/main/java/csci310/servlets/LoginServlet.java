@@ -61,13 +61,13 @@ public class LoginServlet extends HttpServlet {
 			authenticate(username, hashPw);
 					
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			out.print("login fail - InterruptedException");
 		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
+			out.print("login fail - NoSuchAlgorithmException");
 		}
 	}
 	
-	public static String hashPassword(String pw) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+	public String hashPassword(String pw) throws NoSuchAlgorithmException, UnsupportedEncodingException {
 		MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
 		byte[] hash = messageDigest.digest(pw.getBytes("UTF-8"));
 		StringBuffer hexString = new StringBuffer();

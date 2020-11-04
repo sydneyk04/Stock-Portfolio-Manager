@@ -81,7 +81,73 @@
 	    firebase.initializeApp(firebaseConfig);
   	</script>
 
-		<script src="../production/js/csv/importCSV.js"></script>
+    
+	<script>
+		/*
+	 	 * App security: Back button pressed - prevent user from going back to dashboard afterwards 
+	 	 */
+		if (window.performance && window.performance.navigation.type == window.performance.navigation.TYPE_BACK_FORWARD) {
+	    	window.location.replace("../login.jsp");
+		}
+
+		$(document).ready(function() {
+			/*
+			 * App security: Auto-logout after 2 min of inactivity 
+			 */
+			$('body').bind('click mousemove keypress scroll resize', function() {
+           		lastActiveTime = new Date().getTime();
+           	});
+			
+           	setInterval(checkIdleTime, 1000); // 1 sec
+           	
+           	function checkIdleTime() {
+                var diff = new Date().getTime() - lastActiveTime;
+                if (diff > 120000) {
+                 window.location.href ="../login.jsp"
+                }
+                else {
+                    $.ajax({url: 'index.jsp', error: function(data, status, xhr){
+                        alert("Unable to refresh session on server: "+xhr);
+                        window.location.reload();}
+                    });
+                }
+           	}
+			
+			function resizeTopNav() {
+				$('#top_nav').each(function(){
+				    var inner = $(this).find('nav');
+				    $(this).height(inner.outerHeight(true));
+				});
+			}
+			
+			/*
+			 * Window resize: UI changes 
+			 */
+			$(window).resize(function() {
+			    if(this.resizeTO) clearTimeout(this.resizeTO);
+			    this.resizeTO = setTimeout(function() {
+			        $(this).trigger('resizeEnd');
+			    }, 500);
+			});
+
+			$(window).bind('resizeEnd', function() {
+				resizeTopNav();
+			});
+			
+			/*
+			 * App security: Back button pressed 
+			 */
+			$(window).bind("pageshow", function(event) {
+			    if (event.originalEvent.persisted) {
+			        Alert("User clicked on back button!");
+			    }
+			});
+		});
+
+	</script>
+	
+	<script src="../production/js/csv/importCSV.js"></script>
+	
 	</head>
 
   <body class="nav-md">
@@ -213,7 +279,7 @@
 					        </button>
 					      </div>
 					      <div class="modal-body">
-					      	 <a href="exampleStockCSV.csv" download="example">
+					      	 <a href="exampleStockCSV.csv" download="exampleStockCSV.csv">
 					     	 <button type="button" style="background: darkgrey;" class="btn btn-primary">Download Example CSV</button>
 					     	 </a>
 						      <div id="dvImportSegments" class="fileupload">
