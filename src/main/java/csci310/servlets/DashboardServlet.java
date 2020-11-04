@@ -38,10 +38,11 @@ public class DashboardServlet extends HttpServlet {
 		if (action != null && action.equals("logout")) {
 			logout();
 			return;
-		} 
-		else {
+		} else if (action != null){
 			// Call functions of servlet here (e.g. homeServlet.doGet(request, response);)
 			stockperformanceServlet.doGet(request, response);
+			response.sendRedirect(INDEXPG);
+		} else {
 			response.sendRedirect(INDEXPG);
 		}
 	}

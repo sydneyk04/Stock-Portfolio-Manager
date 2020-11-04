@@ -80,44 +80,41 @@ public class StockPerformanceServlet extends HttpServlet {
 		
 		String username = session.getAttribute("username").toString();
 		
-		if(username != null) {
-			//default time period is 1Y
-			from = Calendar.getInstance();
-			from.add(Calendar.YEAR, -1);
-			now = Calendar.getInstance();
-				
-			try {
-				getUserStock(username);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		from = Calendar.getInstance();
+		from.add(Calendar.YEAR, -1);
+		now = Calendar.getInstance();
 			
-			//set stocks as session variable for front end
-			session.setAttribute("myStocks", myStocks);
-			session.setAttribute("view", view);
-			session.setAttribute("invalid_error", null);
-			
-			try {
-				calculatePortfolio();
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			if(!portfolioValHistory.isEmpty()) {
-				DecimalFormat f = new DecimalFormat("##.00");
-				ArrayList<String> holder = portfolioValHistory.get(portfolioValHistory.size()-1);
-				Double val = Double.parseDouble(holder.get(1));
-				session.setAttribute("portfolioVal", f.format(val));	
-			}
-				
-			//build the graph using the list of stocks
-			buildGraph();
+		try {
+			getUserStock(username);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
+		//set stocks as session variable for front end
+		session.setAttribute("myStocks", myStocks);
+		session.setAttribute("view", view);
+		session.setAttribute("invalid_error", null);
+		
+		try {
+			calculatePortfolio();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if(!portfolioValHistory.isEmpty()) {
+			DecimalFormat f = new DecimalFormat("##.00");
+			ArrayList<String> holder = portfolioValHistory.get(portfolioValHistory.size()-1);
+			Double val = Double.parseDouble(holder.get(1));
+			session.setAttribute("portfolioVal", f.format(val));	
+		}
+			
+		//build the graph using the list of stocks
+		buildGraph();
 		
 	}
 	
@@ -128,10 +125,9 @@ public class StockPerformanceServlet extends HttpServlet {
 		response.setStatus(HttpServletResponse.SC_OK);
 		session = request.getSession();
 		System.out.println("Hello from doPost");
-		
 		String action = request.getParameter("action");
 		//if user wants to toggle hide/show on graph - DONE
-		if(action != null && action.equals("portfolioState")) {
+		if(action.equals("portfolioState")) {
 			String ticker = request.getParameter("ticker");
 			for(int i=0; i<myStocks.size(); i++) {
 				if(myStocks.get(i).get(0).equals(ticker)){
@@ -142,18 +138,16 @@ public class StockPerformanceServlet extends HttpServlet {
 					}
 				}
 			}
-			
 			try {
 				calculatePortfolio();
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			buildGraph();
 		} 
 		
 		//add a random stock to graph but don't add it to your portfolio - DONE
-		else if(action != null && action.equals("viewStock")) {
+		else if(action.equals("viewStock")) {
 			session.setAttribute("invalid_error", null);
 			String ticker = request.getParameter("ticker");
 			ticker = ticker.toUpperCase();
@@ -176,9 +170,7 @@ public class StockPerformanceServlet extends HttpServlet {
 					holder.add(purchase);
 					holder.add(sell);
 					view.add(holder);
-					
 					buildGraph();
-				
 				//if not valid stock name
 				} catch(NullPointerException e) {
 					session.setAttribute("invalid_error", "Please enter a valid ticker");
@@ -192,7 +184,7 @@ public class StockPerformanceServlet extends HttpServlet {
 		}
 		
 		//this is just case where user views stock and decides they dont want to see it on the graph anymore
-		else if(action != null && action.equals("removeViewStock")) {
+		else if(action.equals("removeViewStock")) {
 			String ticker = request.getParameter("removeTicker");
 			for(int i=0; i<view.size(); i++) {
 				if(view.get(i).get(0).equals(ticker)){
@@ -201,11 +193,10 @@ public class StockPerformanceServlet extends HttpServlet {
 			}
 			session.setAttribute("view", view);
 			buildGraph();
-			
 		} 
 		
 		//this is for adding stock to database
-		else if(action != null && action.equals("addStock")) {
+		else if(action.equals("addStock")) {
 			//code to add a stock to your portfolio
 			System.out.println("add stock function");
 			
@@ -250,13 +241,10 @@ public class StockPerformanceServlet extends HttpServlet {
 			
 		}
 		//change calendar time period
-		else if(action != null && action.equals("changeTimePeriod")){
-			System.out.println("Change time period");
-			
+		else if(action.equals("changeTimePeriod")){
 			//these are of type "Calendar"
 			String fromString = request.getParameter("from");
 			String toString = request.getParameter("to");
-			
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			try {
 				from.setTime(sdf.parse(fromString));
@@ -264,8 +252,6 @@ public class StockPerformanceServlet extends HttpServlet {
 			} catch (ParseException e1) {
 				e1.printStackTrace();
 			}
-			
-			
 			jsons = new ArrayList<String>();
 			portfolioValHistory = new ArrayList<ArrayList>();
 			portfolioJSON = "";
@@ -281,23 +267,10 @@ public class StockPerformanceServlet extends HttpServlet {
 				}
 				session.setAttribute("view", view);
 			} catch (ParseException e) {
-				
+				e.printStackTrace();
 			}
-			
 			buildGraph();
-			
-		} else {
-			
-//		
-//			//pass the new dates into build stock jsons
-//			try {
-//				buildStockJSONS(from, now);
-//			} catch (ParseException e) {
-//				//jhello
-//				e.printStackTrace();
-//			}
-		}
-		
+		} 
 	}
 	
 	String viewStock(String ticker, String numOfShares, String purchase, String sell) throws IOException, ParseException {
@@ -315,7 +288,6 @@ public class StockPerformanceServlet extends HttpServlet {
 			Double close = history.get(i).getClose().doubleValue();
 			Double shares = Double.parseDouble(numOfShares);
 			close = close * shares;
-			
 			//check if user owned stock during this point in time before showing on the graph
 			String holder = year + "-" + (month + 1) + "-" + day;
 			boolean owned = ownedCheck(holder, purchase, sell);
@@ -328,7 +300,6 @@ public class StockPerformanceServlet extends HttpServlet {
 				map = new HashMap<Object,Object>(); map.put("label", label); map.put("y", 0.00); 
 				list.add(map);
 			}
-
 		}
 		String stockHistory = new Gson().toJson(list);
 		System.out.println(stockHistory);
@@ -355,6 +326,8 @@ public class StockPerformanceServlet extends HttpServlet {
 		} else if(sellDate.equals(historicalDate) && datePurchased.before(historicalDate)) {
 			owned = true;
 		} else if(sellDate.after(historicalDate) && datePurchased.equals(historicalDate)) {
+			owned = true;
+		} else if(sellDate.equals(historicalDate) && datePurchased.equals(historicalDate)) {
 			owned = true;
 		}
 		
@@ -447,11 +420,8 @@ public class StockPerformanceServlet extends HttpServlet {
 	
 	
 	void buildGraph() throws IOException {
-	
 		//chart to display different stocks
-		//i know this looks wacky but it will actually work hahah
 		String theChart =  "<script type=\"text/javascript\">\n" + 
-//				"			window.onload = function() { \n" + 
 				"				var chart = new CanvasJS.Chart(\"chartContainer\", {\n" + 
 				"					zoomEnabled: true,\n" + 
 				"					theme: \"light2\",\n" + 

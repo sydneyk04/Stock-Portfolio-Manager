@@ -2,6 +2,7 @@ package csci310.servlets;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -9,6 +10,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import javax.servlet.RequestDispatcher;
@@ -47,11 +49,6 @@ public class StockPerformanceServletTest extends Mockito {
 		when(request.getSession()).thenReturn(session); 
 		when(response.getWriter()).thenReturn(printWriter);
 		
-		Calendar from = Calendar.getInstance();
-		from.add(Calendar.YEAR, -1);
-		Calendar now = Calendar.getInstance();
-		when(session.getAttribute("from")).thenReturn(from); 
-		when(session.getAttribute("now")).thenReturn(now);
 //		ArrayList<String> stock = new ArrayList<String>();
 //		String ticker = "TSLA";
 //		String name = "Tesla";
@@ -64,44 +61,81 @@ public class StockPerformanceServletTest extends Mockito {
 //		servlet.myStocks.add(stock);
     }
 	
-	@Test
-	public void testDoGet() throws IOException, ServletException, InterruptedException, ParseException {	
-		when(session.getAttribute("username")).thenReturn(null);
-		servlet.doGet(request, response);
-		
-		when(session.getAttribute("username")).thenReturn("test");
-		StockPerformanceServlet spyServlet = spy(StockPerformanceServlet.class);
-		doNothing().when(spyServlet).getUserStock(anyString());
-		doNothing().when(spyServlet).calculatePortfolio();
-		doNothing().when(spyServlet).buildGraph();
-		spyServlet.doGet(request, response);
-		
-		doThrow(IOException.class).when(spyServlet).getUserStock(anyString());
-		spyServlet.doGet(request, response);
-		
-		doThrow(InterruptedException.class).when(spyServlet).getUserStock(anyString());
-		spyServlet.doGet(request, response);
-		
-		doThrow(ParseException.class).when(spyServlet).calculatePortfolio();
-		spyServlet.doGet(request, response);
-	}
+//	@Test
+//	public void testDoGet() throws IOException, ServletException, InterruptedException, ParseException {	
+//		when(session.getAttribute("username")).thenReturn("test");
+//		StockPerformanceServlet spyServlet = spy(StockPerformanceServlet.class);
+//		doNothing().when(spyServlet).getUserStock(anyString());
+//		doNothing().when(spyServlet).calculatePortfolio();
+//		doNothing().when(spyServlet).buildGraph();
+//		spyServlet.doGet(request, response);
+//		
+//		doThrow(IOException.class).when(spyServlet).getUserStock(anyString());
+//		spyServlet.doGet(request, response);
+//		
+//		doThrow(InterruptedException.class).when(spyServlet).getUserStock(anyString());
+//		spyServlet.doGet(request, response);
+//		
+//		doThrow(ParseException.class).when(spyServlet).calculatePortfolio();
+//		spyServlet.doGet(request, response);
+//	}
 	
 	@Test
 	public void testDoPost() throws IOException, ServletException, InterruptedException, ParseException {	
+		//setup
 		servlet.getUserStock("johnDoe");
 		servlet.from = Calendar.getInstance();
 		servlet.from.add(Calendar.YEAR, -1);
 		servlet.now = Calendar.getInstance();
+		ArrayList<String> stock = new ArrayList<String>();
+		stock.add("TSLA");
+		stock.add("Tesla");
+		stock.add("1");
+		stock.add("2020-01-10");
+		stock.add("2020-10-10");
+		stock.add("Yes");
+		servlet.myStocks.add(stock);
+		servlet.view.add(stock);
+		doNothing().when(session).setAttribute(anyString(), anyString());
+		
+		//toggle portfolio state - yes
+		when(request.getParameter("action")).thenReturn("portfolioState");
+		when(request.getParameter("ticker")).thenReturn("TSLA");
+		servlet.doPost(request, response);
+		//toggle portfolio state - no
 		servlet.doPost(request, response);
 		
+		//throw exception
 		StockPerformanceServlet spyServlet = spy(StockPerformanceServlet.class);
-		spyServlet.from = Calendar.getInstance();
-		spyServlet.from.add(Calendar.YEAR, -1);
-		spyServlet.now = Calendar.getInstance();
 		doThrow(ParseException.class).when(spyServlet).calculatePortfolio();
 		doNothing().when(response).sendRedirect(anyString());
 		spyServlet.getUserStock("johnDoe");
 		spyServlet.doPost(request, response);
+		
+		//viewstock - yes
+		when(request.getParameter("action")).thenReturn("viewStock");
+		when(request.getParameter("ticker")).thenReturn("TSLA");
+		when(request.getAttribute("invalid_error")).thenReturn(null);
+		when(request.getParameter("datePurchased")).thenReturn("2020-01-10");
+		when(request.getParameter("dateSold")).thenReturn("2020-10-10");
+		when(request.getParameter("numOfShares")).thenReturn("1");
+		servlet.doPost(request, response);
+		
+		//removeviewstock - yes
+		when(request.getParameter("action")).thenReturn("removeViewStock");
+		when(request.getParameter("removeTicker")).thenReturn("TSLA");
+		servlet.doPost(request, response);
+		
+		when(request.getParameter("removeTicker")).thenReturn("efed");
+		servlet.doPost(request, response);
+		
+		
+		//add stock - this isnt implemented in my servlet
+		
+		//change time period
+		when(request.getParameter("action")).thenReturn("changeTimePeriod");
+		when(request.getParameter("from")).thenReturn("2020-01-10");
+		when(request.getParameter("to")).thenReturn("2020-10-10");
 	}
 	
 	@Test
@@ -128,16 +162,45 @@ public class StockPerformanceServletTest extends Mockito {
 	
 	@Test
 	public void testOwnedCheck() throws IOException, ServletException, InterruptedException, ParseException {	
-		servlet.ownedCheck("2020-04-22", "2020-01-22", "");
-		assertTrue(true);
+		//i just put every possible combo to get full coverage
 		
-		servlet.ownedCheck("2020-04-22", "2020-01-22", "2020-04-22");
-		assertTrue(true);
+		//sell date > historical date, purchase date < historical date
+		Boolean owned = servlet.ownedCheck("2020-04-22", "2020-01-22", "");
+		assertTrue(owned);
 		
-		servlet.ownedCheck("2020-04-22", "2020-04-22", "");
-		assertTrue(true);
+		//sell date < historical date, purchase date < historical date
+		owned = servlet.ownedCheck("2020-04-22", "2020-01-22", "2020-02-22");
+		assertFalse(owned);
+		
+		//sell date = historical date, purchase date < historical date
+		owned = servlet.ownedCheck("2020-04-22", "2020-01-22", "2020-04-22");
+		assertTrue(owned);
+
+		//sell date > historical date, purchase date > historical date
+		owned = servlet.ownedCheck("2020-04-22", "2020-05-22", "");
+		assertFalse(owned);
+		
+		//sell date < historical date, purchase date > historical date
+		owned = servlet.ownedCheck("2020-04-22", "2020-05-22", "2020-02-22");
+		assertFalse(owned);
+		
+		//sell date = historical date, purchase date > historical date
+		owned = servlet.ownedCheck("2020-04-22", "2020-05-22", "2020-04-22");
+		assertFalse(owned);
+		
+		//sell date > historical date, purchase date = historical date
+		owned = servlet.ownedCheck("2020-04-22", "2020-04-22", "2020-05-22");
+		assertTrue(owned);
+
+		//sell date < historical date, purchase date = historical date
+		owned = servlet.ownedCheck("2020-04-22", "2020-04-22", "2020-01-22");
+		assertFalse(owned);
+		
+		//sell date = historical date, purchase date = historical date
+		owned = servlet.ownedCheck("2020-04-22", "2020-04-22", "2020-04-22");
+		assertTrue(owned);
 	}
-	
+
 	@Test
 	public void testCalculatePortfolio() throws IOException, ServletException, InterruptedException, ParseException {	
 		servlet.getUserStock("johnDoe");
@@ -148,26 +211,31 @@ public class StockPerformanceServletTest extends Mockito {
 	
 	@Test
 	public void testViewStock() throws IOException, ServletException, InterruptedException, ParseException {	
-		servlet.viewStock("TSLA", "1", "2020-01-22", "");
-		assertTrue(servlet.jsons.size() > 0);
+		Calendar from = Calendar.getInstance();
+		from.add(Calendar.YEAR, -1);
+		Calendar now = Calendar.getInstance();
+		servlet.from = from;
+		servlet.now = now;
+		String stockJSON = servlet.viewStock("TSLA", "1", "2020-01-22", "2020-10-22");
+		assertTrue(stockJSON != null);
 	}
-	
-//	@Test
-//	public void testBuildGraph() throws IOException, ServletException, InterruptedException, ParseException {	
-//		servlet.jsons.clear();
-//		servlet.myStocks.clear();
-//		Calendar from = Calendar.getInstance();
-//		from.add(Calendar.YEAR, -1);
-//		Calendar now = Calendar.getInstance();
-//		servlet.getUserStock("johnDoe");
-//		servlet.buildStockJSONS(from, now);
-//		System.out.println(servlet.myStocks.size() + "111");
-//		System.out.println(servlet.jsons.size() + "222");
-//		
-//		doNothing().when(session).setAttribute(anyString(), anyString());
-//		
-//		servlet.buildGraph();
-//	}
+
+	@Test
+	public void testBuildGraph() throws IOException, ServletException, InterruptedException, ParseException {	
+		servlet.jsons.clear();
+		servlet.myStocks.clear();
+		Calendar from = Calendar.getInstance();
+		from.add(Calendar.YEAR, -1);
+		Calendar now = Calendar.getInstance();
+		servlet.from = from;
+		servlet.now = now;
+		
+		doNothing().when(session).setAttribute(anyString(), anyString());
+		
+		servlet.getUserStock("johnDoe");
+		servlet.calculatePortfolio();
+		servlet.buildGraph();
+	}
 	
 	@Test
 	public void testAddStock() {
