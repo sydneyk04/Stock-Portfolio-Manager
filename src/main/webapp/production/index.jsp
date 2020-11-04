@@ -207,7 +207,7 @@
 					        </button>
 					      </div>
 					      <div class="modal-body">
-					      	 <a href="exampleStockCSV.csv" download="example">
+					      	 <a href="exampleStockCSV.csv" download="exampleStockCSV.csv">
 					     	 <button type="button" style="background: darkgrey;" class="btn btn-primary">Download Example CSV</button>
 					     	 </a>
 						      <div id="dvImportSegments" class="fileupload">
