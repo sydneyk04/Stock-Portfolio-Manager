@@ -50,6 +50,7 @@ public class DashboardServlet extends HttpServlet {
 		out = response.getWriter();
 		
 		String action = request.getParameter("action");
+		System.out.println("hi from dashboard");
 		if (action != null && action.equals("logout")) {
 			logout();
 			return;

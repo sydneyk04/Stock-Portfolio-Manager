@@ -279,6 +279,7 @@ public class StockPerformanceServlet extends HttpServlet {
 		}
 		
 		else if(action.equals("removeStock")) {
+			System.out.println("removestock");
 			String username = session.getAttribute("username").toString();
 			String ticker = request.getParameter("removeStockTicker");
 			for(int i=0; i<myStocks.size(); i++) {

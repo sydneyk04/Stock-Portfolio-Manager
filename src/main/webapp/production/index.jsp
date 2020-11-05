@@ -15,9 +15,11 @@
 	String chart = (String) session.getAttribute("chart");
 	String username = (String) session.getAttribute("username");
 	String invalid_error = (String) session.getAttribute("invalid_error");
+	String failedAdd = (String) session.getAttribute("failedAdd");
 	String portfolioVal = (String) session.getAttribute("portfolioVal");
 	List<ArrayList> view = (List<ArrayList>) session.getAttribute("view");
 	List<ArrayList> myStocks = (List<ArrayList>) session.getAttribute("myStocks");
+	
 %>
 <html lang="en">
   <head>
@@ -316,19 +318,7 @@
 					        </button>
 					      </div>
 								<form class="" id="csvAddForm" action="/dashboard" method="post">
-<<<<<<< HEAD
-					      <div class="modal-body">
-					      	 <a href="exampleStockCSV.csv" download="example">
-					     	 <button type="button" style="background: darkgrey;" class="btn btn-primary">Download Example CSV</button>
-					     	 </a>
-
-						      <div id="dvImportSegments" class="fileupload">
-								<fieldset>
-									<legend>Upload your CSV file</legend>
-									<input type="file" name="File Upload" id="txtFileUpload" accept=".csv" />
-								</fieldset>
-							 </div>
-						      <div class="modal-body">
+								 <div class="modal-body">
 						      	 <a href="exampleStockCSV.csv" download="example">
 						     	 <button type="button" style="background: darkgrey;" class="btn btn-primary">Download Example CSV</button>
 						     	 </a>
@@ -357,7 +347,7 @@
 					  </div>
 					</div>
 
-                  <div class="">
+                  
                     <ul id="stock_list" class="to_do">
 
 
@@ -378,17 +368,12 @@
 	                                  <div class="modal-footer">
 	                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
 
-										<form class="" action="/dashboard" method="post">
+										<form class="form" action="/dashboard" method="POST">
 											<input type="hidden" name="action" value="removeStock">
 											<input type="hidden" name="ticker" value="<%=myStocks.get(i).get(0) %>">
 											<button type="submit" class="btn btn-primary deletestock" data-dismiss="modal" id="stockremovebutton">Remove Stock</button>
 										</form>
 
-										<form class="" action="/dashboard" method="post">
-											<input type="hidden" name="action" value="removeStock">
-											<input type="hidden" name="ticker" value="<%=myStocks.get(i).get(0) %>">
-											<button type="submit" class="btn btn-primary deletestock" data-dismiss="modal" id="stockremovebutton">Remove Stock</button>
-										</form>
 	                                  </div>
 	                                </div>
 	                              </div>
@@ -414,10 +399,10 @@
 	                             <div style="display:inline;">
 	                              <p style="text-align:left;display:inline;">   Calculate in Portfolio: </p><p style="text-align:left; display:inline; font-weight:bold;">
 	                              	<form name="formname" action="/dashboard" method="POST">
-																		<input type="hidden" name="action" value="portfolioState">
-																		<input type="hidden" name="ticker" value="<%=myStocks.get(i).get(0) %>">
-										 								<button style="text-align:left;display:inline;" type="submit"class="btn btn-light btn-sm"><%=myStocks.get(i).get(5) %></button>
-				           								</form>
+											<input type="hidden" name="action" value="portfolioState">
+											<input type="hidden" name="ticker" value="<%=myStocks.get(i).get(0) %>">
+			 								<button style="text-align:left;display:inline;" type="submit"class="btn btn-light btn-sm"><%=myStocks.get(i).get(5) %></button>
+        							</form>
 	                              </p>
 	                            </div>
 	                        </div>
@@ -431,8 +416,7 @@
                     <!-- Button trigger modal --><br><br>
                     <div class="addstockbutton">
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addStockModal">Add Stock</button>
-                    </div>
-
+                   
 
 
                     <!-- Modal For Add Stock-->
@@ -485,13 +469,8 @@
 		                          </div>
 		                          <div class="modal-footer">
 		                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-<<<<<<< HEAD
 		                          <button type="submit" class="btn btn-primary" data-dismiss="modal" id="stockaddbutton">Add Stock</button>
-=======
-		                        	<button type="submit" class="btn btn-primary" data-dismiss="modal" id="stockaddbutton">Add Stock</button>
->>>>>>> branch 'develop' of https://github.com/CSCI310/project-20203b-groupl-20203.git
-                            </form>
-
+	 						</form>
 
 
                           </div>
@@ -734,7 +713,7 @@
 						  </button>
 					</form> -->
 					<h2>View stocks</h2>
-					<%if(myStocks!=null){for(int i=0; i<view.size(); i++) {%>
+					<%if(view!=null){for(int i=0; i<view.size(); i++) {%>
 						<div style="float: left; width: 85%;">
                            <div style="display:inline;">
                              <p style="text-align:left;display:inline;">   Ticker: </p><p style="text-align:left; display:inline; font-weight:bold;"><%=view.get(i).get(0) %></p>
@@ -758,6 +737,8 @@
                              <br>
                            </div>
 	                    </div>
+	                    <strong id="login_error" style="color:red"><%if(failedAdd != null){ %> <%= failedAdd%> <% } %></strong>
+                           
 
 					<%}}%>
 
