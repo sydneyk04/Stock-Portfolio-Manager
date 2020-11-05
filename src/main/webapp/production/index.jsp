@@ -342,9 +342,9 @@
 
 					<%-- submit csv form --%>
 					<script type="text/javascript">
-						var form = document.getElementById("csvAddForm");
+						var removeForm = document.getElementById("csvAddForm");
 						document.getElementById("csvAddButton").addEventListener("click", function() {
-							form.submit();
+							removeForm.submit();
 						});
 					</script>
 
@@ -368,7 +368,7 @@
 	                                  </div>
 	                                  <div class="modal-footer">
 	                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-																			<form class="" id="removeStock-<%=myStocks.get(i).get(0)%>" action="/dashboard" method="post">
+																			<form class="" id="removeStock-<%=myStocks.get(i).get(0)%>" action="/dashboard" method="POST">
 																				<input type="hidden" name="action" value="removeStock">
 																				<input type="hidden" name="ticker" value="<%=myStocks.get(i).get(0) %>">
 																				<button type="submit" class="btn btn-primary deletestock" data-dismiss="modal" id="stockremovebutton<%=myStocks.get(i).get(0)%>">Remove Stock</button>
@@ -376,9 +376,12 @@
 
 																			<%-- remove stock form --%>
 																			<script type="text/javascript">
+
 																				var form = document.getElementById("removeStock-<%=myStocks.get(i).get(0)%>");
+																				console.log(form);
 																				document.getElementById("stockremovebutton<%=myStocks.get(i).get(0)%>").addEventListener("click", function() {
 																					form.submit();
+																					console.log("called remove");
 																				});
 																			</script>
 	                                  </div>
@@ -412,9 +415,9 @@
 				           								</form>
 																	<%-- toggle stock display form --%>
 																	<script type="text/javascript">
-																		var form = document.getElementById("stockDisplay-<%=myStocks.get(i).get(0)%>");
+																		var toggleForm = document.getElementById("stockDisplay-<%=myStocks.get(i).get(0)%>");
 																		document.getElementById("displayButton-<%=myStocks.get(i).get(0)%>").addEventListener("click", function() {
-																			form.submit();
+																			toggleForm.submit();
 																		});
 																	</script>
 	                              </p>
@@ -490,9 +493,9 @@
                             </form>
 														<%-- add stock form --%>
 														<script type="text/javascript">
-															var form = document.getElementById("addStockForm");
+															var addForm = document.getElementById("addStockForm");
 															document.getElementById("stockaddbutton").addEventListener("click", function() {
-																form.submit();
+																addForm.submit();
 															});
 														</script>
 
@@ -629,99 +632,17 @@
                           updateDoughnut();
                         }, 5000);
 
-                      // Adding a stock JS
-                      $("#stockaddbutton").click(function(){
-                        console.log("stock add attempt")
-                        var exchange = $("#exchange").val();
-                        var ticker = $("#ticker").val();
-                        var shares = $("#shares").val();
-												var purchaseDate = $("#datePurchased").val();
-												var sellDate = $("#dateSold").val();
-                        $("#exchange").val("");
-                        $("#ticker").val("");
-                        $("#shares").val("");
-                        // var appendingHTML = '<li><div style="display:inline;"><button type="button" id="delete1" style="background:lightgrey; border:none; border-radius:5px;" class="flat">X</button><br></div><div style="display:inline;"><p style="text-align:left;display:inline;">   Exchange: </p><p style="text-align:left;display:inline;font-weight: bold;">' + exchange + '</p><br> </div><div style="display:inline;"> <p style="text-align:left;display:inline;">   Ticker: </p><p style="text-align:left;display:inline;font-weight: bold;">' + ticker + '</p><br> </div><div style="display:inline;"><p style="text-align:left;display:inline;">   # Shares: </p><p style="text-align:left;display:inline;font-weight: bold;">' + shares + '</p><br></div></li>';
-                        var appendingHTML = `
-                        <li id="li-${ticker}" class="d-flex">
-                            <div style="display:inline; float: left; width: 15%;">
-                              <button type="button" style="background:lightgrey; border:none; border-radius:5px; color:white;" class="flat" data-toggle="modal" data-target="#removeStockModal">X</button><br>
-                              <!-- Modal for Remove Stock -->
-                              <div class="modal fade" id="removeStockModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                  <div class="modal-content">
-                                    <div class="modal-header">
-                                      <h5 class="modal-title" id="exampleModalLabel">Are you sure you want to remove this stock?</h5>
-                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                      </button>
-                                    </div>
-                                    <div class="modal-footer">
-                                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-																			<form class="" id="removeStock-${ticker}" action="/dashboard" method="post">
-																				<input type="hidden" name="action" value="removeStock">
-																				<input type="hidden" name="ticker" value="${ticker}">
-																				<button type="submit" class="btn btn-primary deletestock" data-dismiss="modal" id="stockremovebutton${ticker}">Remove Stock</button>
-																			</form>																			
-																		</div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div style="float: left; width: 85%;">
-                              <div style="display:inline;">
-                                <p style="text-align:left;display:inline;">   Ticker: </p><p style="text-align:left; display:inline; font-weight:bold;">`+ ticker + `</p>
-                                <br>
-                              </div>
-                              <div style="display:inline;">
-                                <p style="text-align:left;display:inline;">   # Shares: </p><p style="text-align:left; display:inline; font-weight:bold;">`+ shares + `</p>
-                                <br>
-                              </div>
-                              <div style="display:inline;">
-                                <p style="text-align:left;display:inline;">   Purchase Date: </p><p style="text-align:left; display:inline; font-weight:bold;">`+ purchaseDate + `</p>
-                                <br>
-                              </div>
-															<div style="display:inline;">
-                                <p style="text-align:left;display:inline;">   Sell Date: </p><p style="text-align:left; display:inline; font-weight:bold;">`+ sellDate + `</p>
-                                <br>
-                              </div>
-															<div style="display:inline;">
-															 <p style="text-align:left;display:inline;">   Calculate in Portfolio: </p><p style="text-align:left; display:inline; font-weight:bold;">
-																 <form name="formname" action="/dashboard" method="POST">
-																	 <input type="hidden" name="action" value="portfolioState">
-																	 <input type="hidden" name="ticker" value="Yes">
-																	 <button style="text-align:left;display:inline;" type="submit"class="btn btn-light btn-sm">Yes</button>
-																 </form>
-															 </p>
-														 </div>
-                          </div>
-                          <br>
-                          <br>
-                          <br>
-                        </li>
-                        `;
-                        $( "#stock_list" ).append(appendingHTML);
-                        $('#addStockModal').modal('hide');
-                        // This deletes buttons when they click out of the stock
-                        var els = document.getElementsByClassName("deletestock");
-                        for (var i = 0; i < els.length; i++) {
-                            els[i].addEventListener('click', function (e) {
-                              $('#removeStockModal').modal('hide');
-                                console.log("delete stock")
-                                e.preventDefault();
-                                e.target.closest('li').remove();
-                            });
-                        }
-                      });
+
                       // This deletes buttons when they click out of the stock
-                      var els = document.getElementsByClassName("deletestock");
-                      for (var i = 0; i < els.length; i++) {
-                          els[i].addEventListener('click', function (e) {
-                              $('#removeStockModal').modal('hide');
-                              console.log("delete stock")
-                              e.preventDefault();
-                              e.target.closest('li').remove();
-                          });
-                      }
+                      // var els = document.getElementsByClassName("deletestock");
+                      // for (var i = 0; i < els.length; i++) {
+                      //     els[i].addEventListener('click', function (e) {
+                      //         $('#removeStockModal').modal('hide');
+                      //         console.log("delete stock")
+                      //         e.preventDefault();
+                      //         e.target.closest('li').remove();
+                      //     });
+                      // }
                     });
                     // $( document ).ready(function() {
                     //   $( "#stock_list" ).append("");
