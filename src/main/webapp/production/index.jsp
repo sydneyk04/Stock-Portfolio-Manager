@@ -316,6 +316,7 @@
 					        </button>
 					      </div>
 								<form class="" id="csvAddForm" action="/dashboard" method="post">
+<<<<<<< HEAD
 					      <div class="modal-body">
 					      	 <a href="exampleStockCSV.csv" download="example">
 					     	 <button type="button" style="background: darkgrey;" class="btn btn-primary">Download Example CSV</button>
@@ -327,16 +328,31 @@
 									<input type="file" name="File Upload" id="txtFileUpload" accept=".csv" />
 								</fieldset>
 							 </div>
-					      </div>
-					      <div class="modal-footer">
-					        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+						      <div class="modal-body">
+						      	 <a href="exampleStockCSV.csv" download="example">
+						     	 <button type="button" style="background: darkgrey;" class="btn btn-primary">Download Example CSV</button>
+						     	 </a>
 
-
+							      <div id="dvImportSegments" class="fileupload">
+									<fieldset>
+										<legend>Upload your CSV file</legend>
+										<input type="file" name="FileUpload" id="txtFileUpload" accept=".csv" />
+									</fieldset>
+								 </div>
+						      </div>
+						      <div class="modal-footer">
+						        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+										<input type="hidden" name="action" value="addCSV">
 										<button type="submit" class="btn btn-primary" data-dismiss="modal" id="csvAddButton">Upload File</button>
 
 
 					      </div>
-								</form>
+					      <div class="modal-footer">
+					        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+							<button type="submit" class="btn btn-primary" data-dismiss="modal" id="csvAddButton">Upload File</button>
+
+					      </div>
+						</form>
 					    </div>
 					  </div>
 					</div>
@@ -361,6 +377,13 @@
 	                                  </div>
 	                                  <div class="modal-footer">
 	                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+
+										<form class="" action="/dashboard" method="post">
+											<input type="hidden" name="action" value="removeStock">
+											<input type="hidden" name="ticker" value="<%=myStocks.get(i).get(0) %>">
+											<button type="submit" class="btn btn-primary deletestock" data-dismiss="modal" id="stockremovebutton">Remove Stock</button>
+										</form>
+
 										<form class="" action="/dashboard" method="post">
 											<input type="hidden" name="action" value="removeStock">
 											<input type="hidden" name="ticker" value="<%=myStocks.get(i).get(0) %>">
@@ -462,7 +485,11 @@
 		                          </div>
 		                          <div class="modal-footer">
 		                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+<<<<<<< HEAD
 		                          <button type="submit" class="btn btn-primary" data-dismiss="modal" id="stockaddbutton">Add Stock</button>
+=======
+		                        	<button type="submit" class="btn btn-primary" data-dismiss="modal" id="stockaddbutton">Add Stock</button>
+>>>>>>> branch 'develop' of https://github.com/CSCI310/project-20203b-groupl-20203.git
                             </form>
 
 
