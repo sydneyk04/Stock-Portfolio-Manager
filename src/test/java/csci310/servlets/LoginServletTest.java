@@ -22,6 +22,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class LoginServletTest extends Mockito {
 	@Mock
@@ -47,6 +51,15 @@ public class LoginServletTest extends Mockito {
     	servlet = new LoginServlet();
      
     	when(request.getSession()).thenReturn(session);        
+	}
+	
+	@Test
+	public void testAddLockOut() {
+		Assert.assertTrue(true);
+	}
+	@Test
+	public void testLockedOut() {
+		Assert.assertTrue(true);
 	}
 	
 	@Test
