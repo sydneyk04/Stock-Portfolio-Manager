@@ -3,6 +3,7 @@ package cucumber;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -13,6 +14,7 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.interactions.Actions;
 
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
@@ -60,6 +62,8 @@ public class StepDefinitions {
 	/**************************
 	 * LANDING PAGE FEATURE
 	 **************************/
+	
+
 	@Given("I am on the landing page")
 	public void i_am_on_the_landing_page() {
 		driver.get(ROOT_URL);
@@ -116,7 +120,7 @@ public class StepDefinitions {
 	public void i_should_see_text(String text) {
 		assertTrue(driver.getPageSource().contains(text));
 	}
-	
+
 	/**************************
 	 * LOGIN FEATURE
 	 **************************/
@@ -547,11 +551,57 @@ public class StepDefinitions {
 		element.click();
 	}
 	
+	@Then("I click the button to add stocks to my portfolio using a CSV")
+	public void i_click_the_button_to_add_stocks_to_my_portfolio_using_a_CSV() {
+
+		WebElement csvButton = driver.findElement(By.id("addCsv"));
+		csvButton.click();
+	}
+
+	
+	@Then("I choose a CSV file")
+	public void i_choose_a_CSV_file() {
+		WebElement upload = driver.findElement(By.id("txtFileUpload"));
+		File file = new File("../../../../exampleStockCSV.csv");
+		upload.sendKeys(file.getAbsolutePath());
+	}
+	
+	@Then("I click the button to upload the file")
+	public void i_click_the_button_to_upload_the_file() {
+		WebElement csvButton = driver.findElement(By.id("csvAddButton"));
+		csvButton.click();
+	}
+	
+	@Then("I should see the new stocks added")
+	public void i_should_see_the_new_stocks_added() {
+		String managePort = driver.findElement(By.className("col-md-4 col-sm-4 ")).getText();
+		assertTrue(managePort.contains("AMZN"));
+	}
+	
+	@Then("I click the button to download an example CSV file")
+	public void i_click_the_button_to_download_an_example_CSV_file() {
+		WebElement csvButton = driver.findElement(By.id("exampleButton"));
+		csvButton.click();
+	}
+	
+	@Then("I should see a file downloaded")
+	public void i_should_see_a_file_downloaded() {
+		String downloadPath = "D:\\seleniumdownloads";
+		boolean flag = false;
+		File dir = new File(downloadPath);
+		File[] dirContents = dir.listFiles();
+		for(int i= 0; i < dirContents.length; i++) {
+			if(dirContents[i].getName().contains("../../../../exampleStockCSV.csv")) {
+				flag = true;
+			}
+		}
+		assertTrue(flag);
+	}
 	
 	/**************************
 	 * PORTFOLIO PERFORMANCE FEATURE
 	 **************************/
-	@Given("I click the button to change the graph date range")
+	@Given("I click the button to choose a file")
 	public void i_click_the_button_to_change_the_graph_date_range() {
 		WebElement button = driver.findElement(By.id("reportrange"));
 		button.click();

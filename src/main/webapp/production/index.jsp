@@ -303,7 +303,7 @@
                 </div>
                 <div class="x_content">
                 <!-- Button trigger modal -->
-					<button type="button"  style="background:lightgrey; border:none; border-radius:5px; color:#73879C;" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Add by CSV</button>
+					<button type="button" id="addCsv"  style="background:lightgrey; border:none; border-radius:5px; color:#73879C;" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Add by CSV</button>
 
 					<!-- Modal -->
 					<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -318,7 +318,7 @@
 								<form class="" id="csvAddForm" action="/dashboard" method="post">
 						      <div class="modal-body">
 						      	 <a href="exampleStockCSV.csv" download="example">
-						     	 <button type="button" style="background: darkgrey;" class="btn btn-primary">Download Example CSV</button>
+						     	 <button type="button" id="exampleButton" style="background: darkgrey;" class="btn btn-primary">Download Example CSV</button>
 						     	 </a>
 
 							      <div id="dvImportSegments" class="fileupload">
