@@ -2,6 +2,8 @@ package cucumber;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
+import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
 
 import java.io.File;
 import java.util.Random;
@@ -15,6 +17,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
@@ -33,6 +36,7 @@ public class StepDefinitions {
 	private static final String Dashboard_URL = "http://localhost:8080/production/index.jsp";
 
 	private final WebDriver driver = new ChromeDriver();
+	private final WebDriverWait wait = new WebDriverWait(driver, 30);
 	private static String entered_pass;
 	
 	//https://stackoverflow.com/questions/20536566/creating-a-random-string-with-a-z-and-0-9-in-java
@@ -553,22 +557,39 @@ public class StepDefinitions {
 	
 	@Then("I click the button to add stocks to my portfolio using a CSV")
 	public void i_click_the_button_to_add_stocks_to_my_portfolio_using_a_CSV() {
-
-		WebElement csvButton = driver.findElement(By.id("addCsv"));
+		//WebElement csvButton = wait.until(presenceOfElementLocated(By.id("addCsv")));
+		//csseslector("#addCsv")
+		//WebElement csvButton = driver.findElement(By.xpath("//*[@id=\"addCsv\"]"));
+		WebElement csvButton = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/button"));
+		//WebElement csvButton = driver.findElement(By.cssSelector("#addCsv"));
+		Actions action = new Actions(driver); 
+		action.moveToElement(csvButton);
+		csvButton = wait.until(elementToBeClickable(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/button")));
+		//csvButton = wait.until(elementToBeClickable(By.cssSelector("#addCsv")));
+		//WebElement csvButton = driver.findElement(By.id("addCsv"));
 		csvButton.click();
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	
 	@Then("I choose a CSV file")
 	public void i_choose_a_CSV_file() {
-		WebElement upload = driver.findElement(By.id("txtFileUpload"));
-		File file = new File("../../../../exampleStockCSV.csv");
+		WebElement modal = wait.until(presenceOfElementLocated(By.id("exampleModal")));
+		//WebElement upload = driver.findElement(By.id("txtFileUpload"));
+		WebElement upload = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[1]/div/div/form/div[1]/div/fieldset/input"));
+		File file = new File("exampleStockCSV.csv");
 		upload.sendKeys(file.getAbsolutePath());
 	}
 	
 	@Then("I click the button to upload the file")
 	public void i_click_the_button_to_upload_the_file() {
-		WebElement csvButton = driver.findElement(By.id("csvAddButton"));
+		//WebElement csvButton = driver.findElement(By.id("csvAddButton"));
+		WebElement csvButton = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[1]/div/div/form/div[2]/button[2]"));
 		csvButton.click();
 	}
 	
@@ -580,7 +601,9 @@ public class StepDefinitions {
 	
 	@Then("I click the button to download an example CSV file")
 	public void i_click_the_button_to_download_an_example_CSV_file() {
-		WebElement csvButton = driver.findElement(By.id("exampleButton"));
+		WebElement modal = wait.until(presenceOfElementLocated(By.id("exampleModal")));
+		//WebElement csvButton = driver.findElement(By.id("exampleButton"));
+		WebElement csvButton = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[1]/div/div/form/div[1]/a/button"));
 		csvButton.click();
 	}
 	
@@ -745,6 +768,8 @@ public class StepDefinitions {
 		String url = driver.getCurrentUrl();
 		assertTrue(url.equalsIgnoreCase("http://localhost:8080/login.jsp"));
 	}
+	
+	
 	/**************************
 	 * HASH SECURITY FEATURE
 	 **************************/
@@ -755,7 +780,7 @@ public class StepDefinitions {
 		assertTrue(!pwd.equals(hash));
 	}
 
-  /**************************
+    /**************************
 	 * APP SECURITY FEATURE
 	 **************************/
 	@When("I attempt to navigate to the dashboard page")
