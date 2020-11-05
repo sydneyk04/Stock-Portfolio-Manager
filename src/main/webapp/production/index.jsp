@@ -340,6 +340,14 @@
 					  </div>
 					</div>
 
+					<%-- submit csv form --%>
+					<script type="text/javascript">
+						var form = document.getElementById("csvAddForm");
+						document.getElementById("csvAddButton").addEventListener("click", function() {
+							form.submit();
+						});
+					</script>
+
                   <div class="">
                     <ul id="stock_list" class="to_do">
 
@@ -360,11 +368,19 @@
 	                                  </div>
 	                                  <div class="modal-footer">
 	                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-																			<form class="" action="/dashboard" method="post">
+																			<form class="" id="removeStock-<%=myStocks.get(i).get(0)%>" action="/dashboard" method="post">
 																				<input type="hidden" name="action" value="removeStock">
 																				<input type="hidden" name="ticker" value="<%=myStocks.get(i).get(0) %>">
-																				<button type="submit" class="btn btn-primary deletestock" data-dismiss="modal" id="stockremovebutton">Remove Stock</button>
+																				<button type="submit" class="btn btn-primary deletestock" data-dismiss="modal" id="stockremovebutton<%=myStocks.get(i).get(0)%>">Remove Stock</button>
 																			</form>
+
+																			<%-- remove stock form --%>
+																			<script type="text/javascript">
+																				var form = document.getElementById("removeStock-<%=myStocks.get(i).get(0)%>");
+																				document.getElementById("stockremovebutton<%=myStocks.get(i).get(0)%>").addEventListener("click", function() {
+																					form.submit();
+																				});
+																			</script>
 	                                  </div>
 	                                </div>
 	                              </div>
@@ -389,11 +405,18 @@
 	                            </div>
 	                             <div style="display:inline;">
 	                              <p style="text-align:left;display:inline;">   Calculate in Portfolio: </p><p style="text-align:left; display:inline; font-weight:bold;">
-	                              	<form name="formname" action="/dashboard" method="POST">
+	                              	<form name="formname" id="stockDisplay-<%=myStocks.get(i).get(0)%>" action="/dashboard" method="POST">
 																		<input type="hidden" name="action" value="portfolioState">
 																		<input type="hidden" name="ticker" value="<%=myStocks.get(i).get(0) %>">
-										 								<button style="text-align:left;display:inline;" type="submit"class="btn btn-light btn-sm"><%=myStocks.get(i).get(5) %></button>
+										 								<button style="text-align:left;display:inline;" type="submit" id="displayButton-<%=myStocks.get(i).get(0)%>" class="btn btn-light btn-sm"><%=myStocks.get(i).get(5) %></button>
 				           								</form>
+																	<%-- toggle stock display form --%>
+																	<script type="text/javascript">
+																		var form = document.getElementById("stockDisplay-<%=myStocks.get(i).get(0)%>");
+																		document.getElementById("displayButton-<%=myStocks.get(i).get(0)%>").addEventListener("click", function() {
+																			form.submit();
+																		});
+																	</script>
 	                              </p>
 	                            </div>
 	                        </div>
@@ -425,7 +448,7 @@
                             <div class="inputrow">
 
 
-                            <form name="formname" action="/dashboard" method="POST">
+                            <form name="formname" id="addStockForm" action="/dashboard" method="POST">
 	                            <input type="hidden" name="action" value="addStock">
 		                              <div style="float: left; width: 30%; overflow: scroll; margin-right:2.5%; margin-left:2.5%; display:table-cell;">
 		                                <div style="margin-right:5px;">
@@ -465,7 +488,13 @@
 		                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
 		                        	<button type="submit" class="btn btn-primary" data-dismiss="modal" id="stockaddbutton">Add Stock</button>
                             </form>
-
+														<%-- add stock form --%>
+														<script type="text/javascript">
+															var form = document.getElementById("addStockForm");
+															document.getElementById("stockaddbutton").addEventListener("click", function() {
+																form.submit();
+															});
+														</script>
 
 
                           </div>
@@ -628,8 +657,12 @@
                                     </div>
                                     <div class="modal-footer">
                                       <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                      <button type="button" class="btn btn-primary deletestock" id="stockremovebutton">Remove Stock</button>
-                                    </div>
+																			<form class="" id="removeStock-${ticker}" action="/dashboard" method="post">
+																				<input type="hidden" name="action" value="removeStock">
+																				<input type="hidden" name="ticker" value="${ticker}">
+																				<button type="submit" class="btn btn-primary deletestock" data-dismiss="modal" id="stockremovebutton${ticker}">Remove Stock</button>
+																			</form>																			
+																		</div>
                                   </div>
                                 </div>
                               </div>
