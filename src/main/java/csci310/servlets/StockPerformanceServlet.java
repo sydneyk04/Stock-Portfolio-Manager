@@ -77,44 +77,46 @@ public class StockPerformanceServlet extends HttpServlet {
 		jsons.clear();
 		portfolioValHistory.clear();
 		view.clear();
-		
-		String username = session.getAttribute("username").toString();
-		
-		from = Calendar.getInstance();
-		from.add(Calendar.YEAR, -1);
-		now = Calendar.getInstance();
-			
-		try {
-			getUserStock(username);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		//set stocks as session variable for front end
-		session.setAttribute("myStocks", myStocks);
-		session.setAttribute("view", view);
-		session.setAttribute("invalid_error", null);
-		
-		try {
-			calculatePortfolio();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		if(!portfolioValHistory.isEmpty()) {
-			DecimalFormat f = new DecimalFormat("##.00");
-			ArrayList<String> holder = portfolioValHistory.get(portfolioValHistory.size()-1);
-			Double val = Double.parseDouble(holder.get(1));
-			session.setAttribute("portfolioVal", f.format(val));	
-		}
-			
-		//build the graph using the list of stocks
-		buildGraph();
+		if (session.getAttribute("username") != null) {
+        String username = session.getAttribute("username").toString();
+        //default time period is 1Y
+        from = Calendar.getInstance();
+        from.add(Calendar.YEAR, -1);
+        now = Calendar.getInstance();
+  
+      try {
+        getUserStock(username);
+      } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      } catch (InterruptedException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+
+      //set stocks as session variable for front end
+      session.setAttribute("myStocks", myStocks);
+      session.setAttribute("view", view);
+      session.setAttribute("invalid_error", null);
+
+      try {
+        calculatePortfolio();
+      } catch (ParseException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+
+      if(!portfolioValHistory.isEmpty()) {
+        DecimalFormat f = new DecimalFormat("##.00");
+        ArrayList<String> holder = portfolioValHistory.get(portfolioValHistory.size()-1);
+        Double val = Double.parseDouble(holder.get(1));
+        session.setAttribute("portfolioVal", f.format(val));	
+      }
+
+      //build the graph using the list of stocks
+      buildGraph();
+      
+    }
 		
 	}
 	
@@ -138,6 +140,7 @@ public class StockPerformanceServlet extends HttpServlet {
 					}
 				}
 			}
+
 			try {
 				calculatePortfolio();
 			} catch (ParseException e) {
@@ -417,7 +420,64 @@ public class StockPerformanceServlet extends HttpServlet {
 		portfolioJSON = new Gson().toJson(list);
 		System.out.println(portfolioJSON);
 	}
+
+	void buildStockJSONS(Calendar from, Calendar now) throws IOException, ParseException {
+		//Below is the code to build/format json for graph
+		//for loop to run through list of users stocks
+		for(int s=0; s<myStocks.size(); s++) {
+			
+			//this is where we need to deal with time period (Done!)
+			String ticker = (String) myStocks.get(s).get(0);
+			List<HistoricalQuote> history = YahooFinance.get(ticker, from, now, Interval.DAILY).getHistory();
+			
+			//this is for formatting it for the graph that i am using
+			Map<Object,Object> map = null;
+			List<Map<Object,Object>> list = new ArrayList<Map<Object,Object>>();
+			for(int i=0; i<history.size(); i++) {
+				Calendar date = history.get(i).getDate();
+				int year = date.get(Calendar.YEAR);
+				int month = date.get(Calendar.MONTH);
+				int day = date.get(Calendar.DAY_OF_MONTH);
+				DateFormatSymbols symbols = new DateFormatSymbols();
+				String label = day + " " + symbols.getShortMonths()[month] + " " + year;
+				Double close = history.get(i).getClose().doubleValue();
+				Double shares = Double.parseDouble((String) myStocks.get(s).get(2));
+				
+				//check if user owned stock during this point in time add to portfolio value
+				String holder = year + "-" + (month + 1) + "-" + day;
+				DateFormat formatter = new SimpleDateFormat("YYYY-MM-DD");
+				Date datePurchased = null;
+				Date sellDate = null;
+				Date historicalDate = null;
+				boolean owned = false;
+				try {
+					datePurchased = (Date)formatter.parse((String)myStocks.get(s).get(3));
+					sellDate = (Date)formatter.parse((String)myStocks.get(s).get(4));
+					historicalDate = (Date)formatter.parse(holder);
+					
+					owned = sellDate.after(historicalDate);
+					owned = datePurchased.before(historicalDate);
+				} catch (ParseException pe) {
+					System.out.println("ERROR - Failed to format date: " + pe.getLocalizedMessage());
+				}
 	
+				//create portfolio value at that index
+				addPortfolioValues(i, close, shares, label, owned);
+			
+				map = new HashMap<Object,Object>(); 
+				map.put("label", label); 
+				map.put("y", close); 
+				list.add(map);
+			}
+			String stockHistory = new Gson().toJson(list);
+			System.out.println(stockHistory);
+			
+			//add to big list
+			jsons.add(stockHistory);
+		}
+		
+		buildPortfolioJSON();
+	}
 	
 	void buildGraph() throws IOException {
 		//chart to display different stocks

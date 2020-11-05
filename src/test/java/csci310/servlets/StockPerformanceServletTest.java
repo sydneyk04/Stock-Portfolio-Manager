@@ -2,6 +2,7 @@ package csci310.servlets;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -63,6 +64,22 @@ public class StockPerformanceServletTest extends Mockito {
 	
 	@Test (expected = NullPointerException.class)
 	public void testDoGet() throws IOException, ServletException, InterruptedException, ParseException {	
+		when(session.getAttribute("username")).thenReturn("test");
+		StockPerformanceServlet spyServlet = spy(StockPerformanceServlet.class);
+		doNothing().when(spyServlet).getUserStock(anyString());
+		doNothing().when(spyServlet).buildStockJSONS(Calendar.getInstance(), Calendar.getInstance());
+		doNothing().when(spyServlet).buildGraph();
+		spyServlet.doGet(request, response);
+		
+		doThrow(InterruptedException.class).when(spyServlet).getUserStock(anyString());
+		spyServlet.doGet(request, response);
+		
+		doThrow(ParseException.class).when(spyServlet).buildStockJSONS(Calendar.getInstance(), Calendar.getInstance());
+		spyServlet.doGet(request, response);
+		
+		when(session.getAttribute("username")).thenReturn(null);
+		spyServlet.doGet(request, response);
+
 //		when(session.getAttribute("username")).thenReturn("test");
 //		StockPerformanceServlet spyServlet = spy(StockPerformanceServlet.class);
 //		doNothing().when(spyServlet).getUserStock(anyString());
@@ -218,8 +235,9 @@ public class StockPerformanceServletTest extends Mockito {
 		Calendar from = Calendar.getInstance();
 		from.add(Calendar.YEAR, -1);
 		Calendar now = Calendar.getInstance();
-		servlet.from = from;
+    servlet.from = from;
 		servlet.now = now;
+    
 		String stockJSON = servlet.viewStock("TSLA", "1", "2020-01-22", "2020-10-22");
 		assertTrue(stockJSON != null);
 	}
