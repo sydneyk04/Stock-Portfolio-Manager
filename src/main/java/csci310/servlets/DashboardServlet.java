@@ -43,6 +43,7 @@ public class DashboardServlet extends HttpServlet {
 			stockperformanceServlet.doGet(request, response);
 			response.sendRedirect(INDEXPG);
 		} else {
+			stockperformanceServlet.doGet(request, response);
 			response.sendRedirect(INDEXPG);
 		}
 	}
