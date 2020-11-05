@@ -143,6 +143,14 @@ public class StockPerformanceServlet extends HttpServlet {
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
+			
+			if(!portfolioValHistory.isEmpty()) {
+				DecimalFormat f = new DecimalFormat("##.00");
+				ArrayList<String> holder = portfolioValHistory.get(portfolioValHistory.size()-1);
+				Double val = Double.parseDouble(holder.get(1));
+				session.setAttribute("portfolioVal", f.format(val));	
+			}
+			
 			buildGraph();
 		} 
 		
@@ -197,46 +205,85 @@ public class StockPerformanceServlet extends HttpServlet {
 		
 		//this is for adding stock to database
 		else if(action.equals("addStock")) {
-			//code to add a stock to your portfolio
-			System.out.println("add stock function");
-			
-			//kendalls code
+			System.out.println("add stock hi");
+			String username = session.getAttribute("username").toString();
 			String ticker = request.getParameter("ticker");
 			ticker = ticker.toUpperCase();
 			String purchase = request.getParameter("datePurchased");
 			String sell = request.getParameter("dateSold");
 			String numOfShares = request.getParameter("numOfShares");
 			
+			DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+			Calendar datePurchased = Calendar.getInstance();
+			Calendar sellDate = Calendar.getInstance();
 			try {
-				ArrayList<String> stock = new ArrayList<String>();
-				stock.add(ticker);
-				stock.add(YahooFinance.get(ticker).getName());
-				stock.add(numOfShares);
-				stock.add(purchase);
-				stock.add(sell);
-				stock.add("Yes");
-				myStocks.add(stock);
-				session.setAttribute("myStocks", myStocks);
-				calculatePortfolio();
-				buildGraph();
-			//if not valid stock name
-			} catch(NullPointerException e) {
-				session.setAttribute("invalid_error", "Please enter a valid ticker");
-			} catch(FileNotFoundException f) {
-				session.setAttribute("invalid_error", "Please enter a valid ticker");
-			} catch (ParseException e) {
-				e.printStackTrace();
+				datePurchased.setTime(formatter.parse(purchase));
+				if(sell.equals("")) {
+					sellDate.add(Calendar.DAY_OF_YEAR, 1);		
+				} else {
+					sellDate.setTime(formatter.parse(sell));
+				}
+			} catch (ParseException e1) {
+				e1.printStackTrace();
+			}
+			
+			//if you already own the stock dont let user add it and remove from view?
+			for(int i=0; i<myStocks.size(); i++) {
+				if(myStocks.get(i).get(0).equals(ticker)){
+					session.setAttribute("failedAdd", "Uh, oh! Looks like you already own this stock.");
+				}
+			}
+			
+			if(session.getAttribute("failedAdd") == null) {
+				//if its in view remove it
+				for(int i=0; i<view.size(); i++) {
+					if(view.get(i).get(0).equals(ticker)){
+						view.remove(i);
+					}
+				}
+				session.setAttribute("view", view);
+				
+				try {
+					addStock(username, ticker, datePurchased, sellDate, Double.parseDouble(numOfShares));
+				
+					ArrayList<String> stock = new ArrayList<String>();
+					stock.add(ticker);
+					stock.add(YahooFinance.get(ticker).getName());
+					stock.add(numOfShares);
+					stock.add(purchase);
+					stock.add(sell);
+					stock.add("Yes");
+					myStocks.add(stock);
+					session.setAttribute("myStocks", myStocks);
+					calculatePortfolio();
+					buildGraph();
+				} catch(NullPointerException e) {
+					session.setAttribute("failedAdd", "Unable to add this stock");
+				} catch(FileNotFoundException f) {
+					session.setAttribute("failedAdd", "Unable to add this stock");
+				} catch (ParseException e) {
+					session.setAttribute("failedAdd", "Unable to add this stock");
+				}
+			}
+			
+			if(!portfolioValHistory.isEmpty()) {
+				DecimalFormat f = new DecimalFormat("##.00");
+				ArrayList<String> holder = portfolioValHistory.get(portfolioValHistory.size()-1);
+				Double val = Double.parseDouble(holder.get(1));
+				session.setAttribute("portfolioVal", f.format(val));	
 			}
 			
 		}
 		
 		else if(action.equals("removeStock")) {
+			String username = session.getAttribute("username").toString();
 			String ticker = request.getParameter("removeStockTicker");
 			for(int i=0; i<myStocks.size(); i++) {
 				if(myStocks.get(i).get(0).equals(ticker)){
 					myStocks.remove(i);
 				}
 			}
+			removeStock(username, ticker);
 			session.setAttribute("myStocks", myStocks);
 			try {
 				calculatePortfolio();
@@ -244,6 +291,13 @@ public class StockPerformanceServlet extends HttpServlet {
 				e.printStackTrace();
 			}
 			buildGraph();
+			
+			if(!portfolioValHistory.isEmpty()) {
+				DecimalFormat f = new DecimalFormat("##.00");
+				ArrayList<String> holder = portfolioValHistory.get(portfolioValHistory.size()-1);
+				Double val = Double.parseDouble(holder.get(1));
+				session.setAttribute("portfolioVal", f.format(val));	
+			}
 		} 
 		
 		//change calendar time period
