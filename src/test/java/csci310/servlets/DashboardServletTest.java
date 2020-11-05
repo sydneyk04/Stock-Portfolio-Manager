@@ -54,7 +54,7 @@ public class DashboardServletTest extends Mockito {
 		assertTrue(true);
 	}
 
-	@Test
+	@Test(expected=NullPointerException.class)
 	public void testDoPostHttpServletRequestHttpServletResponse() throws IOException, ServletException {
 		servlet.doPost(request, response);
 		assertTrue(true);

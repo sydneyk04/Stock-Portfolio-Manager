@@ -162,7 +162,7 @@
       <div class="main_container">
         <!-- top navigation -->
          <header id="top_nav" style="height:60px; background:#787878;">
-  			<nav id="banner" class="navbar navbar-dark bg-secondary navbar-static-top justify-content-left">
+  			<nav id="banner" class="navbar navbar-dark bg-secondary justify-content-left">
 		      	<div id="banner-content" class="navbar-brand" style="color:white;font-size:45px;font-family: 'Raleway', sans-serif;">
 		      		<a href="index.jsp" style="text-decoration: none; color:white;" >
 				    	USC CS 310 Stock Portfolio Management
@@ -315,21 +315,27 @@
 					          <span aria-hidden="true">&times;</span>
 					        </button>
 					      </div>
-					      <div class="modal-body">
-					      	 <a href="exampleStockCSV.csv" download="example">
-					     	 <button type="button" style="background: darkgrey;" class="btn btn-primary">Download Example CSV</button>
-					     	 </a>
-						      <div id="dvImportSegments" class="fileupload">
-								<fieldset>
-									<legend>Upload your CSV file</legend>
-									<input type="file" name="File Upload" id="txtFileUpload" accept=".csv" />
-								</fieldset>
-							 </div>
+								<form class="" id="csvAddForm" action="/dashboard" method="post">
+						      <div class="modal-body">
+						      	 <a href="exampleStockCSV.csv" download="example">
+						     	 <button type="button" style="background: darkgrey;" class="btn btn-primary">Download Example CSV</button>
+						     	 </a>
+
+							      <div id="dvImportSegments" class="fileupload">
+									<fieldset>
+										<legend>Upload your CSV file</legend>
+										<input type="file" name="FileUpload" id="txtFileUpload" accept=".csv" />
+									</fieldset>
+								 </div>
+						      </div>
+						      <div class="modal-footer">
+						        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+										<input type="hidden" name="action" value="addCSV">
+										<button type="submit" class="btn btn-primary" data-dismiss="modal" id="csvAddButton">Upload File</button>
+
+
 					      </div>
-					      <div class="modal-footer">
-					        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-					        <button type="button" class="btn btn-primary" id="csvAddButton">Upload File</button>
-					      </div>
+								</form>
 					    </div>
 					  </div>
 					</div>
@@ -339,11 +345,11 @@
 
 
                       <%if(myStocks!=null){for(int i=0; i<myStocks.size(); i++){ %>
-	                      <li>
+	                      <li id="li-<%=myStocks.get(i).get(0) %>" class="d-flex">
 	                          <div style="display:inline; float: left; width: 15%;">
-	                            <button type="button" style="background:lightgrey; border:none; border-radius:5px; color:white;" class="flat" data-toggle="modal" data-target="#removeStockModal">X</button><br>
+	                            <button type="button" style="background:lightgrey; border:none; border-radius:5px; color:white;" class="flat" data-toggle="modal" data-target="#removeStockModal-<%=myStocks.get(i).get(0)%>">X</button>
 	                            <!-- Modal for Remove Stock -->
-	                            <div class="modal fade" id="removeStockModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	                            <div class="modal fade" id="removeStockModal-<%=myStocks.get(i).get(0)%>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	                              <div class="modal-dialog" role="document">
 	                                <div class="modal-content">
 	                                  <div class="modal-header">
@@ -354,7 +360,11 @@
 	                                  </div>
 	                                  <div class="modal-footer">
 	                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-	                                    <button type="button" class="btn btn-primary deletestock" id="stockremovebutton">Remove Stock</button>
+																			<form class="" action="/dashboard" method="post">
+																				<input type="hidden" name="action" value="removeStock">
+																				<input type="hidden" name="ticker" value="<%=myStocks.get(i).get(0) %>">
+																				<button type="submit" class="btn btn-primary deletestock" data-dismiss="modal" id="stockremovebutton">Remove Stock</button>
+																			</form>
 	                                  </div>
 	                                </div>
 	                              </div>
@@ -380,17 +390,13 @@
 	                             <div style="display:inline;">
 	                              <p style="text-align:left;display:inline;">   Calculate in Portfolio: </p><p style="text-align:left; display:inline; font-weight:bold;">
 	                              	<form name="formname" action="/dashboard" method="POST">
-										<input type="hidden" name="action" value="portfolioState">
-										<input type="hidden" name="ticker" value="<%=myStocks.get(i).get(0) %>">
-										 <button style="text-align:left;display:inline;" type="submit"class="btn btn-light btn-sm"><%=myStocks.get(i).get(5) %></button>
-				           			</form>
+																		<input type="hidden" name="action" value="portfolioState">
+																		<input type="hidden" name="ticker" value="<%=myStocks.get(i).get(0) %>">
+										 								<button style="text-align:left;display:inline;" type="submit"class="btn btn-light btn-sm"><%=myStocks.get(i).get(5) %></button>
+				           								</form>
 	                              </p>
-	                              <br>
 	                            </div>
 	                        </div>
-	                        <br>
-	                        <br>
-	                        <br>
 
 
 	                      </li>
@@ -403,12 +409,7 @@
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addStockModal">Add Stock</button>
                     </div>
 
-					<div id="dvImportSegments" class="fileupload">
-						<fieldset>
-							<legend>Upload your CSV file</legend>
-							<input type="file" name="File Upload" id="txtFileUpload" accept=".csv" />
-						</fieldset>
-					</div>
+
 
                     <!-- Modal For Add Stock-->
                     <div class="modal fade" id="addStockModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -461,9 +462,8 @@
 		                            </div>
 		                          </div>
 		                          <div class="modal-footer">
-		                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-
-		                        <button type="submit" class="btn btn-primary" id="stockaddbutton">Add to my portfolio</button>
+		                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+		                        	<button type="submit" class="btn btn-primary" data-dismiss="modal" id="stockaddbutton">Add Stock</button>
                             </form>
 
 
@@ -606,12 +606,14 @@
                         var exchange = $("#exchange").val();
                         var ticker = $("#ticker").val();
                         var shares = $("#shares").val();
+												var purchaseDate = $("#datePurchased").val();
+												var sellDate = $("#dateSold").val();
                         $("#exchange").val("");
                         $("#ticker").val("");
                         $("#shares").val("");
                         // var appendingHTML = '<li><div style="display:inline;"><button type="button" id="delete1" style="background:lightgrey; border:none; border-radius:5px;" class="flat">X</button><br></div><div style="display:inline;"><p style="text-align:left;display:inline;">   Exchange: </p><p style="text-align:left;display:inline;font-weight: bold;">' + exchange + '</p><br> </div><div style="display:inline;"> <p style="text-align:left;display:inline;">   Ticker: </p><p style="text-align:left;display:inline;font-weight: bold;">' + ticker + '</p><br> </div><div style="display:inline;"><p style="text-align:left;display:inline;">   # Shares: </p><p style="text-align:left;display:inline;font-weight: bold;">' + shares + '</p><br></div></li>';
                         var appendingHTML = `
-                        <li>
+                        <li id="li-${ticker}" class="d-flex">
                             <div style="display:inline; float: left; width: 15%;">
                               <button type="button" style="background:lightgrey; border:none; border-radius:5px; color:white;" class="flat" data-toggle="modal" data-target="#removeStockModal">X</button><br>
                               <!-- Modal for Remove Stock -->
@@ -634,10 +636,6 @@
                             </div>
                             <div style="float: left; width: 85%;">
                               <div style="display:inline;">
-                                <p style="text-align:left;display:inline;">   Exchange: </p><p style="text-align:left; display:inline; font-weight:bold;">`+ exchange + `</p>
-                                <br>
-                              </div>
-                              <div style="display:inline;">
                                 <p style="text-align:left;display:inline;">   Ticker: </p><p style="text-align:left; display:inline; font-weight:bold;">`+ ticker + `</p>
                                 <br>
                               </div>
@@ -645,6 +643,23 @@
                                 <p style="text-align:left;display:inline;">   # Shares: </p><p style="text-align:left; display:inline; font-weight:bold;">`+ shares + `</p>
                                 <br>
                               </div>
+                              <div style="display:inline;">
+                                <p style="text-align:left;display:inline;">   Purchase Date: </p><p style="text-align:left; display:inline; font-weight:bold;">`+ purchaseDate + `</p>
+                                <br>
+                              </div>
+															<div style="display:inline;">
+                                <p style="text-align:left;display:inline;">   Sell Date: </p><p style="text-align:left; display:inline; font-weight:bold;">`+ sellDate + `</p>
+                                <br>
+                              </div>
+															<div style="display:inline;">
+															 <p style="text-align:left;display:inline;">   Calculate in Portfolio: </p><p style="text-align:left; display:inline; font-weight:bold;">
+																 <form name="formname" action="/dashboard" method="POST">
+																	 <input type="hidden" name="action" value="portfolioState">
+																	 <input type="hidden" name="ticker" value="Yes">
+																	 <button style="text-align:left;display:inline;" type="submit"class="btn btn-light btn-sm">Yes</button>
+																 </form>
+															 </p>
+														 </div>
                           </div>
                           <br>
                           <br>
