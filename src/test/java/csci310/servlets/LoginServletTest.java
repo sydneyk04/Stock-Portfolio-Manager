@@ -124,7 +124,8 @@ public class LoginServletTest extends Mockito {
 		when(request.getParameter("password")).thenReturn("test");   
 		servlet.doPost(request, response);  
 		String result4 = writer.getBuffer().toString();
-		Assert.assertEquals("login success", result4);
+		//Assert.assertEquals("login success", result4);
+		Assert.assertEquals("login fail", result4);
 		
 		doThrow(IOException.class)
 			.when(response)
@@ -132,6 +133,10 @@ public class LoginServletTest extends Mockito {
      
 		servlet.doPost(request, response);  
 		Assert.assertTrue(true);
+		
+		// reset firebase variables
+		FirebaseDatabase.getInstance().getReference().child("users").child("testLockOut").child("loginTime").setValueAsync(0);
+		FirebaseDatabase.getInstance().getReference().child("users").child("testLockOut").child("loginAttempts").setValueAsync(0);
 	}
 	
 	@Test
