@@ -65,7 +65,7 @@ public class LoginServletTest extends Mockito {
 	@Test
 	public void testHashPassword() throws NoSuchAlgorithmException, UnsupportedEncodingException {
 		String pw = "randompassword";
-		String hashedPw = LoginServlet.hashPassword(pw);
+		String hashedPw = servlet.hashPassword(pw);
 
 		// hashing method
 		MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
@@ -115,7 +115,6 @@ public class LoginServletTest extends Mockito {
 		servlet.doPost(request, response);  
 		String result = writer.getBuffer().toString();
 		
-        
 		Assert.assertEquals("login success", result);
 		
 		doThrow(IOException.class)
@@ -171,12 +170,54 @@ public class LoginServletTest extends Mockito {
 		spyServlet.doPost(request, response);
 		result = writer.getBuffer().toString();
 		Assert.assertEquals("login fail", result);
+		
+		when(request.getParameter("username")).thenReturn(null);
+		spyServlet.doPost(request, response);
+		result = writer.getBuffer().toString();
+		Assert.assertEquals("login fail", result);
+		
+		doThrow(NoSuchAlgorithmException.class).when(spyServlet).hashPassword(anyString());
+		when(request.getParameter("username")).thenReturn("johnDoe");
+		when(request.getParameter("password")).thenReturn("test123");
+		spyServlet.doPost(request, response);
+		result = writer.getBuffer().toString();
+		Assert.assertEquals("login fail", result);
+		
+		doThrow(InterruptedException.class).when(spyServlet).authenticate(anyString(), anyString());
+		spyServlet.doPost(request, response);
+		result = writer.getBuffer().toString();
+		Assert.assertEquals("login fail", result);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
-	public void testAuthenticateThrowInterruptedException() throws Exception {
-		when(response.getWriter()).thenThrow(InterruptedException.class);
-		servlet.doPost(request, response);
+	public void testAuthenticate() throws Exception {
+		StringWriter writer = new StringWriter();
+		PrintWriter out = new PrintWriter(writer);
+		LoginServlet spyServlet = spy(servlet);
+        
+		when(response.getWriter()).thenReturn(out);
+		when(request.getParameter("username")).thenReturn(null);
+		when(request.getParameter("password")).thenReturn("test123");
+		
+		doThrow(InterruptedException.class).when(spyServlet).authenticate(anyString(), anyString());
+		spyServlet.doPost(request, response);
+		String result = writer.getBuffer().toString();
+		Assert.assertEquals("login fail - InterruptedException", result);
+	}
+	
+	@Test
+	public void testAuthenticateThrowNoSuchAlgorithmException() throws Exception {
+		StringWriter writer = new StringWriter();
+		PrintWriter out = new PrintWriter(writer);
+		LoginServlet spyServlet = spy(servlet);
+        
+		when(response.getWriter()).thenReturn(out);
+		when(request.getParameter("username")).thenReturn(null);
+		when(request.getParameter("password")).thenReturn("test123");
+		
+		doThrow(NoSuchAlgorithmException.class).when(spyServlet).hashPassword(anyString());		
+		spyServlet.doPost(request, response);
+		String result = writer.getBuffer().toString();
+		Assert.assertEquals("login fail - NoSuchAlgorithmException", result);
 	}
 }
