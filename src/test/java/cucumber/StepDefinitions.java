@@ -704,24 +704,7 @@ public class StepDefinitions {
 		String hash = "ecd71870d1963316a97e3ac3408c9835ad8cf0f3c1bc703527c30265534f75ae";
 		assertTrue(!pwd.equals(hash));
 	}
-	/**************************
-	 * HTTPS SECURITY FEATURE
-	 **************************/
-	@When("I enter in the same URL using https")
-	public void i_enter_in_the_same_URL_using_https() {
-		driver.get(Https_URL);
-	}
-	@Then("I should be redirected to the https landing page")
-	public void i_should_be_redirected_to_the_https_landing_page() {
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		String url = driver.getCurrentUrl();
-		assertTrue(url.equalsIgnoreCase("https://localhost:8080"));
-  }
+
   /**************************
 	 * APP SECURITY FEATURE
 	 **************************/
