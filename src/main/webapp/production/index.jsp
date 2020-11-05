@@ -92,7 +92,7 @@
 
 	<script>
 		/*
-	 	 * App security: Back button pressed - prevent user from going back to dashboard afterwards 
+	 	 * App security: Back button pressed - prevent user from going back to dashboard afterwards
 	 	 */
 		if (window.performance && window.performance.navigation.type == window.performance.navigation.TYPE_BACK_FORWARD) {
 	    	window.location.replace("../login.jsp");
@@ -100,14 +100,14 @@
 
 		$(document).ready(function() {
 			/*
-			 * App security: Auto-logout after 2 min of inactivity 
+			 * App security: Auto-logout after 2 min of inactivity
 			 */
 			$('body').bind('click mousemove keypress scroll resize', function() {
            		lastActiveTime = new Date().getTime();
            	});
-			
+
            	setInterval(checkIdleTime, 1000); // 1 sec
-           	
+
            	function checkIdleTime() {
                 var diff = new Date().getTime() - lastActiveTime;
                 if (diff > 120000) {
@@ -120,16 +120,16 @@
                     });
                 }
            	}
-			
+
 			function resizeTopNav() {
 				$('#top_nav').each(function(){
 				    var inner = $(this).find('nav');
 				    $(this).height(inner.outerHeight(true));
 				});
 			}
-			
+
 			/*
-			 * Window resize: UI changes 
+			 * Window resize: UI changes
 			 */
 			$(window).resize(function() {
 			    if(this.resizeTO) clearTimeout(this.resizeTO);
@@ -141,9 +141,9 @@
 			$(window).bind('resizeEnd', function() {
 				resizeTopNav();
 			});
-			
+
 			/*
-			 * App security: Back button pressed 
+			 * App security: Back button pressed
 			 */
 			$(window).bind("pageshow", function(event) {
 			    if (event.originalEvent.persisted) {
@@ -327,8 +327,8 @@
 							 </div>
 					      </div>
 					      <div class="modal-footer">
-					        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-					        <button type="button" class="btn btn-primary">Upload</button>
+					        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+					        <button type="button" class="btn btn-primary" id="csvAddButton">Upload File</button>
 					      </div>
 					    </div>
 					  </div>
@@ -409,7 +409,7 @@
 							<input type="file" name="File Upload" id="txtFileUpload" accept=".csv" />
 						</fieldset>
 					</div>
-			
+
                     <!-- Modal For Add Stock-->
                     <div class="modal fade" id="addStockModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                       <div class="modal-dialog" role="document">
@@ -700,7 +700,7 @@
                              <br><p style="text-align:left;display:inline;">   # Shares: </p><p style="text-align:left; display:inline; font-weight:bold;"><%=view.get(i).get(2) %></p>
                              <br><p style="text-align:left;display:inline;">   Purchase Date: </p><p style="text-align:left; display:inline; font-weight:bold;"><%=view.get(i).get(3) %></p>
                              <br><p style="text-align:left;display:inline;">   Sell Date: </p><p style="text-align:left; display:inline; font-weight:bold;"><%=view.get(i).get(4) %></p>
-                             
+
                              <form name="formname" action="/dashboard" method="POST">
 	                            <input type="hidden" name="action" value="removeViewStock">
 	                            <input type="hidden" name="removeTicker" value="<%=view.get(i).get(0) %>">
@@ -715,11 +715,11 @@
 	                    </div>
 
 					<%}}%>
-					
+
 					<!-- Button trigger modal --><br><br>
                     <button type="button" data-toggle="modal" data-target="#viewStockModal">Add Stock to Graph</button>
-                   
-					
+
+
 					 <!-- Modal To Add Stock to Graph but Not Portfolio-->
                     <div class="modal fade" id="viewStockModal" tabindex="-1" role="dialog"aria-hidden="true">
                       <div class="modal-dialog" role="document">
@@ -784,8 +784,8 @@
                         </div>
                       </div>
                     </div>
-					
-					
+
+
 					<!-- <form name="formname" action="/dashboard" method="POST">
 						<input type="text" name="ticker" placeholder="Enter a stock you want to view">
 						<input type="hidden" name="action" value="viewStock">
@@ -793,7 +793,7 @@
 							submit
 						</button>
 						<div id="login-error-container">
-				      		
+
            				</div>
 					</form> -->
                  </div>
