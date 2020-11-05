@@ -72,14 +72,14 @@ public class StockPerformanceServletTest extends Mockito {
 		when(session.getAttribute("username")).thenReturn("test");
 		StockPerformanceServlet spyServlet = spy(StockPerformanceServlet.class);
 		doNothing().when(spyServlet).getUserStock(anyString());
-		doNothing().when(spyServlet).buildStockJSONS(Calendar.getInstance(), Calendar.getInstance());
+		doNothing().when(spyServlet).calculatePortfolio();
 		doNothing().when(spyServlet).buildGraph();
 		spyServlet.doGet(request, response);
 		
 		doThrow(InterruptedException.class).when(spyServlet).getUserStock(anyString());
 		spyServlet.doGet(request, response);
 		
-		doThrow(ParseException.class).when(spyServlet).buildStockJSONS(Calendar.getInstance(), Calendar.getInstance());
+		doThrow(ParseException.class).when(spyServlet).calculatePortfolio();
 		spyServlet.doGet(request, response);
 		
 		when(session.getAttribute("username")).thenReturn(null);
@@ -244,8 +244,7 @@ public class StockPerformanceServletTest extends Mockito {
 		stock.add("2020-01-10");
 		stock.add("2020-10-10");
 		stock.add("Yes");
-		servlet.myStocks.add(stock);
-		servlet.view.add(stock);
+		
 		StockPerformanceServlet spyServlet = spy(servlet);
 		
 		when(request.getParameter("action")).thenReturn("addStock");
@@ -253,9 +252,12 @@ public class StockPerformanceServletTest extends Mockito {
 		when(request.getSession()).thenReturn(session);
 		when(session.getAttribute("username")).thenReturn("johnDoe");	
 		when(request.getParameter("ticker")).thenReturn("TSLA");
-		when(request.getParameter(request.getParameter("datePurchased"))).thenReturn("2020-01-10");
-		when(request.getParameter(request.getParameter("dateSold"))).thenReturn("2020-10-10");
-		when(request.getParameter(request.getParameter("numOfShares"))).thenReturn("1");
+		when(request.getParameter("datePurchased")).thenReturn("2020-01-10");
+		when(request.getParameter("dateSold")).thenReturn("2020-10-10");
+		when(request.getParameter("numOfShares")).thenReturn("1");
+		
+		servlet.myStocks.add(stock);
+		servlet.view.add(stock);
 		
 		spyServlet.doPost(request, response);
 		assertNull(session.getAttribute("view"));
@@ -384,7 +386,8 @@ public class StockPerformanceServletTest extends Mockito {
 		when(session.getAttribute("username")).thenReturn("johnDoe");
 		
 		servlet.doGet(request, response);
-		assertThat(servlet.calculatePortfolio(), greaterThan(0));
+		servlet.calculatePortfolio();
+		assertTrue(!servlet.portfolioValHistory.equals(""));
 	}
 	
 	
@@ -423,22 +426,6 @@ public class StockPerformanceServletTest extends Mockito {
 		Calendar from = Calendar.getInstance();
         from.add(Calendar.YEAR, -1);
         assertThat(servlet.addStock("test", "TSLA", from, Calendar.getInstance(), 1).size(), greaterThan(0));
-	}
-	
-	@Test
-	public void testBuildStockJSONS() throws IOException, ParseException {
-		Calendar from = Calendar.getInstance();
-		from.add(Calendar.YEAR, -1);
-		ArrayList<String> stock = new ArrayList<String>();
-		stock.add("TSLA");
-		stock.add("Tesla");
-		stock.add("1");
-		stock.add("2020-01-10");
-		stock.add("2020-10-10");
-		stock.add("Yes");
-		servlet.myStocks.add(stock);
-		servlet.buildStockJSONS(from, Calendar.getInstance());
-		assertThat(servlet.jsons.size(), greaterThan(0));
 	}
 	
 	@Test
