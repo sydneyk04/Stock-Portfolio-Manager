@@ -1,4 +1,6 @@
 <%@ page import="csci310.*" %>
+<%@ page import ="java.util.ArrayList"%>
+<%@ page import ="java.util.List"%>
 <!DOCTYPE html>
 <%
 	// Disable Caching
@@ -12,6 +14,10 @@
 
 	String chart = (String) session.getAttribute("chart");
 	String username = (String) session.getAttribute("username");
+	String invalid_error = (String) session.getAttribute("invalid_error");
+	String portfolioVal = (String) session.getAttribute("portfolioVal");
+	List<ArrayList> view = (List<ArrayList>) session.getAttribute("view");
+	List<ArrayList> myStocks = (List<ArrayList>) session.getAttribute("myStocks");
 %>
 <html lang="en">
   <head>
@@ -50,7 +56,6 @@
     <!-- Custom Theme Style -->
     <link href="../build/css/custom.min.css" rel="stylesheet">
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
   	<!-- Insert these scripts at the bottom of the HTML, but before you use any Firebase services -->
 
@@ -63,7 +68,11 @@
   	<!-- Add Firebase products that you want to use -->
   	<script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-auth.js"></script>
   	<script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-firestore.js"></script>
-	<script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-database.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-database.js"></script>
+
+		<!-- bootstrap-daterangepicker -->
+    <script src="../vendors/moment/min/moment.min.js"></script>
+    <script src="../vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
 
 	<script>
 		var firebaseConfig = {
@@ -81,10 +90,9 @@
 	    firebase.initializeApp(firebaseConfig);
   	</script>
 
-    
 	<script>
 		/*
-	 	 * App security: Back button pressed - prevent user from going back to dashboard afterwards 
+	 	 * App security: Back button pressed - prevent user from going back to dashboard afterwards
 	 	 */
 		if (window.performance && window.performance.navigation.type == window.performance.navigation.TYPE_BACK_FORWARD) {
 	    	window.location.replace("../login.jsp");
@@ -92,14 +100,14 @@
 
 		$(document).ready(function() {
 			/*
-			 * App security: Auto-logout after 2 min of inactivity 
+			 * App security: Auto-logout after 2 min of inactivity
 			 */
 			$('body').bind('click mousemove keypress scroll resize', function() {
            		lastActiveTime = new Date().getTime();
            	});
-			
+
            	setInterval(checkIdleTime, 1000); // 1 sec
-           	
+
            	function checkIdleTime() {
                 var diff = new Date().getTime() - lastActiveTime;
                 if (diff > 120000) {
@@ -112,16 +120,16 @@
                     });
                 }
            	}
-			
+
 			function resizeTopNav() {
 				$('#top_nav').each(function(){
 				    var inner = $(this).find('nav');
 				    $(this).height(inner.outerHeight(true));
 				});
 			}
-			
+
 			/*
-			 * Window resize: UI changes 
+			 * Window resize: UI changes
 			 */
 			$(window).resize(function() {
 			    if(this.resizeTO) clearTimeout(this.resizeTO);
@@ -133,9 +141,9 @@
 			$(window).bind('resizeEnd', function() {
 				resizeTopNav();
 			});
-			
+
 			/*
-			 * App security: Back button pressed 
+			 * App security: Back button pressed
 			 */
 			$(window).bind("pageshow", function(event) {
 			    if (event.originalEvent.persisted) {
@@ -145,9 +153,7 @@
 		});
 
 	</script>
-	
-	<script src="../production/js/csv/importCSV.js"></script>
-	
+		<script src="../production/js/csv/importCSV.js"></script>
 	</head>
 
   <body class="nav-md">
@@ -189,7 +195,6 @@
                     <a class="dropdown-item"  href="../login.jsp"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
                   </div>
                 </li>
-
              </ul>
             </nav>
           </div>
@@ -234,18 +239,50 @@
                 	<!--   <div id="chart_plot_01" class="demo-placeholder"></div> -->
                   <!-- <canvas id="chartContainer" width="1000" height="400"></canvas> -->
                   <div id="chartContainer" style="width: 1000px; height: 400px" ></div>
-                  <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
-				  <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+                  <%-- <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script> --%>
+				  				<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
                   <%= chart%>
                   </script>
-			</div>
+
+									<div class="col-md-3 col-sm-6" id="performanceRangePicker">
+										<p>Choose a range for display</p>
+										<form id="performanceRangeForm" action="/dashboard" method="post">
+											<input type="hidden" name="action" value="changeTimePeriod">
+											<input type="hidden" id="rangeFrom" name="from" value="">
+											<input type="hidden" id="rangeTo" name="to" value="">
+
+											<div class="input-datarange input-group date">
+												<input type="text" class="input-sm form-control" id="datepicker" />
+											</div>
+											<button type="submit" class="btn btn-primary btn-md" name="button">Confirm</button>
+										</form>
+									</div>
+
+									<script type="text/javascript">
+										$('#datepicker').daterangepicker({
+											startDate: moment().subtract(1, 'year'),
+											endDate: moment(),
+											maxDate: moment(),
+											ranges: {
+												'Last Week': [moment().subtract(6, 'days'), moment()],
+												'Last Month': [moment().subtract(29, 'days'), moment()],
+												'Last 3 Months': [moment().subtract(3, 'month'), moment()],
+												'Last Year': [moment().subtract(1, 'year'), moment()]
+											}
+										});
+
+										$('#datepicker').on('apply.daterangepicker', function(ev, picker) {
+											$('input[name=from]').val(picker.startDate.format('YYYY-MM-DD'));
+											$('input[name=to]').val(picker.endDate.format('YYYY-MM-DD'));
+										})
+									</script>
+
+								</div>
                 <div class="col-md-3 col-sm-3  bg-white">
                   <div class="x_title">
-                    <h2>Toggle Graph</h2>
+                    <h2>Portfolio Value Today: $<%if(portfolioVal != null){%><%=portfolioVal%><%}%></h2>
                     <div class="clearfix"></div>
                   </div>
-
-                  <button type="button" class="btn btn-primary" id="spytoggle" style="color:#007bff;background:#fff;">Remove S&P</button>
                 </div>
 
                 <div class="clearfix"></div>
@@ -257,7 +294,7 @@
 
           <div class="row">
 
-            <!-- Start to do list -->
+		 	<!-- Start to do list -->
             <div class="col-md-4 col-sm-4 ">
               <div class="x_panel">
                 <div class="x_title">
@@ -279,7 +316,7 @@
 					        </button>
 					      </div>
 					      <div class="modal-body">
-					      	 <a href="exampleStockCSV.csv" download="exampleStockCSV.csv">
+					      	 <a href="exampleStockCSV.csv" download="example">
 					     	 <button type="button" style="background: darkgrey;" class="btn btn-primary">Download Example CSV</button>
 					     	 </a>
 						      <div id="dvImportSegments" class="fileupload">
@@ -291,7 +328,7 @@
 					      </div>
 					      <div class="modal-footer">
 					        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-					        <button type="button" class="btn btn-primary" data-dismiss="modal" id="csvAddButton">Upload File</button>
+					        <button type="button" class="btn btn-primary" id="csvAddButton">Upload File</button>
 					      </div>
 					    </div>
 					  </div>
@@ -300,16 +337,78 @@
                   <div class="">
                     <ul id="stock_list" class="to_do">
 
+
+                      <%if(myStocks!=null){for(int i=0; i<myStocks.size(); i++){ %>
+	                      <li>
+	                          <div style="display:inline; float: left; width: 15%;">
+	                            <button type="button" style="background:lightgrey; border:none; border-radius:5px; color:white;" class="flat" data-toggle="modal" data-target="#removeStockModal">X</button><br>
+	                            <!-- Modal for Remove Stock -->
+	                            <div class="modal fade" id="removeStockModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	                              <div class="modal-dialog" role="document">
+	                                <div class="modal-content">
+	                                  <div class="modal-header">
+	                                    <h5 class="modal-title" id="exampleModalLabel">Are you sure you want to remove this stock?</h5>
+	                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                                      <span aria-hidden="true">&times;</span>
+	                                    </button>
+	                                  </div>
+	                                  <div class="modal-footer">
+	                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+	                                    <button type="button" class="btn btn-primary deletestock" id="stockremovebutton">Remove Stock</button>
+	                                  </div>
+	                                </div>
+	                              </div>
+	                            </div>
+	                          </div>
+	                          <div style="float: left; width: 85%;">
+	                            <div style="display:inline;">
+	                              <p style="text-align:left;display:inline;">   Ticker: </p><p style="text-align:left; display:inline; font-weight:bold;"><%=myStocks.get(i).get(0) %></p>
+	                              <br>
+	                            </div>
+	                            <div style="display:inline;">
+	                              <p style="text-align:left;display:inline;">   # Shares: </p><p style="text-align:left; display:inline; font-weight:bold;"><%=myStocks.get(i).get(2) %></p>
+	                              <br>
+	                            </div>
+	                            <div style="display:inline;">
+	                              <p style="text-align:left;display:inline;">   Purchase Date: </p><p style="text-align:left; display:inline; font-weight:bold;"><%=myStocks.get(i).get(3) %></p>
+	                              <br>
+	                            </div>
+	                            <div style="display:inline;">
+	                              <p style="text-align:left;display:inline;">   Sell Date: </p><p style="text-align:left; display:inline; font-weight:bold;"><%=myStocks.get(i).get(4) %></p>
+	                              <br>
+	                            </div>
+	                             <div style="display:inline;">
+	                              <p style="text-align:left;display:inline;">   Calculate in Portfolio: </p><p style="text-align:left; display:inline; font-weight:bold;">
+	                              	<form name="formname" action="/dashboard" method="POST">
+										<input type="hidden" name="action" value="portfolioState">
+										<input type="hidden" name="ticker" value="<%=myStocks.get(i).get(0) %>">
+										 <button style="text-align:left;display:inline;" type="submit"class="btn btn-light btn-sm"><%=myStocks.get(i).get(5) %></button>
+				           			</form>
+	                              </p>
+	                              <br>
+	                            </div>
+	                        </div>
+	                        <br>
+	                        <br>
+	                        <br>
+
+
+	                      </li>
+					   <% } }%>
+
                     </ul>
 
-                    <!-- Button trigger modal -->
+                    <!-- Button trigger modal --><br><br>
                     <div class="addstockbutton">
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addStockModal">Add Stock</button>
                     </div>
 
-
-
-
+					<div id="dvImportSegments" class="fileupload">
+						<fieldset>
+							<legend>Upload your CSV file</legend>
+							<input type="file" name="File Upload" id="txtFileUpload" accept=".csv" />
+						</fieldset>
+					</div>
 
                     <!-- Modal For Add Stock-->
                     <div class="modal fade" id="addStockModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -324,47 +423,56 @@
                           <div class="modal-body">
                             <div class="inputrow">
 
-                              <div style="float: left; width: 30%; overflow: scroll; margin-right:2.5%; display:table-cell;">
-                                <div style="margin-right:5px;">
-                                  <p style="text-align:center;">Ticker*</p>
-                                  <input class="stockinput" type="text" id="ticker" name="fname" required>
-                                </div>
-                              </div>
-                              <div style="float: left; width: 30%; overflow: scroll; margin-left:2.5%; display:table-cell;">
-                                <div style="margin-right:5px;">
-                                  <p style="text-align:center;"># Shares*</p>
-                                  <input class="stockinput" type="text" id="shares" name="fname" required>
-                                </div>
-                              </div>
-                            </div>
-                            <br>
-                            <div class="inputrow">
-                              <div style="float: left; width: 30%; overflow: scroll; margin-right:2.5%; display:table-cell;">
-                                <div style="margin-right:5px;">
-                                  <p style="text-align:center;">Date Purchased*</p>
-                                  <input class="stockinput" type="date" id="buyDate" name="fname" required>
-                                </div>
-                              </div>
-                              <div style="float: left; width: 30%; overflow: scroll; margin-right:2.5%; margin-left:2.5%; display:table-cell;">
-                                <div style="margin-right:5px;">
-                                  <p style="text-align:center;">Date Sold</p>
-                                  <input class="stockinput" type="date" id="sellDate" name="fname" required>
-                                </div>
-                              </div>
-                              <div style="float: left; width: 30%; overflow: scroll; margin-left:2.5%; display:table-cell;">
-                                <div style="margin-right:5px;">
-                                  <p style="text-align:center;">Note: date must be in mm/dd/YYYY and only NYSE/NASDAQ supported</p>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                            <button type="button" class="btn btn-primary" data-dismiss="modal" id="stockaddbutton">Add Stock</button>
+
+                            <form name="formname" action="/dashboard" method="POST">
+	                            <input type="hidden" name="action" value="addStock">
+		                              <div style="float: left; width: 30%; overflow: scroll; margin-right:2.5%; margin-left:2.5%; display:table-cell;">
+		                                <div style="margin-right:5px;">
+		                                  <p style="text-align:center;">Ticker*</p>
+		                                  <input class="stockinput" type="text" id="ticker" name="ticker" required>
+		                                </div>
+		                              </div>
+		                              <div style="float: left; width: 30%; overflow: scroll; margin-left:2.5%; display:table-cell;">
+		                                <div style="margin-right:5px;">
+		                                  <p style="text-align:center;"># Shares*</p>
+		                                  <input class="stockinput" type="text" id="shares" name="numOfShares" required>
+		                                </div>
+		                              </div>
+		                            </div>
+		                            <br>
+		                            <div class="inputrow">
+		                              <div style="float: left; width: 30%; overflow: scroll; margin-right:2.5%; display:table-cell;">
+		                                <div style="margin-right:5px;">
+		                                  <p style="text-align:center;">Date Purchased*</p>
+		                                  <input class="stockinput" type="date" id="datePurchased" name="datePurchased" required>
+		                                </div>
+		                              </div>
+		                              <div style="float: left; width: 30%; overflow: scroll; margin-right:2.5%; margin-left:2.5%; display:table-cell;">
+		                                <div style="margin-right:5px;">
+		                                  <p style="text-align:center;">Date Sold</p>
+		                                  <input class="stockinput" type="date" id="dateSold" name="dateSold">
+		                                </div>
+		                              </div>
+		                              <div style="float: left; width: 30%; overflow: scroll; margin-left:2.5%; display:table-cell;">
+		                                <div style="margin-right:5px;">
+		                                  <p style="text-align:center;">Note: date must be in mm/dd/YYYY and only NYSE/NASDAQ supported</p>
+		                                </div>
+		                              </div>
+		                            </div>
+		                          </div>
+		                          <div class="modal-footer">
+		                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+		                        <button type="submit" class="btn btn-primary" id="stockaddbutton">Add to my portfolio</button>
+                            </form>
+
+
+
                           </div>
                         </div>
                       </div>
                     </div>
+
 					 <style>
                       .stockinput{
                         border: none;
@@ -382,7 +490,6 @@
                         justify-content: center;
                         align-items: center;
                         border: none;
-
                       }
                     </style>
                   </div>
@@ -394,10 +501,8 @@
                     //     $( "#stock_list" ).append("<li><p><div class=\"icheckbox_flat-green checked\" style=\"position: relative;\"><input type=\"checkbox\" class=\"flat\" style=\"position: absolute; opacity: 0;\"><ins class=\"iCheck-helper\" style=\"position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;\"></ins></div> Schedule meeting with new client </p></li>");
                     //     $( "#stock_list" ).append('<li><div style="display:inline;"><input type="checkbox" class="flat"><br></div><div style="display:inline;"><p style="text-align:left;display:inline;">   Exchange: </p><p style="text-align:left;display:inline;">Exchange</p><br> </div><div style="display:inline;"> <p style="text-align:left;display:inline;">   Ticker: </p><p style="text-align:left;display:inline;">Exchange</p><br> </div><div style="display:inline;"><p style="text-align:left;display:inline;">   # Shares: </p><p style="text-align:left;display:inline;">Exchange</p><br></div></li>');
                     //   });
-
                     // });
                     $(document).ready(function(){
-
                       function updateDoughnut(){
                         // if ("undefined" != typeof Chart && (console.log("init_chart_doughnut"),
                         // $(".canvasDoughnut"))) {
@@ -425,13 +530,10 @@
                         //     })
                         //}
                         var els = document.getElementsByClassName("canvasDoughnut");
-
                         for (var i = 0; i < els.length; i++) {
                           els[i].style.width = "280";
                           els[i].style.height = "280";
-
                         }
-
                       }
 
                       function getCookie(name) {
@@ -465,13 +567,9 @@
                    	    	document.getElementById("totalPortfolio").innerHTML = "$" + portfolioValue;
                    	    }
                       }
-
                       function updatePorfolio() {
-
                         var apiLink = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=IBM&apikey=60096f09efmsh63c9a7515124324p1b4c57jsna3f56df4cc32";
-
                         console.log(apiLink)
-
                         axios.get(apiLink)
                           .then(function (response) {
                             var responseData = response.data;
@@ -485,7 +583,6 @@
                             console.log(valueJson);
                             valueJson = valueJson["4. close"];
                             var dollarValue = valueJson;
-
                             //document.getElementById("totalPortfolio").innerHTML = "$" + dollarValue;
                             //getTotalPortfolioValue();
                           })
@@ -503,223 +600,80 @@
                           updateDoughnut();
                         }, 5000);
 
-
-											// Adding stock lists
-											var username = '<%=username%>';
-											var ref = firebase.database().ref().child('users').child(username).child('portfolio');
-											ref.once("value")
-												.then(function(snapshot) {
-												if(snapshot.val() != null) {
-													for (const ticker in snapshot.val()) {
-														var appendingHTML = `
-		                        <li id="li-${ticker}">
-		                            <div style="display:inline; float: left; width: 15%;">
-		                              <button type="button" style="background:lightgrey; border:none; border-radius:5px; color:white;" class="flat" data-toggle="modal" data-target="#removeStockModal${ticker}">X</button><br>
-		                              <!-- Modal for Remove Stock -->
-		                              <div class="modal fade" id="removeStockModal${ticker}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		                                <div class="modal-dialog" role="document">
-		                                  <div class="modal-content">
-		                                    <div class="modal-header">
-		                                      <h5 class="modal-title" id="exampleModalLabel">Are you sure you want to remove this stock?</h5>
-		                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-		                                        <span aria-hidden="true">&times;</span>
-		                                      </button>
-		                                    </div>
-		                                    <div class="modal-footer">
-		                                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-		                                      <button type="button" id="fk" class="btn btn-primary deletestock" data-dismiss="modal" id="stockremovebutton">Remove Stock</button>
-		                                    </div>
-		                                  </div>
-		                                </div>
-		                              </div>
-		                            </div>
-		                            <div style="float: left; width: 85%;">
-
-		                              <div style="display:inline;">
-		                                <p style="text-align:left;display:inline;">   Ticker: </p><p style="text-align:left; display:inline; font-weight:bold;">${ticker}</p>
-		                                <br>
-		                              </div>
-		                              <div style="display:inline;">
-		                                <p style="text-align:left;display:inline;">   # Shares: </p><p style="text-align:left; display:inline; font-weight:bold;">${snapshot.val()[ticker]["shares"]}</p>
-		                                <br>
-		                              </div>
-		                          </div>
-		                          <br>
-		                          <br>
-		                          <br>
-
-
-		                        </li>
-
-		                        `;
-														$( "#stock_list" ).append(appendingHTML);
-
-														var els = document.getElementsByClassName("deletestock");
-
-		                        els[els.length-1].addEventListener('click', function (e) {
-		                            $('#removeStockModal').modal('hide');
-		                            console.log("delete stock")
-		                            e.preventDefault();
-																var username = '<%=username%>';
-																var ref = firebase.database().ref().child('users').child(username).child('portfolio').child(ticker);
-																ref.remove();
-																console.log(e.target);
-																e.target.closest('li').remove();
-		                        });
-													}
-												}
-											});
-
-
                       // Adding a stock JS
                       $("#stockaddbutton").click(function(){
                         console.log("stock add attempt")
-                        var name = $("#exchange").val();
+                        var exchange = $("#exchange").val();
                         var ticker = $("#ticker").val();
                         var shares = $("#shares").val();
-												var buyDate = $("#buyDate").val();
-												var sellDate = $("#sellDate").val();
-												var d1 = Date.parse(buyDate);
-												var d2 = Date.parse(sellDate);
-
-												$("#exchange").val("");
+                        $("#exchange").val("");
                         $("#ticker").val("");
                         $("#shares").val("");
-
-												console.log(ticker);
-												if(ticker == "") {
-													alert("ticker is empty");
-													return;
-												}
-												if(shares == "") {
-													alert("number of shares is empty");
-													return;
-												}
-												if(buyDate == "") {
-													alert("buy date is empty");
-													return;
-												}
-												if(sellDate == "") {
-													alert("sell date is empty");
-													return;
-												}
-												if(d1 >= d2) {
-													alert("buy date must precede sell date!");
-												}
-
-												var newData = {
-													name: name,
-													from: buyDate,
-													to: sellDate,
-													shares: shares
-												};
-												var username = '<%=username%>';
-
-												// Update existing node if ticker/from/to match, else add new one
-												var flagToAppendHTML = true;
-												var ref = firebase.database().ref().child('users').child(username).child('portfolio').child(ticker);
-												ref.once("value")
-													.then(function(snapshot) {
-													if(snapshot.val() == null) {
-														ref.update(newData);
-													} else if(snapshot.val()["from"] == buyDate && snapshot.val()["to"] == sellDate) {
-														newData["shares"] = (parseFloat(newData["shares"]) + parseFloat(snapshot.val()["shares"])).toString();
-														ref.update(newData);
-														document.querySelector("#li-"+ticker).getElementsByTagName('p')[5].innerHTML = newData["shares"];
-														flagToAppendHTML = false;
-													} else {
-														ref.update(newData);
-													}
-												}).then(() => {
-													if(flagToAppendHTML) {
-														var appendingHTML = `
-		                        <li id="li-`+ ticker +`">
-		                            <div style="display:inline; float: left; width: 15%;">
-		                              <button type="button" style="background:lightgrey; border:none; border-radius:5px; color:white;" class="flat" data-toggle="modal" data-target="#removeStockModal`+ticker+shares+buyDate+sellDate+`">X</button><br>
-		                              <!-- Modal for Remove Stock -->
-		                              <div class="modal fade" id="removeStockModal`+ticker+shares+buyDate+sellDate+`" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		                                <div class="modal-dialog" role="document">
-		                                  <div class="modal-content">
-		                                    <div class="modal-header">
-		                                      <h5 class="modal-title" id="exampleModalLabel">Are you sure you want to remove this stock?</h5>
-		                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-		                                        <span aria-hidden="true">&times;</span>
-		                                      </button>
-		                                    </div>
-		                                    <div class="modal-footer">
-		                                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-		                                      <button type="button" class="btn btn-primary deletestock" data-dismiss="modal" id="stockremovebutton">Remove Stock</button>
-		                                    </div>
-		                                  </div>
-		                                </div>
-		                              </div>
-		                            </div>
-		                            <div style="float: left; width: 85%;">
-
-		                              <div style="display:inline;">
-		                                <p style="text-align:left;display:inline;">   Ticker: </p><p style="text-align:left; display:inline; font-weight:bold;">`+ ticker + `</p>
-		                                <br>
-		                              </div>
-		                              <div style="display:inline;">
-		                                <p style="text-align:left;display:inline;">   # Shares: </p><p style="text-align:left; display:inline; font-weight:bold;">`+ shares + `</p>
-		                                <br>
-		                              </div>
-		                          </div>
-		                          <br>
-		                          <br>
-		                          <br>
-
-
-		                        </li>
-
-		                        `;
-
-
-		                        $( "#stock_list" ).append(appendingHTML);
-
-		                        $('#addStockModal').modal('hide');
-
-		                        // This deletes buttons when they click out of the stock
-		                        var els = document.getElementsByClassName("deletestock");
-
-		                        els[els.length-1].addEventListener('click', function (e) {
-		                            $('#removeStockModal').modal('hide');
-		                            console.log("delete stock")
-		                            e.preventDefault();
-																var username = '<%=username%>';
-																var ref = firebase.database().ref().child('users').child(username).child('portfolio').child(ticker);
-																ref.remove();
-																e.target.closest('li').remove();
-		                        });
-													}
-												});
-
-
-
-
                         // var appendingHTML = '<li><div style="display:inline;"><button type="button" id="delete1" style="background:lightgrey; border:none; border-radius:5px;" class="flat">X</button><br></div><div style="display:inline;"><p style="text-align:left;display:inline;">   Exchange: </p><p style="text-align:left;display:inline;font-weight: bold;">' + exchange + '</p><br> </div><div style="display:inline;"> <p style="text-align:left;display:inline;">   Ticker: </p><p style="text-align:left;display:inline;font-weight: bold;">' + ticker + '</p><br> </div><div style="display:inline;"><p style="text-align:left;display:inline;">   # Shares: </p><p style="text-align:left;display:inline;font-weight: bold;">' + shares + '</p><br></div></li>';
-
+                        var appendingHTML = `
+                        <li>
+                            <div style="display:inline; float: left; width: 15%;">
+                              <button type="button" style="background:lightgrey; border:none; border-radius:5px; color:white;" class="flat" data-toggle="modal" data-target="#removeStockModal">X</button><br>
+                              <!-- Modal for Remove Stock -->
+                              <div class="modal fade" id="removeStockModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title" id="exampleModalLabel">Are you sure you want to remove this stock?</h5>
+                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                      </button>
+                                    </div>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                      <button type="button" class="btn btn-primary deletestock" id="stockremovebutton">Remove Stock</button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div style="float: left; width: 85%;">
+                              <div style="display:inline;">
+                                <p style="text-align:left;display:inline;">   Exchange: </p><p style="text-align:left; display:inline; font-weight:bold;">`+ exchange + `</p>
+                                <br>
+                              </div>
+                              <div style="display:inline;">
+                                <p style="text-align:left;display:inline;">   Ticker: </p><p style="text-align:left; display:inline; font-weight:bold;">`+ ticker + `</p>
+                                <br>
+                              </div>
+                              <div style="display:inline;">
+                                <p style="text-align:left;display:inline;">   # Shares: </p><p style="text-align:left; display:inline; font-weight:bold;">`+ shares + `</p>
+                                <br>
+                              </div>
+                          </div>
+                          <br>
+                          <br>
+                          <br>
+                        </li>
+                        `;
+                        $( "#stock_list" ).append(appendingHTML);
+                        $('#addStockModal').modal('hide');
+                        // This deletes buttons when they click out of the stock
+                        var els = document.getElementsByClassName("deletestock");
+                        for (var i = 0; i < els.length; i++) {
+                            els[i].addEventListener('click', function (e) {
+                              $('#removeStockModal').modal('hide');
+                                console.log("delete stock")
+                                e.preventDefault();
+                                e.target.closest('li').remove();
+                            });
+                        }
                       });
-
                       // This deletes buttons when they click out of the stock
                       var els = document.getElementsByClassName("deletestock");
-
                       for (var i = 0; i < els.length; i++) {
                           els[i].addEventListener('click', function (e) {
                               $('#removeStockModal').modal('hide');
                               console.log("delete stock")
                               e.preventDefault();
-															var username = '<%=username%>';
-															var ticker = e.target.closest('li').getElementsByTagName('p')[3].innerHTML;
-															var ref = firebase.database().ref().child('users').child(username).child('portfolio').child(ticker);
-															ref.remove();
-															e.target.closest('li').remove();
+                              e.target.closest('li').remove();
                           });
                       }
-
-
-
-
                     });
                     // $( document ).ready(function() {
                     //   $( "#stock_list" ).append("");
@@ -731,6 +685,139 @@
             </div>
             <!-- End to do list -->
 
+			  <div class="col-md-5 col-sm-5s  bg-white">
+			  		<!-- <form name="formname" action="/dashboard" method="POST">
+						<input type="hidden" name="action" value="viewstock">
+						  <button type="button" class="btn btn-primary" id="spytoggle" style="color:#007bff;background:#fff;">
+						  	Click this to go to stock performance graph
+						  </button>
+					</form> -->
+					<h2>View stocks</h2>
+					<%if(myStocks!=null){for(int i=0; i<view.size(); i++) {%>
+						<div style="float: left; width: 85%;">
+                           <div style="display:inline;">
+                             <p style="text-align:left;display:inline;">   Ticker: </p><p style="text-align:left; display:inline; font-weight:bold;"><%=view.get(i).get(0) %></p>
+                             <br><p style="text-align:left;display:inline;">   # Shares: </p><p style="text-align:left; display:inline; font-weight:bold;"><%=view.get(i).get(2) %></p>
+                             <br><p style="text-align:left;display:inline;">   Purchase Date: </p><p style="text-align:left; display:inline; font-weight:bold;"><%=view.get(i).get(3) %></p>
+                             <br><p style="text-align:left;display:inline;">   Sell Date: </p><p style="text-align:left; display:inline; font-weight:bold;"><%=view.get(i).get(4) %></p>
+
+                             <form name="formname" action="/dashboard" method="POST">
+	                            <input type="hidden" name="action" value="removeViewStock">
+	                            <input type="hidden" name="removeTicker" value="<%=view.get(i).get(0) %>">
+	                            <button style="text-align:left; display:inline; font-weight:bold;">Remove</button>
+	                         </form>
+	                         <form name="formname" action="/dashboard" method="POST">
+	                            <input type="hidden" name="action" value="removeViewStock">
+	                       	 	<button type="submit" class="addstockbutton" style="text-align:left; display:inline; font-weight:bold;">Add to Portfolio</button>
+                             </form>
+                             <br>
+                           </div>
+	                    </div>
+
+					<%}}%>
+
+					<!-- Button trigger modal --><br><br>
+                    <button type="button" data-toggle="modal" data-target="#viewStockModal">Add Stock to Graph</button>
+
+
+					 <!-- Modal To Add Stock to Graph but Not Portfolio-->
+                    <div class="modal fade" id="viewStockModal" tabindex="-1" role="dialog"aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title">Add a Stock to your Graph</h5>
+                            <strong id="login_error" style="color:red"><%if(invalid_error != null){ %> <%= invalid_error%> <% } %></strong>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                            <div class="inputrow">
+
+
+                            <form name="formname" action="/dashboard" method="POST">
+	                            <input type="hidden" name="action" value="viewStock">
+		                              <div style="float: left; width: 30%; overflow: scroll; margin-right:2.5%; margin-left:2.5%; display:table-cell;">
+		                                <div style="margin-right:5px;">
+		                                  <p style="text-align:center;">Ticker*</p>
+		                                  <input class="stockinput" type="text" id="ticker" name="ticker" required>
+		                                </div>
+		                              </div>
+		                              <div style="float: left; width: 30%; overflow: scroll; margin-left:2.5%; display:table-cell;">
+		                                <div style="margin-right:5px;">
+		                                  <p style="text-align:center;"># Shares*</p>
+		                                  <input class="stockinput" type="text" id="shares" name="numOfShares" required>
+		                                </div>
+		                              </div>
+		                            </div>
+		                            <br>
+		                            <div class="inputrow">
+		                              <div style="float: left; width: 30%; overflow: scroll; margin-right:2.5%; display:table-cell;">
+		                                <div style="margin-right:5px;">
+		                                  <p style="text-align:center;">Date Purchased*</p>
+		                                  <input class="stockinput" type="date" id="datePurchased" name="datePurchased" required>
+		                                </div>
+		                              </div>
+		                              <div style="float: left; width: 30%; overflow: scroll; margin-right:2.5%; margin-left:2.5%; display:table-cell;">
+		                                <div style="margin-right:5px;">
+		                                  <p style="text-align:center;">Date Sold</p>
+		                                  <input class="stockinput" type="date" id="dateSold" name="dateSold">
+		                                </div>
+		                              </div>
+		                              <div style="float: left; width: 30%; overflow: scroll; margin-left:2.5%; display:table-cell;">
+		                                <div style="margin-right:5px;">
+		                                  <p style="text-align:center;">Note: date must be in mm/dd/YYYY</p>
+		                                </div>
+		                              </div>
+		                            </div>
+		                          </div>
+		                          <div class="modal-footer">
+		                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+		                        <button type="submit" class="btn btn-primary">Add to my Graph</button>
+		                        <br><strong id="login_error" style="color:red"><%if(invalid_error != null){ %> <%= invalid_error%> <% } %></strong>
+                            </form>
+
+
+
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+
+					<!-- <form name="formname" action="/dashboard" method="POST">
+						<input type="text" name="ticker" placeholder="Enter a stock you want to view">
+						<input type="hidden" name="action" value="viewStock">
+						<button type="submit" class="btn btn-primary btn-md justify-content-start">
+							submit
+						</button>
+						<div id="login-error-container">
+
+           				</div>
+					</form> -->
+                 </div>
+
+                   <!--
+                    <div class="modal fade" id="stockPerformanceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Stock Performance Graph</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+
+                          </div>
+                           <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                          </div>
+                      </div>
+                    </div>
+
+ -->
           </div>
 
 
@@ -784,9 +871,7 @@
     <script src="../vendors/jqvmap/dist/jquery.vmap.js"></script>
     <script src="../vendors/jqvmap/dist/maps/jquery.vmap.world.js"></script>
     <script src="../vendors/jqvmap/examples/js/jquery.vmap.sampledata.js"></script>
-    <!-- bootstrap-daterangepicker -->
-    <script src="../vendors/moment/min/moment.min.js"></script>
-    <script src="../vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+
 
     <!-- Custom Theme Scripts -->
     <script src="../build/js/custom.min.js"></script>
