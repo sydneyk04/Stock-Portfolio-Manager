@@ -59,7 +59,8 @@ public class SignUpServlet extends HttpServlet {
 			try{
 				hashPw = hashPassword(password);
 			} catch (NoSuchAlgorithmException e) {
-				e.printStackTrace();
+				out.print("signup fail");
+				return;
 			}
 			createUser(username, hashPw, new MyCallback() {
 				@Override
@@ -91,7 +92,7 @@ public class SignUpServlet extends HttpServlet {
 		
 	}
 	
-	public static String hashPassword(String pw) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+	public String hashPassword(String pw) throws NoSuchAlgorithmException, UnsupportedEncodingException {
 		MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
 		byte[] hash = messageDigest.digest(pw.getBytes("UTF-8"));
 		StringBuffer hexString = new StringBuffer();

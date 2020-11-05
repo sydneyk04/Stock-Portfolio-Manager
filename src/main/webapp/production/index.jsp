@@ -13,6 +13,7 @@
 	}
 
 	String chart = (String) session.getAttribute("chart");
+	String username = (String) session.getAttribute("username");
 	String invalid_error = (String) session.getAttribute("invalid_error");
 	String portfolioVal = (String) session.getAttribute("portfolioVal");
 	List<ArrayList> view = (List<ArrayList>) session.getAttribute("view");
@@ -88,31 +89,25 @@
 	    // Initialize Firebase
 	    firebase.initializeApp(firebaseConfig);
   	</script>
-<<<<<<< HEAD
 
 	<script>
-		// Back button pressed
+		/*
+	 	 * App security: Back button pressed - prevent user from going back to dashboard afterwards 
+	 	 */
 		if (window.performance && window.performance.navigation.type == window.performance.navigation.TYPE_BACK_FORWARD) {
 	    	window.location.replace("../login.jsp");
 		}
 
-		console.log("init importCSV");
-
 		$(document).ready(function() {
-			// auto-logout after 2 min
-			var startTime = new Date().getTime();
-			setInterval(function() {
-				sessionStorage.clear();
-				window.location.replace("../login.jsp");
-			}, 120000);
-
-			// logout after inactive for 2 min
-			/* $('body').bind('click mousemove keypress scroll resize', function() {
+			/*
+			 * App security: Auto-logout after 2 min of inactivity 
+			 */
+			$('body').bind('click mousemove keypress scroll resize', function() {
            		lastActiveTime = new Date().getTime();
            	});
-
-           	setInterval(checkIdleTime, 30000); // 30 sec
-
+			
+           	setInterval(checkIdleTime, 1000); // 1 sec
+           	
            	function checkIdleTime() {
                 var diff = new Date().getTime() - lastActiveTime;
                 if (diff > 120000) {
@@ -124,63 +119,18 @@
                         window.location.reload();}
                     });
                 }
-           	} */
-
-			// The event listener for the file upload
-			document.getElementById('txtFileUpload').addEventListener('change', upload, false);
-
-			// Method that checks that the browser supports the HTML5 File API
-			function browserSupportFileUpload() {
-					var isCompatible = false;
-					if (window.File && window.FileReader && window.FileList && window.Blob) {
-					isCompatible = true;
-					}
-					return isCompatible;
-			}
-
-			// Method that reads and processes the selected file
-			function upload(evt) {
-				console.log("called");
-			if (!browserSupportFileUpload()) {
-					alert('The File APIs are not fully supported in this browser!');
-					} else {
-							var data = null;
-							var file = evt.target.files[0];
-							var reader = new FileReader();
-							reader.readAsText(file);
-							reader.onload = function(event) {
-									var lines = event.target.result.split('\r\n');
-									for(i = 1; i < lines.length; ++i)
-									{
-										var lineElements = lines[i].split(",");
-										var symbol = lineElements[1];
-										var newData = {
-											name: lineElements[2],
-											from: lineElements[3],
-											to: lineElements[4],
-											shares: lineElements[5]
-										}
-										var ref = firebase.database().ref().child('users').child(lineElements[0]).child('portfolio').child(symbol);
-										ref.update(newData);
-										console.log("updated");
-									}
-							};
-							reader.onerror = function() {
-									alert('Unable to read ' + file.fileName);
-							};
-					}
-			}
-
+           	}
+			
 			function resizeTopNav() {
 				$('#top_nav').each(function(){
 				    var inner = $(this).find('nav');
 				    $(this).height(inner.outerHeight(true));
 				});
 			}
-
+			
 			/*
-			 * Window resize: UI changes
-			*/
+			 * Window resize: UI changes 
+			 */
 			$(window).resize(function() {
 			    if(this.resizeTO) clearTimeout(this.resizeTO);
 			    this.resizeTO = setTimeout(function() {
@@ -191,10 +141,10 @@
 			$(window).bind('resizeEnd', function() {
 				resizeTopNav();
 			});
-
+			
 			/*
-			 * App security: Back button pressed
-			*/
+			 * App security: Back button pressed 
+			 */
 			$(window).bind("pageshow", function(event) {
 			    if (event.originalEvent.persisted) {
 			        Alert("User clicked on back button!");
@@ -203,12 +153,8 @@
 		});
 
 	</script>
-  </head>
-=======
-    
 		<script src="../production/js/csv/importCSV.js"></script>
 	</head>
->>>>>>> branch 'develop' of https://github.com/CSCI310/project-20203b-groupl-20203.git
 
   <body class="nav-md">
 
