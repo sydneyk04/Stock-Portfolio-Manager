@@ -54,11 +54,83 @@ public class LoginServletTest extends Mockito {
 	}
 	
 	@Test
-	public void testAddLockOut() {
+	public void testAddLockOut() throws Exception{
+		
+		StringWriter writer = new StringWriter();
+		PrintWriter out = new PrintWriter(writer);
+  
+		when(response.getWriter()).thenReturn(out);
+		when(request.getParameter("username")).thenReturn("testAddLockOut");
+		when(request.getParameter("password")).thenReturn("invalid");   
+
+		servlet.doPost(request, response);  
+		String result = writer.getBuffer().toString();
+		
+		Assert.assertEquals("login fail", result);
+		
+		
+		doThrow(IOException.class)
+			.when(response)
+			.sendRedirect(anyString());
+     
+		servlet.doPost(request, response);  
 		Assert.assertTrue(true);
 	}
 	@Test
-	public void testLockedOut() {
+	public void testLockedOut()throws Exception{
+		
+		StringWriter writer = new StringWriter();
+		PrintWriter out = new PrintWriter(writer);
+  
+		//1
+		when(response.getWriter()).thenReturn(out);
+		when(request.getParameter("username")).thenReturn("testLockOut");
+		when(request.getParameter("password")).thenReturn("invalid");   
+		servlet.doPost(request, response);  
+		String result = writer.getBuffer().toString();
+		Assert.assertEquals("login fail", result);
+		//2
+		when(response.getWriter()).thenReturn(out);
+		when(request.getParameter("username")).thenReturn("testLockOut");
+		when(request.getParameter("password")).thenReturn("invalid");   
+		servlet.doPost(request, response);  
+		String result1 = writer.getBuffer().toString();
+		Assert.assertEquals("login fail", result1);
+		//3
+		when(response.getWriter()).thenReturn(out);
+		when(request.getParameter("username")).thenReturn("testLockOut");
+		when(request.getParameter("password")).thenReturn("invalid");   
+		servlet.doPost(request, response);  
+		String result2 = writer.getBuffer().toString();
+		Assert.assertEquals("login fail", result2);
+		//lockout
+		when(response.getWriter()).thenReturn(out);
+		when(request.getParameter("username")).thenReturn("testLockOut");
+		when(request.getParameter("password")).thenReturn("test");   
+		servlet.doPost(request, response);  
+		String result3 = writer.getBuffer().toString();
+		Assert.assertEquals("login fail", result3);
+		//wait for lockout to be over
+		Thread.sleep(60000);
+		when(response.getWriter()).thenReturn(out);
+		when(request.getParameter("username")).thenReturn("testLockOut");
+		when(request.getParameter("password")).thenReturn("invalid");   
+		servlet.doPost(request, response);  
+		String result5 = writer.getBuffer().toString();
+		Assert.assertEquals("login fail", result5);
+		
+		when(response.getWriter()).thenReturn(out);
+		when(request.getParameter("username")).thenReturn("testLockOut");
+		when(request.getParameter("password")).thenReturn("test");   
+		servlet.doPost(request, response);  
+		String result4 = writer.getBuffer().toString();
+		Assert.assertEquals("login success", result4);
+		
+		doThrow(IOException.class)
+			.when(response)
+			.sendRedirect(anyString());
+     
+		servlet.doPost(request, response);  
 		Assert.assertTrue(true);
 	}
 	

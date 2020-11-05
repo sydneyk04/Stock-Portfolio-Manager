@@ -206,7 +206,7 @@ public class LoginServlet extends HttpServlet {
 			out = response.getWriter();
 			
 			if(username == "lockout") {
-				out.print("login fail");
+				out.print("lockout");
 				session.setAttribute("login_error_message", "Account locked for 1 minute");
 				response.sendRedirect(LOGINPG);
 			}
