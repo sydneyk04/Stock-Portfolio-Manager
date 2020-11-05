@@ -126,6 +126,7 @@ public class StockPerformanceServlet extends HttpServlet {
 		session = request.getSession();
 		System.out.println("Hello from doPost");
 		String action = request.getParameter("action");
+		System.out.println(action);
 		//if user wants to toggle hide/show on graph - DONE
 		if(action.equals("portfolioState")) {
 			System.out.println("Action is 'portfolioState'");
@@ -219,35 +220,49 @@ public class StockPerformanceServlet extends HttpServlet {
 //			Calendar sell = request.getParameter("dateSold");
 //			Double numOfShare = request.getParameter("numOfShare");
 			
-			System.out.println("ticker");
-			//if stock is already in "view" array list and you are adding from there
-			//remove it from view array
-			for(int i=0; i<view.size(); i++) {
-				if(view.get(i).get(0).equals(ticker)){
-					view.remove(i);
-				}
+//			System.out.println("ticker");
+//			//if stock is already in "view" array list and you are adding from there
+//			//remove it from view array
+//			for(int i=0; i<view.size(); i++) {
+//				if(view.get(i).get(0).equals(ticker)){
+//					view.remove(i);
+//				}
+//			}
+//			
+//			//add stock to firebase here
+//			//addStock(username, ticker, purchase, sell, numOfShare);
+//			
+//			//regenerate all the variables
+//			myStocks = new ArrayList<ArrayList>();
+//			jsons = new ArrayList<String>();
+//			portfolioValHistory = new ArrayList<ArrayList>();
+//			portfolioJSON = "";
+//			
+//			//recalculate the portfolio
+//			try {
+//				calculatePortfolio();
+//			} catch (ParseException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//					
+//			//build the graph using the list of stocks
+//			buildGraph();
+			
+		}
+		//user remove stock
+		else if(action.equals("removeStock")) {
+			String ticker = request.getParameter("ticker");
+		}
+		else if(action.equals("addCSV")) {
+			System.out.println("!!!!!!!!!!");
+			String line = "", splitBy = ",";
+			BufferedReader br = new BufferedReader(new FileReader(request.getParameter("FileUpload")));
+			line = br.readLine();
+			while((line = br.readLine()) != null) {
+				String [] info = line.split(splitBy);
+				System.out.println(info[0] + info[1] + info[2] + info[3]);
 			}
-			
-			//add stock to firebase here
-			//addStock(username, ticker, purchase, sell, numOfShare);
-			
-			//regenerate all the variables
-			myStocks = new ArrayList<ArrayList>();
-			jsons = new ArrayList<String>();
-			portfolioValHistory = new ArrayList<ArrayList>();
-			portfolioJSON = "";
-			
-			//recalculate the portfolio
-			try {
-				calculatePortfolio();
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-					
-			//build the graph using the list of stocks
-			buildGraph();
-			
 		}
 		//change calendar time period
 		else if(action.equals("changeTimePeriod")){
