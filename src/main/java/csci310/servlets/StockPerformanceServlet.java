@@ -54,7 +54,7 @@ import yahoofinance.histquotes.Interval;
 public class StockPerformanceServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	static PrintWriter out;
-	private HttpSession session = null;
+	HttpSession session = null;
 	Calendar from;
 	Calendar now;
 	Boolean check = false;
@@ -167,6 +167,7 @@ public class StockPerformanceServlet extends HttpServlet {
 			}
 			
 			if(session.getAttribute("invalid_error") == null) {
+				System.out.println("invalid_error is null");
 				try {
 					ArrayList<String> holder = new ArrayList<String>();
 					String json = viewStock(ticker, numOfShares, purchase, sell);
@@ -535,7 +536,6 @@ public class StockPerformanceServlet extends HttpServlet {
 				"				chart.render();\n" + 
 //				"			}\n" + 
 				"		</script>";
-		
 		session.setAttribute("chart", theChart);
 		
 	}
