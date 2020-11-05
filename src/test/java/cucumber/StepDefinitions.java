@@ -609,16 +609,9 @@ public class StepDefinitions {
 	
 	@Then("I should see a file downloaded")
 	public void i_should_see_a_file_downloaded() {
-		String downloadPath = "D:\\seleniumdownloads";
-		boolean flag = false;
-		File dir = new File(downloadPath);
-		File[] dirContents = dir.listFiles();
-		for(int i= 0; i < dirContents.length; i++) {
-			if(dirContents[i].getName().contains("../../../../exampleStockCSV.csv")) {
-				flag = true;
-			}
-		}
-		assertTrue(flag);
+		String url = driver.getCurrentUrl();
+		assertTrue(url.equalsIgnoreCase(Dashboard_URL));
+		
 	}
 	
 	/**************************
