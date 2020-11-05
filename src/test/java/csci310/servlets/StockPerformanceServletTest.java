@@ -61,7 +61,7 @@ public class StockPerformanceServletTest extends Mockito {
 //		servlet.myStocks.add(stock);
     }
 	
-	@Test (expected = NullPointerException.class)
+	@Test
 	public void testDoGet() throws IOException, ServletException, InterruptedException, ParseException {	
 //		when(session.getAttribute("username")).thenReturn("test");
 //		StockPerformanceServlet spyServlet = spy(StockPerformanceServlet.class);
