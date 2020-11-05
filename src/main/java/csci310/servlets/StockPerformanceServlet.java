@@ -200,46 +200,52 @@ public class StockPerformanceServlet extends HttpServlet {
 			//code to add a stock to your portfolio
 			System.out.println("add stock function");
 			
-			//grab all the info from the frontend
-			String username = session.getAttribute("username").toString();
+			//kendalls code
 			String ticker = request.getParameter("ticker");
+			ticker = ticker.toUpperCase();
 			String purchase = request.getParameter("datePurchased");
 			String sell = request.getParameter("dateSold");
-			String numOfShare = request.getParameter("numOfShare");
-//			Calendar purchase = request.getParameter("datePurchased");
-//			Calendar sell = request.getParameter("dateSold");
-//			Double numOfShare = request.getParameter("numOfShare");
+			String numOfShares = request.getParameter("numOfShares");
 			
-			System.out.println("ticker");
-			//if stock is already in "view" array list and you are adding from there
-			//remove it from view array
-			for(int i=0; i<view.size(); i++) {
-				if(view.get(i).get(0).equals(ticker)){
-					view.remove(i);
-				}
+			try {
+				ArrayList<String> stock = new ArrayList<String>();
+				stock.add(ticker);
+				stock.add(YahooFinance.get(ticker).getName());
+				stock.add(numOfShares);
+				stock.add(purchase);
+				stock.add(sell);
+				stock.add("Yes");
+				myStocks.add(stock);
+				session.setAttribute("myStocks", myStocks);
+				calculatePortfolio();
+				buildGraph();
+			//if not valid stock name
+			} catch(NullPointerException e) {
+				session.setAttribute("invalid_error", "Please enter a valid ticker");
+			} catch(FileNotFoundException f) {
+				session.setAttribute("invalid_error", "Please enter a valid ticker");
+			} catch (ParseException e) {
+				e.printStackTrace();
 			}
 			
-			//add stock to firebase here
-			//addStock(username, ticker, purchase, sell, numOfShare);
-			
-			//regenerate all the variables
-			myStocks = new ArrayList<ArrayList>();
-			jsons = new ArrayList<String>();
-			portfolioValHistory = new ArrayList<ArrayList>();
-			portfolioJSON = "";
-			
-			//recalculate the portfolio
+		}
+		
+		else if(action.equals("removeStock")) {
+			String ticker = request.getParameter("removeStockTicker");
+			for(int i=0; i<myStocks.size(); i++) {
+				if(myStocks.get(i).get(0).equals(ticker)){
+					myStocks.remove(i);
+				}
+			}
+			session.setAttribute("myStocks", myStocks);
 			try {
 				calculatePortfolio();
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-					
-			//build the graph using the list of stocks
 			buildGraph();
-			
-		}
+		} 
+		
 		//change calendar time period
 		else if(action.equals("changeTimePeriod")){
 			//these are of type "Calendar"

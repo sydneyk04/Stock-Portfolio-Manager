@@ -400,7 +400,7 @@
 
                     <!-- Button trigger modal --><br><br>
                     <div class="addstockbutton">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addStockModal">Add Stock</button>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addStockModal">Add Stock to Portfolio</button>
                     </div>
 
 					<div id="dvImportSegments" class="fileupload">
@@ -707,7 +707,7 @@
 	                            <button style="text-align:left; display:inline; font-weight:bold;">Remove</button>
 	                         </form>
 	                         <form name="formname" action="/dashboard" method="POST">
-	                            <input type="hidden" name="action" value="removeViewStock">
+	                            <input type="hidden" name="action" value="addStock">
 	                       	 	<button type="submit" class="addstockbutton" style="text-align:left; display:inline; font-weight:bold;">Add to Portfolio</button>
                              </form>
                              <br>
