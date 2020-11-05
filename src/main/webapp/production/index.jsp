@@ -403,20 +403,13 @@
                     <button type="button" class="addstockbutton" data-toggle="modal" data-target="#addStockModal">Add Stock</button>
                     </div>
 
-<<<<<<< HEAD
 					<div id="dvImportSegments" class="fileupload">
 						<fieldset>
 							<legend>Upload your CSV file</legend>
 							<input type="file" name="File Upload" id="txtFileUpload" accept=".csv" />
 						</fieldset>
 					</div>
-
-=======
-										
->>>>>>> branch 'develop' of https://github.com/CSCI310/project-20203b-groupl-20203.git
-
-					
-					
+			
                     <!-- Modal For Add Stock-->
                     <div class="modal fade" id="addStockModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                       <div class="modal-dialog" role="document">
