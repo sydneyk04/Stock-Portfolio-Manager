@@ -145,10 +145,11 @@ public class StockPerformanceServlet extends HttpServlet {
 
 			try {
 				calculatePortfolio();
+				buildGraph();
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-			buildGraph();
+		
 		} 
 		
 		else if(action.equals("toggleSP")) {
@@ -253,11 +254,6 @@ public class StockPerformanceServlet extends HttpServlet {
 			removeStock(username, ticker);
 			session.setAttribute("myStocks", myStocks);
 
-			//regenerate all the variables
-			myStocks = new ArrayList<ArrayList>();
-			jsons = new ArrayList<String>();
-			portfolioValHistory = new ArrayList<ArrayList>();
-			portfolioJSON = "";
 			
 			//recalculate the portfolio
 			try {
