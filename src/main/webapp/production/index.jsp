@@ -241,6 +241,10 @@
                 <div class="col-md-3 col-sm-3  bg-white">
                   <div class="x_title">
                     <h2>Portfolio Value Today: $<%if(portfolioVal != null){%><%=portfolioVal%><%}%></h2>
+                    <form name="formname" id="toggleSP" action="/dashboard" method="POST">
+						<input type="hidden" name="action" value="toggleSP">
+						<br><br><button style="text-align:left;display:inline;" type="submit" id="displayButton" class="btn btn-light btn-sm">Toggle S&P</button>
+	  				</form>
                     <div class="clearfix"></div>
                   </div>
                 </div>
@@ -263,7 +267,7 @@
                 </div>
                 <div class="x_content">
                 <!-- Button trigger modal -->
-					<button type="button" id="addCsv"  style="background:lightgrey; border:none; border-radius:5px; color:#73879C;" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Add by CSV</button>
+					<button type="button"  style="background:lightgrey; border:none; border-radius:5px; color:#73879C;" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Add by CSV</button>
 
 					<!-- Modal -->
 					<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -275,19 +279,11 @@
 					          <span aria-hidden="true">&times;</span>
 					        </button>
 					      </div>
-<<<<<<< HEAD
-								<form class="" id="csvAddForm" action="/dashboard" method="post">
-						      <div class="modal-body">
-						      	 <a href="exampleStockCSV.csv" download="example">
-						     	 <button type="button" id="exampleButton" style="background: darkgrey;" class="btn btn-primary">Download Example CSV</button>
-						     	 </a>
-=======
 						  <form class="" id="csvAddForm" action="/dashboard" method="post">
 							 <div class="modal-body">
 					      	 <a href="exampleStockCSV.csv" download="example">
 					     	 <button type="button" style="background: darkgrey;" class="btn btn-primary">Download Example CSV</button>
 					     	 </a>
->>>>>>> branch 'develop' of https://github.com/CSCI310/project-20203b-groupl-20203.git
 
 						      <div id="dvImportSegments" class="fileupload">
 								<fieldset>
@@ -301,10 +297,6 @@
 							 <input type="hidden" name="action" value="addCSV">
 							 <button type="submit" class="btn btn-primary" data-dismiss="modal" id="csvAddButton">Upload File</button>
 						  </div>
-					      <div class="modal-footer">
-					        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-							<button type="submit" class="btn btn-primary" data-dismiss="modal" id="csvAddButton">Upload File</button>
-					      </div>
 						</form>
 					    </div>
 					  </div>
@@ -320,7 +312,7 @@
 
                   <div class="">
                     <ul id="stock_list" class="to_do">
-                      <%if(myStocks!=null){for(int i=0; i<myStocks.size(); i++){ %>
+                      <%if(myStocks!=null){for(int i=1; i<myStocks.size(); i++){ %>
 	                      <li id="li-<%=myStocks.get(i).get(0) %>" class="d-flex">
 	                          <div style="display:inline; float: left; width: 15%;">
 	                            <button type="button" style="background:lightgrey; border:none; border-radius:5px; color:white;" class="flat" data-toggle="modal" data-target="#removeStockModal-<%=myStocks.get(i).get(0)%>">X</button>
@@ -402,10 +394,10 @@
 
                     <!-- Button trigger modal --><br><br>
                     <div class="addstockbutton">
-
                     <strong id="login_error" style="color:red"><%if(failedAdd != null){ %> <%= failedAdd%> <% } %></strong>
                     <br><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addStockModal">Add Stock</button>
                    
+
 
                     <!-- Modal For Add Stock-->
                     <div class="modal fade" id="addStockModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

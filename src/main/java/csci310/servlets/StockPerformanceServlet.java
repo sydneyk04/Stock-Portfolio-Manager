@@ -54,7 +54,7 @@ import yahoofinance.histquotes.Interval;
 public class StockPerformanceServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	static PrintWriter out;
-	private HttpSession session = null;
+	HttpSession session = null;
 	Calendar from;
 	Calendar now;
 	Boolean check = false;
@@ -83,41 +83,43 @@ public class StockPerformanceServlet extends HttpServlet {
         from = Calendar.getInstance();
         from.add(Calendar.YEAR, -1);
         now = Calendar.getInstance();
-  
-      try {
-        getUserStock(username);
-      } catch (IOException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      } catch (InterruptedException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
+ 
+	        try {
+	        	getUserStock(username);
+	        } catch (IOException e) {
+	        	out.print("stock fail - IOException");
+	        	return;
+	        } catch (InterruptedException e) {
+	        	out.print("stock fail - InterruptedException");
+	        	return;
+	        } catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	
+	        //set stocks as session variable for front end
+	        session.setAttribute("myStocks", myStocks);
+	        session.setAttribute("view", view);
+	        session.setAttribute("invalid_error", null);
+	
+	        try {
+	        	calculatePortfolio();
+	        } catch (ParseException e) {
+	        	out.print("stock fail - ParseException");
+	        	return;
+	        }
+	
+	        if (!portfolioValHistory.isEmpty()) {
+	        	DecimalFormat f = new DecimalFormat("##.00");
+	        	ArrayList<String> holder = portfolioValHistory.get(portfolioValHistory.size()-1);
+	        	Double val = Double.parseDouble(holder.get(1));
+	        	session.setAttribute("portfolioVal", f.format(val));	
+	        }
+	
+	        //build the graph using the list of stocks
+	        buildGraph();    
+		}
 
-      //set stocks as session variable for front end
-      session.setAttribute("myStocks", myStocks);
-      session.setAttribute("view", view);
-      session.setAttribute("invalid_error", null);
-
-      try {
-        calculatePortfolio();
-      } catch (ParseException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-
-      if(!portfolioValHistory.isEmpty()) {
-        DecimalFormat f = new DecimalFormat("##.00");
-        ArrayList<String> holder = portfolioValHistory.get(portfolioValHistory.size()-1);
-        Double val = Double.parseDouble(holder.get(1));
-        session.setAttribute("portfolioVal", f.format(val));	
-      }
-
-      //build the graph using the list of stocks
-      buildGraph();
-      
-    }
-		
 	}
 	
 	@Override
@@ -146,6 +148,18 @@ public class StockPerformanceServlet extends HttpServlet {
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
+			buildGraph();
+		} 
+		
+		else if(action.equals("toggleSP")) {
+			System.out.println("Action is 'toggleSP'");
+			if(myStocks.get(0).get(5).equals("Yes")) {
+				myStocks.get(0).set(5, "No");
+			}else {
+				myStocks.get(0).set(5, "Yes");
+			}
+
+			
 			buildGraph();
 		} 
 		
@@ -224,7 +238,21 @@ public class StockPerformanceServlet extends HttpServlet {
 			
 			//add stock to firebase here
 			//addStock(username, ticker, purchase, sell, numOfShare);
-			
+	
+		}
+		
+		else if(action.equals("removeStock")) {
+			System.out.println("hi from remove stock");
+			String username = session.getAttribute("username").toString();
+			String ticker = request.getParameter("removeStockTicker");
+			for(int i=0; i<myStocks.size(); i++) {
+				if(myStocks.get(i).get(0).equals(ticker)){
+					myStocks.remove(i);
+				}
+			}
+			removeStock(username, ticker);
+			session.setAttribute("myStocks", myStocks);
+
 			//regenerate all the variables
 			myStocks = new ArrayList<ArrayList>();
 			jsons = new ArrayList<String>();
@@ -242,6 +270,26 @@ public class StockPerformanceServlet extends HttpServlet {
 			//build the graph using the list of stocks
 			buildGraph();
 			
+			if(!portfolioValHistory.isEmpty()) {
+				DecimalFormat f = new DecimalFormat("##.00");
+				ArrayList<String> holder = portfolioValHistory.get(portfolioValHistory.size()-1);
+				System.out.println(holder);
+				Double val = Double.parseDouble(holder.get(1));
+				session.setAttribute("portfolioVal", f.format(val));	
+			} else {
+				session.setAttribute("portfolioVal", "0.00");	
+			}
+		} 
+		
+		else if(action.equals("addCSV")) {
+			System.out.println("!!!!!!!!!!");
+			String line = "", splitBy = ",";
+			BufferedReader br = new BufferedReader(new FileReader(request.getParameter("FileUpload")));
+			line = br.readLine();
+			while((line = br.readLine()) != null) {
+				String [] info = line.split(splitBy);
+				System.out.println(info[0] + info[1] + info[2] + info[3]);
+			}
 		}
 		//change calendar time period
 		else if(action.equals("changeTimePeriod")){
@@ -258,6 +306,18 @@ public class StockPerformanceServlet extends HttpServlet {
 			jsons = new ArrayList<String>();
 			portfolioValHistory = new ArrayList<ArrayList>();
 			portfolioJSON = "";
+			
+			//fix s and p
+			myStocks.get(0).set(3,fromString);
+			myStocks.get(0).set(4,toString);
+			String temp = "";
+			try {
+				temp = viewStock("^GSPC", "1", fromString, toString);
+			} catch (ParseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			myStocks.get(0).set(6,temp);
 			
 			//pass the new dates into build stock jsons
 			try {
@@ -340,7 +400,7 @@ public class StockPerformanceServlet extends HttpServlet {
 	void calculatePortfolio() throws IOException, ParseException {
 		portfolioValHistory = new ArrayList<ArrayList>();
 		//for loop to run through list of users stocks
-		for(int s=0; s<myStocks.size(); s++) {
+		for(int s=1; s<myStocks.size(); s++) {
 			String ticker = (String) myStocks.get(s).get(0);
 			List<HistoricalQuote> history = YahooFinance.get(ticker, from, now, Interval.DAILY).getHistory();
 			
@@ -404,7 +464,6 @@ public class StockPerformanceServlet extends HttpServlet {
 		}
 	}
 	
-	
 	void buildPortfolioJSON() throws IOException {
 		Map<Object,Object> map = null;
 		List<Map<Object,Object>> list = new ArrayList<Map<Object,Object>>();
@@ -421,64 +480,7 @@ public class StockPerformanceServlet extends HttpServlet {
 		System.out.println(portfolioJSON);
 	}
 
-	void buildStockJSONS(Calendar from, Calendar now) throws IOException, ParseException {
-		//Below is the code to build/format json for graph
-		//for loop to run through list of users stocks
-		for(int s=0; s<myStocks.size(); s++) {
-			
-			//this is where we need to deal with time period (Done!)
-			String ticker = (String) myStocks.get(s).get(0);
-			List<HistoricalQuote> history = YahooFinance.get(ticker, from, now, Interval.DAILY).getHistory();
-			
-			//this is for formatting it for the graph that i am using
-			Map<Object,Object> map = null;
-			List<Map<Object,Object>> list = new ArrayList<Map<Object,Object>>();
-			for(int i=0; i<history.size(); i++) {
-				Calendar date = history.get(i).getDate();
-				int year = date.get(Calendar.YEAR);
-				int month = date.get(Calendar.MONTH);
-				int day = date.get(Calendar.DAY_OF_MONTH);
-				DateFormatSymbols symbols = new DateFormatSymbols();
-				String label = day + " " + symbols.getShortMonths()[month] + " " + year;
-				Double close = history.get(i).getClose().doubleValue();
-				Double shares = Double.parseDouble((String) myStocks.get(s).get(2));
-				
-				//check if user owned stock during this point in time add to portfolio value
-				String holder = year + "-" + (month + 1) + "-" + day;
-				DateFormat formatter = new SimpleDateFormat("YYYY-MM-DD");
-				Date datePurchased = null;
-				Date sellDate = null;
-				Date historicalDate = null;
-				boolean owned = false;
-				try {
-					datePurchased = (Date)formatter.parse((String)myStocks.get(s).get(3));
-					sellDate = (Date)formatter.parse((String)myStocks.get(s).get(4));
-					historicalDate = (Date)formatter.parse(holder);
-					
-					owned = sellDate.after(historicalDate);
-					owned = datePurchased.before(historicalDate);
-				} catch (ParseException pe) {
-					System.out.println("ERROR - Failed to format date: " + pe.getLocalizedMessage());
-				}
-	
-				//create portfolio value at that index
-				addPortfolioValues(i, close, shares, label, owned);
-			
-				map = new HashMap<Object,Object>(); 
-				map.put("label", label); 
-				map.put("y", close); 
-				list.add(map);
-			}
-			String stockHistory = new Gson().toJson(list);
-			System.out.println(stockHistory);
-			
-			//add to big list
-			jsons.add(stockHistory);
-		}
-		
-		buildPortfolioJSON();
-	}
-	
+
 	void buildGraph() throws IOException {
 		//chart to display different stocks
 		String theChart =  "<script type=\"text/javascript\">\n" + 
@@ -511,6 +513,17 @@ public class StockPerformanceServlet extends HttpServlet {
 						"dataPoints :" + portfolioJSON +
 					"},\n";	
 		
+		//add the sp
+		if(myStocks.get(0).get(5).equals("Yes")) {
+			theChart += "{\n" +
+							"type: \"line\",\n" + 
+							"name: \"S&P\",\n" + 
+							"showInLegend: true,\n" +
+							"yValueFormatString: \"$##0.00\",\n" + 
+							"dataPoints :" + myStocks.get(0).get(6) +
+						"},\n";	
+		}
+
 		//add any stocks you want to view
 		for(int i=0; i<view.size(); i++) {
 			theChart += "{\n" +
@@ -565,10 +578,28 @@ public class StockPerformanceServlet extends HttpServlet {
 	}
 	
 	// retrieve stock symbols
-	public void getUserStock(String username) throws IOException, InterruptedException {
+	public void getUserStock(String username) throws IOException, InterruptedException, ParseException {
 		initializeFireBase();
 		final FirebaseDatabase database = FirebaseDatabase.getInstance();
 		DatabaseReference ref = database.getReference().child("users").child(username).child("portfolio");
+		
+		//add the sp in first
+		ArrayList<String> stock = new ArrayList<String>();
+		stock.add("^GSPC");
+		stock.add(YahooFinance.get("^GSPC").getName());
+		stock.add("1");
+		DateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+		String fromTime = format1.format(from.getTime());
+		String toTime = format1.format(now.getTime());
+		stock.add(fromTime);
+		stock.add(toTime);
+		//whether or not it should be shown on graph
+		stock.add("Yes");
+		String json = viewStock("^GSPC", "1", fromTime, toTime);
+		System.out.println("sp: " + json);
+		//add to big array
+		stock.add(json);
+		myStocks.add(stock);
 		
 		System.out.println(ref.toString());
 		
@@ -618,6 +649,8 @@ public class StockPerformanceServlet extends HttpServlet {
 				break;
 			}
 		}
+		
+		
 	}
 	
 	public void removeStock(String username, String symbol) throws IOException {
