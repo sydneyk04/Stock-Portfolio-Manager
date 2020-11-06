@@ -19,7 +19,7 @@
 	String portfolioVal = (String) session.getAttribute("portfolioVal");
 	List<ArrayList> view = (List<ArrayList>) session.getAttribute("view");
 	List<ArrayList> myStocks = (List<ArrayList>) session.getAttribute("myStocks");
-	
+
 %>
 <html lang="en">
   <head>
@@ -171,7 +171,7 @@
 					</a>
 		      	</div>
 		      	<div>
-		    
+
 					<form name="formname" action="/dashboard" method="POST">
 						<input type="hidden" name="action" value="logout">
 						<button id="logout-button" type="submit" class="btn btn-primary btn-md justify-content-start">
@@ -230,7 +230,7 @@
 								'Last Year': [moment().subtract(1, 'year'), moment()]
 							}
 						});
-		
+
 						$('#datepicker').on('apply.daterangepicker', function(ev, picker) {
 							$('input[name=from]').val(picker.startDate.format('YYYY-MM-DD'));
 							$('input[name=to]').val(picker.endDate.format('YYYY-MM-DD'));
@@ -291,20 +291,15 @@
 					      <div class="modal-footer">
 						     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
 							 <input type="hidden" name="action" value="addCSV">
-							 <button type="submit" class="btn btn-primary" data-dismiss="modal" id="csvAddButton">Upload File</button>
+								 <input type="hidden" id="csvContent" name="csvContent" value="">
+							 <button type="button" class="btn btn-primary" data-dismiss="modal" id="csvAddButton">Upload File</button>
 						  </div>
 						</form>
 					    </div>
 					  </div>
 					</div>
 
-					<%-- submit csv form --%>
-					<script type="text/javascript">
-						var removeForm = document.getElementById("csvAddForm");
-						document.getElementById("csvAddButton").addEventListener("click", function() {
-							removeForm.submit();
-						});
-					</script>
+
 
                   <div class="">
                     <ul id="stock_list" class="to_do">
@@ -330,10 +325,10 @@
 											<input type="hidden" name="removeStockTicker" value="<%=myStocks.get(i).get(0) %>">
 											<button type="submit" class="btn btn-primary deletestock" data-dismiss="modal" id="stockremovebutton<%=myStocks.get(i).get(0)%>">Remove Stock</button>
 										</form>
-	
+
 										<%-- remove stock form --%>
 										<script type="text/javascript">
-	
+
 											var form = document.getElementById("removeStock-<%=myStocks.get(i).get(0)%>");
 											console.log(form);
 											document.getElementById("stockremovebutton<%=myStocks.get(i).get(0)%>").addEventListener("click", function() {
@@ -392,7 +387,7 @@
                     <div class="addstockbutton">
                     <strong id="login_error" style="color:red"><%if(failedAdd != null){ %> <%= failedAdd%> <% } %></strong>
                     <br><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addStockModal">Add Stock</button>
-                   
+
 
 
                     <!-- Modal For Add Stock-->
@@ -622,7 +617,7 @@
 					<!-- Button trigger modal -->
                     <br><button type="button" data-toggle="modal" data-target="#viewStockModal">Add Stock to Graph</button>
                     <br><br>
-                    
+
 					<%if(view!=null){for(int i=0; i<view.size(); i++) {%>
 						<div style="float: left; width: 85%;">
                            <div style="display:inline;">

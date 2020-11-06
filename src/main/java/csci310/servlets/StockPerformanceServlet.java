@@ -324,34 +324,60 @@ public class StockPerformanceServlet extends HttpServlet {
 		
 		else if(action.equals("addCSV")) {
 			System.out.println("!!!!!!!!!!");
-			String line = "", splitBy = ",";
-			BufferedReader br = new BufferedReader(new FileReader(request.getParameter("FileUpload")));
-			line = br.readLine();
+			String username = session.getAttribute("username").toString();
+			String splitBy = ",";
+			String content = request.getParameter("csvContent");
+			content = content.substring(9);
+			
+			String[] info = content.split(splitBy);
 			List<ArrayList> newStocks = new ArrayList<ArrayList>();
-		
-			while((line = br.readLine()) != null) {
-				List<String> stock = new ArrayList<String>();
-				String [] info = line.split(splitBy);
-				System.out.println(info[0] + info[1] + info[2] + info[3]);
+			for(int i = 0; i < info.length; i+=6) {
+				Boolean alreadyOwn = false;
+				String ticker = info[i+1];
+				String name = info[i+2];
+				String buyDate = info[i+3];
+				String sellDate = info[i+4];
+				String shares = info[i+5];
 				
-				//jackson - could you add the info to "stock" and then add that stock to newStock list
-			
-			}
-			
-			
-			List<ArrayList> view = new ArrayList<ArrayList>();
-			
-			//loop through all the stocks they are trying to add
-			for(int i=0; i<newStocks.size(); i++) {
+				//Check for existing stocks
+				for(int j=0; i<myStocks.size(); j++) {
+					if(myStocks.get(j).get(0).equals(ticker)){
+						alreadyOwn = true;
+						break;
+					}
+				}
 				
+				//Continue if a stock already exists 
+				if(alreadyOwn)
+					continue;
+				
+				//Add to new stocks
+				ArrayList<String> stock = new ArrayList<String>();
+				stock.add(ticker);
+				stock.add(name);
+				stock.add(shares);
+				stock.add(buyDate);
+				stock.add(sellDate);
+				stock.add("Yes");
+				newStocks.add(stock);
 			}
+
 			
-			//check
 			
-			//add to databse
+			
+			
 			
 			
 			//recalc portfolio
+			try {
+				calculatePortfolio();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			
 			
