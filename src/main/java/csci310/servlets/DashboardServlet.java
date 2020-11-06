@@ -38,7 +38,11 @@ public class DashboardServlet extends HttpServlet {
 		if (action != null && action.equals("logout")) {
 			logout();
 			return;
-		}  else {
+		} else if (action != null){
+			// Call functions of servlet here (e.g. homeServlet.doGet(request, response);)
+			stockperformanceServlet.doGet(request, response);
+			response.sendRedirect(INDEXPG);
+		} else {
 			stockperformanceServlet.doGet(request, response);
 			response.sendRedirect(INDEXPG);
 		}
@@ -50,7 +54,6 @@ public class DashboardServlet extends HttpServlet {
 		out = response.getWriter();
 		
 		String action = request.getParameter("action");
-		System.out.println("hi from dashboard");
 		if (action != null && action.equals("logout")) {
 			logout();
 			return;

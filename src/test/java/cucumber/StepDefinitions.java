@@ -2,7 +2,10 @@ package cucumber;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
+import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
 
+import java.io.File;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -13,6 +16,8 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
@@ -31,6 +36,7 @@ public class StepDefinitions {
 	private static final String Dashboard_URL = "http://localhost:8080/production/index.jsp";
 
 	private final WebDriver driver = new ChromeDriver();
+	private final WebDriverWait wait = new WebDriverWait(driver, 30);
 	private static String entered_pass;
 	
 	//https://stackoverflow.com/questions/20536566/creating-a-random-string-with-a-z-and-0-9-in-java
@@ -60,6 +66,8 @@ public class StepDefinitions {
 	/**************************
 	 * LANDING PAGE FEATURE
 	 **************************/
+	
+
 	@Given("I am on the landing page")
 	public void i_am_on_the_landing_page() {
 		driver.get(ROOT_URL);
@@ -116,7 +124,7 @@ public class StepDefinitions {
 	public void i_should_see_text(String text) {
 		assertTrue(driver.getPageSource().contains(text));
 	}
-	
+
 	/**************************
 	 * LOGIN FEATURE
 	 **************************/
@@ -386,44 +394,41 @@ public class StepDefinitions {
 
 	@Given("I click the button to add stocks to my portfolio")
 	public void i_click_the_button_to_add_stocks_to_my_portfolio() {
-		WebElement button = driver.findElement(By.id("add"));
-		button.click();
+		
+		WebElement addButton = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/button"));
+		Actions action = new Actions(driver); 
+		action.moveToElement(addButton);
+		addButton = wait.until(elementToBeClickable(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/button")));
+		addButton.click();
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Given("I enter a stock ticker not in my portfolio and a certain number of shares")
 	public void i_enter_a_stock_ticker_not_in_my_portfolio_and_a_certain_number_of_shares() {
-	    WebElement exchange = driver.findElement(By.id("exchange"));
-	    exchange.sendKeys("NASDAQ");
 	    WebElement ticker = driver.findElement(By.id("ticker"));
-	    ticker.sendKeys("TSLA");
+	    ticker.sendKeys("AAPL");
 	    WebElement shares = driver.findElement(By.id("shares"));
 	    shares.sendKeys("10");
+	    WebElement datePurchased = driver.findElement(By.id("datePurchased"));
+	    datePurchased.sendKeys("01/01/2020");
 	}
 
 	@When("I click the submit button")
 	public void i_click_the_submit_button() {
-		WebElement submit = driver.findElement(By.id("stockaddbutton"));
-	    submit.click();;
+		WebElement submit = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[2]/div/div/div[3]/button[2]"));
+	    submit.click();
 	}
 
 	@Then("I should see the value of my portfolio increase and the stocks in my portfolio be updated")
 	public void i_should_see_the_value_of_my_portfolio_increase_and_the_stocks_in_my_portfolio_be_updated() {
-		WebElement exchange = driver.findElement(By.id("exchange1"));
-	    assertEquals(exchange.getText(), "NASDAQ");
-	    WebElement ticker = driver.findElement(By.id("ticker1"));
-	    assertEquals(ticker.getText(), "TSLA");
-	    WebElement shares = driver.findElement(By.id("shares1"));
-	    assertEquals(shares.getText(), "10");
-	    
-	    //logout
-	    WebElement element;
-		try {
-			element = driver.findElement(By.id("logout-button"));
-		} catch (NoSuchElementException e) {
-			element = driver.findElement(By.xpath("//*[@id=\"logout-button\"]"));
-		}
-		
-		element.click();
+		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		assertTrue(driver.getPageSource().contains("AAPL"));
+	   
 	}
 
 	@Given("I click the button to remove stocks from my portfolio")
@@ -432,126 +437,85 @@ public class StepDefinitions {
 		button.click();
 	}
 
-	@Given("I enter a stock ticker and number of shares less than the number I have of that stock")
-	public void i_enter_a_stock_ticker_and_number_of_shares_less_than_the_number_I_have_of_that_stock() {
-		WebElement exchange = driver.findElement(By.id("exchange"));
-	    exchange.sendKeys("NASDAQ");
-	    WebElement ticker = driver.findElement(By.id("ticker"));
-	    ticker.sendKeys("AAPL");
-	    WebElement shares = driver.findElement(By.id("shares"));
-	    shares.sendKeys("5");
-	}
-
-	@Then("I should see the value of my portfolio decrease and the number of shares of that stock in my portfolio be updated")
-	public void i_should_see_the_value_of_my_portfolio_decrease_and_the_number_of_shares_of_that_stock_in_my_portfolio_be_updated() {
-	    // Write code here that turns the phrase above into concrete actions
-		WebElement exchange = driver.findElement(By.id("exchange1"));
-	    assertEquals(exchange.getText(), "NASDAQ");
-	    WebElement ticker = driver.findElement(By.id("ticker1"));
-	    assertEquals(ticker.getText(), "TSLA");
-	    WebElement shares = driver.findElement(By.id("shares1"));
-	    assertEquals(shares.getText(), "10");
-	    
-	    //logout
-	    WebElement element;
-		try {
-			element = driver.findElement(By.id("logout-button"));
-		} catch (NoSuchElementException e) {
-			element = driver.findElement(By.xpath("//*[@id=\"logout-button\"]"));
-		}
-		
-		element.click();
-	}
 
 	@Given("I enter an invalid stock ticker and number of shares")
 	public void i_enter_an_invalid_stock_ticker_and_number_of_shares() {
-		WebElement exchange = driver.findElement(By.id("exchange"));
-	    exchange.sendKeys("NASDAQ");
 	    WebElement ticker = driver.findElement(By.id("ticker"));
 	    ticker.sendKeys("NKLA");
 	    WebElement shares = driver.findElement(By.id("shares"));
 	    shares.sendKeys("20");
+	    WebElement datePurchased = driver.findElement(By.id("datePurchased"));
+	    datePurchased.sendKeys("01/01/2020");
 	}
 
 	@Then("I should see an error message saying stock ticker was not found")
 	public void i_should_see_an_error_message_saying_stock_ticker_was_not_found() {
 		WebElement msg = driver.findElement(By.id("errormsg"));
 		assertEquals(msg.getText(), "Sorry, this stock does not exist.");
-		
-		//logout
-	    WebElement element;
+	
+	}
+
+
+
+	
+	
+	@Then("I click the button to add stocks to my portfolio using a CSV")
+	public void i_click_the_button_to_add_stocks_to_my_portfolio_using_a_CSV() {
+		WebElement csvButton = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/button"));
+		Actions action = new Actions(driver); 
+		action.moveToElement(csvButton);
+		csvButton = wait.until(elementToBeClickable(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/button")));
+		csvButton.click();
 		try {
-			element = driver.findElement(By.id("logout-button"));
-		} catch (NoSuchElementException e) {
-			element = driver.findElement(By.xpath("//*[@id=\"logout-button\"]"));
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
-		element.click();
 	}
 
-	@Given("I enter a stock ticker and number of shares greater than I have of this stock")
-	public void i_enter_a_stock_ticker_and_number_of_shares_greater_than_I_have_of_this_stock() {
-		WebElement exchange = driver.findElement(By.id("exchange"));
-	    exchange.sendKeys("NASDAQ");
-	    WebElement ticker = driver.findElement(By.id("ticker"));
-	    ticker.sendKeys("AAPL");
-	    WebElement shares = driver.findElement(By.id("shares"));
-	    shares.sendKeys("20");
-	}
-
-	@Then("I should see an error message saying I'm trying to remove more shares than I have")
-	public void i_should_see_an_error_message_saying_I_m_trying_to_remove_more_shares_than_I_have() {
-		WebElement msg = driver.findElement(By.id("errormsg"));
-		assertEquals(msg.getText(), "Sorry, you don't have enough stocks to sell.");
-		
-		//logout
-	    WebElement element;
-		try {
-			element = driver.findElement(By.id("logout-button"));
-		} catch (NoSuchElementException e) {
-			element = driver.findElement(By.xpath("//*[@id=\"logout-button\"]"));
-		}
-		
-		element.click();
-	}
-
-	@Given("I enter a stock ticker in my portfolio and a certain number of shares")
-	public void i_enter_a_stock_ticker_in_my_portfolio_and_a_certain_number_of_shares() {
-		WebElement exchange = driver.findElement(By.id("exchange"));
-	    exchange.sendKeys("NASDAQ");
-	    WebElement ticker = driver.findElement(By.id("ticker"));
-	    ticker.sendKeys("AAPL");
-	    WebElement shares = driver.findElement(By.id("shares"));
-	    shares.sendKeys("10");
-	}
-
-	@Then("I should see the value of my portfolio increase and the shares owned updated")
-	public void i_should_see_the_value_of_my_portfolio_increase_and_the_shares_owned_updated() {
-		WebElement exchange = driver.findElement(By.id("exchange1"));
-	    assertEquals(exchange.getText(), "NASDAQ");
-	    WebElement ticker = driver.findElement(By.id("ticker1"));
-	    assertEquals(ticker.getText(), "TSLA");
-	    WebElement shares = driver.findElement(By.id("shares1"));
-	    assertEquals(shares.getText(), "10");
-	    
-	  //logout
-	    WebElement element;
-		try {
-			element = driver.findElement(By.id("logout-button"));
-			System.out.println("logout button found");
-		} catch (NoSuchElementException e) {
-			element = driver.findElement(By.xpath("//*[@id=\"logout-button\"]"));
-			System.out.println("logout button found");
-		}
-		
-		element.click();
+	
+	@Then("I choose a CSV file")
+	public void i_choose_a_CSV_file() {
+		WebElement modal = wait.until(presenceOfElementLocated(By.id("exampleModal")));
+		//WebElement upload = driver.findElement(By.id("txtFileUpload"));
+		WebElement upload = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[1]/div/div/form/div[1]/div/fieldset/input"));
+		File file = new File("exampleStockCSV.csv");
+		upload.sendKeys(file.getAbsolutePath());
 	}
 	
+	@Then("I click the button to upload the file")
+	public void i_click_the_button_to_upload_the_file() {
+		//WebElement csvButton = driver.findElement(By.id("csvAddButton"));
+		WebElement csvButton = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[1]/div/div/form/div[2]/button[2]"));
+		csvButton.click();
+	}
+	
+	@Then("I should see the new stocks added")
+	public void i_should_see_the_new_stocks_added() {
+		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		assertTrue(driver.getPageSource().contains("AMZN"));
+	}
+	
+	@Then("I click the button to download an example CSV file")
+	public void i_click_the_button_to_download_an_example_CSV_file() {
+		WebElement modal = wait.until(presenceOfElementLocated(By.id("exampleModal")));
+		//WebElement csvButton = driver.findElement(By.id("exampleButton"));
+		WebElement csvButton = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[1]/div/div/form/div[1]/a/button"));
+		csvButton.click();
+	}
+	
+	@Then("I should see a file downloaded")
+	public void i_should_see_a_file_downloaded() {
+		String url = driver.getCurrentUrl();
+		assertTrue(url.equalsIgnoreCase(Dashboard_URL));
+		
+	}
 	
 	/**************************
 	 * PORTFOLIO PERFORMANCE FEATURE
 	 **************************/
-	@Given("I click the button to change the graph date range")
+	@Given("I click the button to choose a file")
 	public void i_click_the_button_to_change_the_graph_date_range() {
 		WebElement button = driver.findElement(By.id("reportrange"));
 		button.click();
@@ -695,6 +659,8 @@ public class StepDefinitions {
 		String url = driver.getCurrentUrl();
 		assertTrue(url.equalsIgnoreCase("http://localhost:8080/login.jsp"));
 	}
+	
+	
 	/**************************
 	 * HASH SECURITY FEATURE
 	 **************************/
@@ -705,7 +671,7 @@ public class StepDefinitions {
 		assertTrue(!pwd.equals(hash));
 	}
 
-  /**************************
+    /**************************
 	 * APP SECURITY FEATURE
 	 **************************/
 	@When("I attempt to navigate to the dashboard page")

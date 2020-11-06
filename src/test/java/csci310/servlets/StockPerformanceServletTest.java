@@ -546,4 +546,3 @@ public class StockPerformanceServletTest extends Mockito {
 		assertTrue(servlet.myStocks.isEmpty());
 	}
 }
-		
