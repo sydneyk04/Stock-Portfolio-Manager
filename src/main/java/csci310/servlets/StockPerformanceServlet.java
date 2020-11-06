@@ -92,7 +92,10 @@ public class StockPerformanceServlet extends HttpServlet {
 	        } catch (InterruptedException e) {
 	        	out.print("stock fail - InterruptedException");
 	        	return;
-	        }
+	        } catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	
 	        //set stocks as session variable for front end
 	        session.setAttribute("myStocks", myStocks);
@@ -156,6 +159,18 @@ public class StockPerformanceServlet extends HttpServlet {
 			}else {
 				session.setAttribute("portfolioVal", "0.00");	
 			}
+			
+			buildGraph();
+		} 
+		
+		else if(action.equals("toggleSP")) {
+			System.out.println("Action is 'toggleSP'");
+			if(myStocks.get(0).get(5).equals("Yes")) {
+				myStocks.get(0).set(5, "No");
+			}else {
+				myStocks.get(0).set(5, "Yes");
+			}
+
 			
 			buildGraph();
 		} 
@@ -293,7 +308,6 @@ public class StockPerformanceServlet extends HttpServlet {
 			System.out.println("hi from remove stock");
 			String username = session.getAttribute("username").toString();
 			String ticker = request.getParameter("removeStockTicker");
-			System.out.println(ticker);
 			for(int i=0; i<myStocks.size(); i++) {
 				if(myStocks.get(i).get(0).equals(ticker)){
 					myStocks.remove(i);
@@ -308,10 +322,7 @@ public class StockPerformanceServlet extends HttpServlet {
 			}
 			buildGraph();
 			
-			System.out.println("hi");
 			if(!portfolioValHistory.isEmpty()) {
-				System.out.println("p val:");
-				System.out.println(portfolioValHistory);
 				DecimalFormat f = new DecimalFormat("##.00");
 				ArrayList<String> holder = portfolioValHistory.get(portfolioValHistory.size()-1);
 				System.out.println(holder);
@@ -349,6 +360,18 @@ public class StockPerformanceServlet extends HttpServlet {
 			jsons = new ArrayList<String>();
 			portfolioValHistory = new ArrayList<ArrayList>();
 			portfolioJSON = "";
+			
+			//fix s and p
+			myStocks.get(0).set(3,fromString);
+			myStocks.get(0).set(4,toString);
+			String temp = "";
+			try {
+				temp = viewStock("^GSPC", "1", fromString, toString);
+			} catch (ParseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			myStocks.get(0).set(6,temp);
 			
 			//pass the new dates into build stock jsons
 			try {
@@ -432,7 +455,7 @@ public class StockPerformanceServlet extends HttpServlet {
 		System.out.println("calculating portfolio");
 		portfolioValHistory = new ArrayList<ArrayList>();
 		//for loop to run through list of users stocks
-		for(int s=0; s<myStocks.size(); s++) {
+		for(int s=1; s<myStocks.size(); s++) {
 			String ticker = (String) myStocks.get(s).get(0);
 			List<HistoricalQuote> history = YahooFinance.get(ticker, from, now, Interval.DAILY).getHistory();
 			
@@ -545,6 +568,17 @@ public class StockPerformanceServlet extends HttpServlet {
 						"dataPoints :" + portfolioJSON +
 					"},\n";	
 		
+		//add the sp
+		if(myStocks.get(0).get(5).equals("Yes")) {
+			theChart += "{\n" +
+							"type: \"line\",\n" + 
+							"name: \"S&P\",\n" + 
+							"showInLegend: true,\n" +
+							"yValueFormatString: \"$##0.00\",\n" + 
+							"dataPoints :" + myStocks.get(0).get(6) +
+						"},\n";	
+		}
+
 		//add any stocks you want to view
 		for(int i=0; i<view.size(); i++) {
 			theChart += "{\n" +
@@ -599,10 +633,28 @@ public class StockPerformanceServlet extends HttpServlet {
 	}
 	
 	// retrieve stock symbols
-	public void getUserStock(String username) throws IOException, InterruptedException {
+	public void getUserStock(String username) throws IOException, InterruptedException, ParseException {
 		initializeFireBase();
 		final FirebaseDatabase database = FirebaseDatabase.getInstance();
 		DatabaseReference ref = database.getReference().child("users").child(username).child("portfolio");
+		
+		//add the sp in first
+		ArrayList<String> stock = new ArrayList<String>();
+		stock.add("^GSPC");
+		stock.add(YahooFinance.get("^GSPC").getName());
+		stock.add("1");
+		DateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+		String fromTime = format1.format(from.getTime());
+		String toTime = format1.format(now.getTime());
+		stock.add(fromTime);
+		stock.add(toTime);
+		//whether or not it should be shown on graph
+		stock.add("Yes");
+		String json = viewStock("^GSPC", "1", fromTime, toTime);
+		System.out.println("sp: " + json);
+		//add to big array
+		stock.add(json);
+		myStocks.add(stock);
 		
 		System.out.println(ref.toString());
 		
@@ -652,6 +704,8 @@ public class StockPerformanceServlet extends HttpServlet {
 				break;
 			}
 		}
+		
+		
 	}
 	
 	public void removeStock(String username, String symbol) throws IOException {

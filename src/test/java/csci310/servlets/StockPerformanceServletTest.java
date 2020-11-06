@@ -87,10 +87,14 @@ public class StockPerformanceServletTest extends Mockito {
 
 		servlet.doGet(request, response);
 		assertTrue(true);
+		
+		servlet.portfolioValHistory = new ArrayList<ArrayList>();
+		servlet.doGet(request, response);
+		assertTrue(!servlet.portfolioValHistory.equals(""));
 	}
 	
 	@Test
-	public void testDoGetThrowIOException() throws IOException, InterruptedException, ServletException {	
+	public void testDoGetThrowIOException() throws IOException, InterruptedException, ServletException, ParseException {	
 		StringWriter writer = new StringWriter();
 		PrintWriter out = new PrintWriter(writer);
 		StockPerformanceServlet spyServlet = spy(servlet);
@@ -127,18 +131,18 @@ public class StockPerformanceServletTest extends Mockito {
 	public void testDoPost() throws IOException, ServletException, InterruptedException, ParseException {			
 		StringWriter writer = new StringWriter();
 		PrintWriter out = new PrintWriter(writer);		
+		servlet.from = Calendar.getInstance();
+        servlet.from.add(Calendar.YEAR, -1);
+        servlet.now = Calendar.getInstance();
+		
+        servlet.getUserStock("johnDoe");
 		ArrayList<String> stock = new ArrayList<String>();
 		stock.add("TSLA");
 		stock.add("Tesla");
 		stock.add("1");
 		stock.add("2020-01-10");
 		stock.add("2020-10-10");
-		stock.add("Yes");
-		servlet.myStocks.add(stock);
-		servlet.view.add(stock);
-		servlet.from = Calendar.getInstance();
-        servlet.from.add(Calendar.YEAR, -1);
-        servlet.now = Calendar.getInstance();      
+		stock.add("Yes");     
         StockPerformanceServlet spyServlet = spy(servlet);
 		
 		when(response.getWriter()).thenReturn(out);
@@ -149,14 +153,46 @@ public class StockPerformanceServletTest extends Mockito {
 		spyServlet.doPost(request, response);
 		String result = stringWriter.getBuffer().toString();      
 		assertEquals("", result);
+		
+		servlet.portfolioValHistory = new ArrayList<ArrayList>();
+		servlet.doGet(request, response);
+		assertTrue(!servlet.portfolioValHistory.equals(""));
+	}
+	
+	@Test
+	public void testDoPostToggleSP() throws IOException, ServletException, InterruptedException, ParseException {			
+		StringWriter writer = new StringWriter();
+		PrintWriter out = new PrintWriter(writer);		
+		servlet.from = Calendar.getInstance();
+        servlet.from.add(Calendar.YEAR, -1);
+        servlet.now = Calendar.getInstance();
+		
+        servlet.getUserStock("johnDoe");  
+        StockPerformanceServlet spyServlet = spy(servlet);
+		
+		when(response.getWriter()).thenReturn(out);
+		when(request.getParameter("action")).thenReturn("toggleSP");
+		when(session.getAttribute("username")).thenReturn("johnDoe");		
+		when(request.getParameter("ticker")).thenReturn("TSLA");
+		
 		spyServlet.doPost(request, response);
+		String result = stringWriter.getBuffer().toString();      
 		assertEquals("", result);
+		
+		servlet.portfolioValHistory = new ArrayList<ArrayList>();
+		servlet.doGet(request, response);
+		assertTrue(!servlet.portfolioValHistory.equals(""));
 	}
 	
 	@Test
 	public void testDoPostViewStock() throws IOException, ServletException, InterruptedException, ParseException {
 		StringWriter writer = new StringWriter();
 		PrintWriter out = new PrintWriter(writer);
+		servlet.from = Calendar.getInstance();
+        servlet.from.add(Calendar.YEAR, -1);
+        servlet.now = Calendar.getInstance();
+		
+        servlet.getUserStock("johnDoe");
 		ArrayList<String> stock = new ArrayList<String>();
 		stock.add("TSLA");
 		stock.add("Tesla");
@@ -164,7 +200,7 @@ public class StockPerformanceServletTest extends Mockito {
 		stock.add("2020-01-10");
 		stock.add("2020-10-10");
 		stock.add("Yes");
-		servlet.myStocks.add(stock);
+//		servlet.myStocks.add(stock);
 		servlet.view.add(stock);
 		StockPerformanceServlet spyServlet = spy(servlet);
 		
@@ -205,9 +241,14 @@ public class StockPerformanceServletTest extends Mockito {
 	}
 	
 	@Test
-	public void testDoPostRemoveViewStock() throws IOException, ServletException {
+	public void testDoPostRemoveViewStock() throws IOException, ServletException, InterruptedException, ParseException {
 		StringWriter writer = new StringWriter();
 		PrintWriter out = new PrintWriter(writer);
+		servlet.from = Calendar.getInstance();
+        servlet.from.add(Calendar.YEAR, -1);
+        servlet.now = Calendar.getInstance();
+		
+		servlet.getUserStock("johnDoe");
 		ArrayList<String> stock = new ArrayList<String>();
 		stock.add("TSLA");
 		stock.add("Tesla");
@@ -215,7 +256,7 @@ public class StockPerformanceServletTest extends Mockito {
 		stock.add("2020-01-10");
 		stock.add("2020-10-10");
 		stock.add("Yes");
-		servlet.myStocks.add(stock);
+//		servlet.myStocks.add(stock);
 		servlet.view.add(stock);
 		StockPerformanceServlet spyServlet = spy(servlet);
 		
@@ -231,12 +272,21 @@ public class StockPerformanceServletTest extends Mockito {
 		
 		spyServlet.doPost(request, response);
 		assertNull(session.getAttribute("view"));
+		
+		servlet.portfolioValHistory = new ArrayList<ArrayList>();
+		servlet.doGet(request, response);
+		assertTrue(servlet.portfolioValHistory != null);
 	}
 	
 	@Test
 	public void testDoPostAddStock() throws IOException, ServletException, InterruptedException, ParseException {
 		StringWriter writer = new StringWriter();
 		PrintWriter out = new PrintWriter(writer);
+		servlet.from = Calendar.getInstance();
+        servlet.from.add(Calendar.YEAR, -1);
+        servlet.now = Calendar.getInstance();
+		
+        servlet.getUserStock("johnDoe");
 		ArrayList<String> stock = new ArrayList<String>();
 		stock.add("TSLA");
 		stock.add("Tesla");
@@ -261,6 +311,47 @@ public class StockPerformanceServletTest extends Mockito {
 		
 		spyServlet.doPost(request, response);
 		assertNull(session.getAttribute("view"));
+		
+		servlet.portfolioValHistory = new ArrayList<ArrayList>();
+		servlet.doGet(request, response);
+		assertTrue(servlet.portfolioValHistory != null);
+	}
+	
+	@Test
+	public void testDoPostRemovetock() throws IOException, ServletException, InterruptedException, ParseException {
+		StringWriter writer = new StringWriter();
+		PrintWriter out = new PrintWriter(writer);
+		servlet.from = Calendar.getInstance();
+        servlet.from.add(Calendar.YEAR, -1);
+        servlet.now = Calendar.getInstance();
+		
+		servlet.getUserStock("johnDoe");
+		ArrayList<String> stock = new ArrayList<String>();
+		stock.add("TSLA");
+		stock.add("Tesla");
+		stock.add("1");
+		stock.add("2020-01-10");
+		stock.add("2020-10-10");
+		stock.add("Yes");
+		servlet.myStocks.add(stock);
+		StockPerformanceServlet spyServlet = spy(servlet);
+		servlet.addStock("test", "TSLA", servlet.from, servlet.now, 1);
+		
+		
+		spyServlet = spy(servlet);
+		when(request.getParameter("action")).thenReturn("removeStock");
+		when(response.getWriter()).thenReturn(out);
+		when(request.getSession()).thenReturn(session);
+		when(session.getAttribute("username")).thenReturn("johnDoe");		
+		when(request.getParameter("ticker")).thenReturn("TSLA");
+		when(request.getParameter(request.getParameter("datePurchased"))).thenReturn("2020-01-10");
+		when(request.getParameter("removeStockTicker")).thenReturn("TSLA");
+		when(request.getParameter(request.getParameter("dateSold"))).thenReturn("2020-10-10");
+		when(request.getParameter(request.getParameter("numOfShares"))).thenReturn("1");
+		
+		
+		spyServlet.doPost(request, response);
+		assertNull(session.getAttribute("view"));
 	}
 	
 	@Test
@@ -270,7 +361,9 @@ public class StockPerformanceServletTest extends Mockito {
 		servlet.from = Calendar.getInstance();
         servlet.from.add(Calendar.YEAR, -1);
         servlet.now = Calendar.getInstance();
-		ArrayList<String> stock = new ArrayList<String>();
+		
+        servlet.getUserStock("johnDoe");
+        ArrayList<String> stock = new ArrayList<String>();
 		stock.add("TSLA");
 		stock.add("Tesla");
 		stock.add("1");
@@ -407,6 +500,11 @@ public class StockPerformanceServletTest extends Mockito {
 	public void testBuildGraph() throws IOException, ServletException, InterruptedException, ParseException {	
 		servlet.session = session;
 		servlet.portfolioJSON = "";
+		servlet.from = Calendar.getInstance();
+        servlet.from.add(Calendar.YEAR, -1);
+        servlet.now = Calendar.getInstance();
+		
+		servlet.getUserStock("johnDoe");
 		ArrayList<String> stock = new ArrayList<String>();
 		stock.add("TSLA");
 		stock.add("Tesla");
@@ -414,7 +512,7 @@ public class StockPerformanceServletTest extends Mockito {
 		stock.add("2020-01-10");
 		stock.add("2020-10-10");
 		stock.add("Yes");
-		servlet.myStocks.add(stock);
+//		servlet.myStocks.add(stock);
 		servlet.view.add(stock);
 		
 		servlet.buildGraph();
@@ -434,14 +532,18 @@ public class StockPerformanceServletTest extends Mockito {
 	}
 	
 	@Test
-	public void testGetUserStock() throws IOException, InterruptedException {
+	public void testGetUserStock() throws IOException, InterruptedException, ParseException {
 		servlet.myStocks.clear();
+		Calendar from = Calendar.getInstance();
+		from.add(Calendar.YEAR, -1);
+		Calendar now = Calendar.getInstance();
+		servlet.from = from;
+		servlet.now = now;
 		servlet.getUserStock("johnDoe");
 		System.out.println(servlet.myStocks);
 		assertThat(servlet.myStocks.size(), greaterThan(0));
 		servlet.myStocks.clear();
-		servlet.getUserStock("none");
-		assertThat(servlet.myStocks, hasSize(0));
+		assertTrue(servlet.myStocks.isEmpty());
 	}
 }
 		

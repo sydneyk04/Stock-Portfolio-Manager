@@ -241,6 +241,10 @@
                 <div class="col-md-3 col-sm-3  bg-white">
                   <div class="x_title">
                     <h2>Portfolio Value Today: $<%if(portfolioVal != null){%><%=portfolioVal%><%}%></h2>
+                    <form name="formname" id="toggleSP" action="/dashboard" method="POST">
+						<input type="hidden" name="action" value="toggleSP">
+						<br><br><button style="text-align:left;display:inline;" type="submit" id="displayButton" class="btn btn-light btn-sm">Toggle S&P</button>
+	  				</form>
                     <div class="clearfix"></div>
                   </div>
                 </div>
@@ -312,7 +316,7 @@
 
                   <div class="">
                     <ul id="stock_list" class="to_do">
-                      <%if(myStocks!=null){for(int i=0; i<myStocks.size(); i++){ %>
+                      <%if(myStocks!=null){for(int i=1; i<myStocks.size(); i++){ %>
 	                      <li id="li-<%=myStocks.get(i).get(0) %>" class="d-flex">
 	                          <div style="display:inline; float: left; width: 15%;">
 	                            <button type="button" style="background:lightgrey; border:none; border-radius:5px; color:white;" class="flat" data-toggle="modal" data-target="#removeStockModal-<%=myStocks.get(i).get(0)%>">X</button>
