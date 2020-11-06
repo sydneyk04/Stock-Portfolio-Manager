@@ -54,7 +54,7 @@ import yahoofinance.histquotes.Interval;
 public class StockPerformanceServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	static PrintWriter out;
-	private HttpSession session = null;
+	HttpSession session = null;
 	Calendar from;
 	Calendar now;
 	Boolean check = false;
