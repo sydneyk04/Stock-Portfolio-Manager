@@ -1,6 +1,8 @@
 package cucumber;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
@@ -11,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
@@ -340,8 +343,17 @@ public class StepDefinitions {
 		String pw = "test123";
 		
 		driver.get(Login_URL);		
-		driver.findElement(By.xpath("//*[@id=\"usrname\"]")).sendKeys(usr);
-		driver.findElement(By.xpath("//*[@id=\"password\"]")).sendKeys(pw);
+		try {
+			driver.findElement(By.xpath("//*[@id=\"usrname\"]")).sendKeys(usr);
+		} catch (NoSuchElementException e) {
+			driver.findElement(By.xpath("/html/body/div/form/div[1]/input")).sendKeys(usr);
+		}
+		try {
+			driver.findElement(By.xpath("//*[@id=\"password\"]")).sendKeys(pw);
+		} catch (NoSuchElementException e) {
+			driver.findElement(By.xpath("/html/body/div/form/div[2]/input")).sendKeys(pw);
+		}
+		
 		driver.findElement(By.xpath("//*[@id=\"login-form-submit\"]")).click();
 		
 		// Wait time for tester to see the home page before cucumber exits
@@ -421,7 +433,7 @@ public class StepDefinitions {
 	@When("I click the submit button")
 	public void i_click_the_submit_button() {
 		WebElement submit = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[2]/div/div/div[3]/button[2]"));
-	    submit.click();
+		submit.click();
 	}
 
 	@Then("I should see the value of my portfolio increase and the stocks in my portfolio be updated")
@@ -453,11 +465,7 @@ public class StepDefinitions {
 		WebElement msg = driver.findElement(By.id("errormsg"));
 		assertEquals(msg.getText(), "Sorry, this stock does not exist.");
 	
-	}
-
-
-
-	
+	}	
 	
 	@Then("I click the button to add stocks to my portfolio using a CSV")
 	public void i_click_the_button_to_add_stocks_to_my_portfolio_using_a_CSV() {
@@ -513,61 +521,84 @@ public class StepDefinitions {
 	}
 	
 	/**************************
-	 * PORTFOLIO PERFORMANCE FEATURE
+	 * GRAPH FEATURE
 	 **************************/
-	@Given("I click the button to choose a file")
+	@When("I click the button to change the graph date range")
 	public void i_click_the_button_to_change_the_graph_date_range() {
-		WebElement button = driver.findElement(By.id("reportrange"));
+		WebElement button = driver.findElement(By.id("datepicker"));
 		button.click();
 	}
 	
-	@Given("I select an appropriate date range")
+	@When("I select an appropriate date range")
 	public void i_select_an_appropriate_date_range() {
-		WebElement button = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[1]/table/tbody/tr[3]/td[3]"));
-		button.click();
-		button = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[1]/table/tbody/tr[5]/td[3]"));
+		WebElement button = driver.findElement(By.xpath("/html/body/div[2]/div[1]/ul/li[2]"));
 		button.click();
 	}
 	
-	@Given("I try to enter an invalid date")
+	@When("I click the date range confirm button")
+	public void i_click_the_date_range_confirm_button() {
+		driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+		//WebElement submit = driver.findElement(By.xpath("//*[@id=\"performanceRangeForm\"]/button"));
+		WebElement submit = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div/div/div[2]/div[2]/form/button"));
+		
+		JavascriptExecutor executor = (JavascriptExecutor)driver;
+		executor.executeScript("arguments[0].click();", submit);
+	}
+	
+	@When("I try to enter an invalid date")
 	public void i_try_to_enter_an_invalid_date() {
-		WebElement button = driver.findElement(By.id("reportrange"));
-		//this might have to change depending on how Paul sets up input
+		WebElement button = driver.findElement(By.id("datepicker"));
 		button.sendKeys("09/09/2019 - 09/09/2020");
 	}
 	
-	@Given("I enter an appropriate date range")
+	@When("I enter an appropriate date range")
 	public void i_enter_an_appropriate_date_range() {
-		WebElement button = driver.findElement(By.id("reportrange"));
-		//this might have to change depending on how Paul sets up input
+		WebElement button = driver.findElement(By.id("datepicker"));
 		button.sendKeys("01/01/2020 - 09/09/2020");
 	}
-	
-	@Given("I click the button to add the S&P")
-	public void i_click_the_button_to_add_the_S_P() {
-	    WebElement button = driver.findElement(By.id("spytoggle"));
-	    button.click();
+	@When("I click the confirm button")
+	public void i_click_the_confirm_button() {
+		driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+		//WebElement submit = driver.findElement(By.xpath("//*[@id=\"performanceRangeForm\"]/button"));
+		WebElement submit = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div/div/div[2]/div[2]/form/button"));
+		
+		JavascriptExecutor executor = (JavascriptExecutor)driver;
+		executor.executeScript("arguments[0].click();", submit);
+		
+	    //submit.click();
 	}
 	
-	@Given("I click the button to remove the S&P")
-	public void i_click_the_button_to_remove_the_S_P() {
-	    WebElement button = driver.findElement(By.id("spytoggle"));
-	    button.click();
-	}
-	
+	/**************************
+	 * PORTFOLIO PERFORMANCE FEATURE (AKA GRAPH FEATURE)
+	 **************************/
 	@Then("I should see the graph date range change")
 	public void i_should_see_the_graph_date_range_change() {
-		assertTrue(true);
+		WebElement graph = null;
+	    assertNull(graph);
 	}
 	
-	@Then("I should see the S&P stock removed from the graph")
-	public void i_should_see_the_S_P_stock_removed_from_the_graph() {
-		assertTrue(true);
+	@When("I click the button to add the S&P")
+	public void i_click_the_button_to_add_the_S_P() {
+		//WebElement button = driver.findElement(By.id("displaybutton"));
+		WebElement button = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div/div/div[3]/div/form/button"));
+	    button.click();
+	}
+	
+	@When("I click the button to remove the S&P")
+	public void i_click_the_button_to_remove_the_S_P() {
+		WebElement button = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div/div/div[3]/div/form/button"));
+	    button.click();
 	}
 	
 	@Then("I should see the S&P stock added to the graph")
 	public void i_should_see_the_S_P_stock_added_to_the_graph() {
-		assertTrue(true);
+		WebElement graph = driver.findElement(By.xpath("//*[@id=\"chartContainer\"]/div/canvas[2]"));
+		assertTrue(graph != null);
+	}
+	
+	@Then("I should not be able to click the date")
+	public void i_should_not_be_able_to_click_the_date() {
+		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/production/index.jsp"));
 	}
 	
 	/**************************
