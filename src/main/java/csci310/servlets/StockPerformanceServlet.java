@@ -216,6 +216,7 @@ public class StockPerformanceServlet extends HttpServlet {
 		//this is for adding stock to database
 		else if(action.equals("addStock")) {
 			System.out.println("add stock hi");
+			session.setAttribute("failedAdd", null);
 			String username = session.getAttribute("username").toString();
 			String ticker = request.getParameter("ticker");
 			ticker = ticker.toUpperCase();
