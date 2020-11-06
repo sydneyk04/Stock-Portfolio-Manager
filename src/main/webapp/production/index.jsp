@@ -293,10 +293,6 @@
 							 <input type="hidden" name="action" value="addCSV">
 							 <button type="submit" class="btn btn-primary" data-dismiss="modal" id="csvAddButton">Upload File</button>
 						  </div>
-					      <div class="modal-footer">
-					        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-							<button type="submit" class="btn btn-primary" data-dismiss="modal" id="csvAddButton">Upload File</button>
-					      </div>
 						</form>
 					    </div>
 					  </div>

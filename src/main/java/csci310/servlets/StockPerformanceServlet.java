@@ -331,6 +331,19 @@ public class StockPerformanceServlet extends HttpServlet {
 				String [] info = line.split(splitBy);
 				System.out.println(info[0] + info[1] + info[2] + info[3]);
 			}
+			
+			
+			
+			//check
+			
+			//add to databse
+			
+			
+			//recalc portfolio
+			
+			
+			
+			
 		}
 
 		//change calendar time period
