@@ -557,16 +557,10 @@ public class StepDefinitions {
 	
 	@Then("I click the button to add stocks to my portfolio using a CSV")
 	public void i_click_the_button_to_add_stocks_to_my_portfolio_using_a_CSV() {
-		//WebElement csvButton = wait.until(presenceOfElementLocated(By.id("addCsv")));
-		//csseslector("#addCsv")
-		//WebElement csvButton = driver.findElement(By.xpath("//*[@id=\"addCsv\"]"));
 		WebElement csvButton = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/button"));
-		//WebElement csvButton = driver.findElement(By.cssSelector("#addCsv"));
 		Actions action = new Actions(driver); 
 		action.moveToElement(csvButton);
 		csvButton = wait.until(elementToBeClickable(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/button")));
-		//csvButton = wait.until(elementToBeClickable(By.cssSelector("#addCsv")));
-		//WebElement csvButton = driver.findElement(By.id("addCsv"));
 		csvButton.click();
 		try {
 			Thread.sleep(500);
