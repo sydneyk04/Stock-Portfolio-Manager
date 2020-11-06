@@ -334,23 +334,21 @@ public class StockPerformanceServletTest extends Mockito {
 		stock.add("2020-10-10");
 		stock.add("Yes");
 		servlet.myStocks.add(stock);
-		StockPerformanceServlet spyServlet = spy(servlet);
 		servlet.addStock("test", "TSLA", servlet.from, servlet.now, 1);
 		
-		
-		spyServlet = spy(servlet);
 		when(request.getParameter("action")).thenReturn("removeStock");
 		when(response.getWriter()).thenReturn(out);
 		when(request.getSession()).thenReturn(session);
 		when(session.getAttribute("username")).thenReturn("johnDoe");		
 		when(request.getParameter("ticker")).thenReturn("TSLA");
-		when(request.getParameter(request.getParameter("datePurchased"))).thenReturn("2020-01-10");
+		when(request.getParameter("datePurchased")).thenReturn("2020-01-10");
 		when(request.getParameter("removeStockTicker")).thenReturn("TSLA");
-		when(request.getParameter(request.getParameter("dateSold"))).thenReturn("2020-10-10");
-		when(request.getParameter(request.getParameter("numOfShares"))).thenReturn("1");
+		when(request.getParameter("dateSold")).thenReturn("2020-10-10");
+		when(request.getParameter("numOfShares")).thenReturn("1");
 		
+		System.out.println("hi: " + servlet.myStocks);
 		
-		spyServlet.doPost(request, response);
+		servlet.doPost(request, response);
 		assertNull(session.getAttribute("view"));
 	}
 	
@@ -399,7 +397,6 @@ public class StockPerformanceServletTest extends Mockito {
 		when(session.getAttribute("username")).thenReturn("johnDoe");
 		when(request.getParameter("action")).thenReturn("portfolioState");
 		doThrow(ParseException.class).when(spyServlet).calculatePortfolio();
-		doThrow(ParseException.class).when(spyServlet).ownedCheck(anyString(), anyString(), anyString());
 		
 		spyServlet.doPost(request, response);
 
