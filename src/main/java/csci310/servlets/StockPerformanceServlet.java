@@ -215,31 +215,74 @@ public class StockPerformanceServlet extends HttpServlet {
 		
 		//this is for adding stock to database
 		else if(action.equals("addStock")) {
-			//code to add a stock to your portfolio
-			System.out.println("add stock function");
-			
-			//grab all the info from the frontend
+			System.out.println("add stock hi");
 			String username = session.getAttribute("username").toString();
 			String ticker = request.getParameter("ticker");
+			ticker = ticker.toUpperCase();
 			String purchase = request.getParameter("datePurchased");
 			String sell = request.getParameter("dateSold");
-			String numOfShare = request.getParameter("numOfShare");
-//			Calendar purchase = request.getParameter("datePurchased");
-//			Calendar sell = request.getParameter("dateSold");
-//			Double numOfShare = request.getParameter("numOfShare");
+			String numOfShares = request.getParameter("numOfShares");
 			
-			System.out.println("ticker");
-			//if stock is already in "view" array list and you are adding from there
-			//remove it from view array
-			for(int i=0; i<view.size(); i++) {
-				if(view.get(i).get(0).equals(ticker)){
-					view.remove(i);
+			DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+			Calendar datePurchased = Calendar.getInstance();
+			Calendar sellDate = Calendar.getInstance();
+			try {
+				datePurchased.setTime(formatter.parse(purchase));
+				if(sell.equals("")) {
+					sellDate.add(Calendar.DAY_OF_YEAR, 1);		
+				} else {
+					sellDate.setTime(formatter.parse(sell));
+				}
+			} catch (ParseException e1) {
+				e1.printStackTrace();
+			}
+			
+			//if you already own the stock dont let user add it and remove from view?
+			for(int i=0; i<myStocks.size(); i++) {
+				if(myStocks.get(i).get(0).equals(ticker)){
+					session.setAttribute("failedAdd", "Uh, oh! Looks like you already own this stock.");
 				}
 			}
 			
-			//add stock to firebase here
-			//addStock(username, ticker, purchase, sell, numOfShare);
-	
+			if(session.getAttribute("failedAdd") == null) {
+				//if its in view remove it
+				for(int i=0; i<view.size(); i++) {
+					if(view.get(i).get(0).equals(ticker)){
+						view.remove(i);
+					}
+				}
+				session.setAttribute("view", view);
+				
+				try {
+					addStock(username, ticker, datePurchased, sellDate, Double.parseDouble(numOfShares));
+				
+					ArrayList<String> stock = new ArrayList<String>();
+					stock.add(ticker);
+					stock.add(YahooFinance.get(ticker).getName());
+					stock.add(numOfShares);
+					stock.add(purchase);
+					stock.add(sell);
+					stock.add("Yes");
+					myStocks.add(stock);
+					session.setAttribute("myStocks", myStocks);
+					calculatePortfolio();
+					buildGraph();
+				} catch(NullPointerException e) {
+					session.setAttribute("failedAdd", "Unable to add this stock");
+				} catch(FileNotFoundException f) {
+					session.setAttribute("failedAdd", "Unable to add this stock");
+				} catch (ParseException e) {
+					session.setAttribute("failedAdd", "Unable to add this stock");
+				}
+			}
+			
+			if(!portfolioValHistory.isEmpty()) {
+				DecimalFormat f = new DecimalFormat("##.00");
+				ArrayList<String> holder = portfolioValHistory.get(portfolioValHistory.size()-1);
+				Double val = Double.parseDouble(holder.get(1));
+				session.setAttribute("portfolioVal", f.format(val));	
+			}
+			
 		}
 		
 		else if(action.equals("removeStock")) {
