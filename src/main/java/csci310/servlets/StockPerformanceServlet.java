@@ -327,12 +327,24 @@ public class StockPerformanceServlet extends HttpServlet {
 			String line = "", splitBy = ",";
 			BufferedReader br = new BufferedReader(new FileReader(request.getParameter("FileUpload")));
 			line = br.readLine();
+			List<ArrayList> newStocks = new ArrayList<ArrayList>();
+		
 			while((line = br.readLine()) != null) {
+				List<String> stock = new ArrayList<String>();
 				String [] info = line.split(splitBy);
 				System.out.println(info[0] + info[1] + info[2] + info[3]);
+				
+				//jackson - could you add the info to "stock" and then add that stock to newStock list
+			
 			}
 			
 			
+			List<ArrayList> view = new ArrayList<ArrayList>();
+			
+			//loop through all the stocks they are trying to add
+			for(int i=0; i<newStocks.size(); i++) {
+				
+			}
 			
 			//check
 			
