@@ -7,6 +7,9 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -17,6 +20,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -48,12 +52,32 @@ public class SignUpServletTest extends Mockito {
     }
 	
 	@Test
+	public void testHashPassword() throws NoSuchAlgorithmException, UnsupportedEncodingException {
+		String pw = "randompassword";
+		String hashedPw = servlet.hashPassword(pw);
+
+		// hashing method
+		MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+		byte[] hash = messageDigest.digest(pw.getBytes("UTF-8"));
+		StringBuffer hexString = new StringBuffer();
+		for (int i = 0; i < hash.length; i++) {
+			String hex = Integer.toHexString(0xff & hash[i]);
+			if (hex.length() == 1)
+				hexString.append('0');
+			hexString.append(hex);
+		}
+
+		assertTrue(hashedPw.contentEquals(hexString));
+	}
+	
+	@Test
 	public void testDoGet() throws IOException, ServletException {	
 		servlet.doGet(request, response);
 	}
 	
+	@SuppressWarnings("static-access")
 	@Test
-	public void testDoPost() throws IOException, ServletException, InterruptedException {		
+	public void testDoPost() throws IOException, ServletException, InterruptedException, NoSuchAlgorithmException {		
 		//check not null
 		when(request.getRequestDispatcher("signup.jsp")).thenReturn(dispatcher);
 		when(request.getParameter("username")).thenReturn("");
@@ -82,6 +106,20 @@ public class SignUpServletTest extends Mockito {
 		when(response.getWriter()).thenReturn(printWriter);
 		servlet.doPost(request, response);	
 		assertTrue(servlet.createdUser == true);
+		
+		//test no algorithm exception
+		StringWriter writer = new StringWriter();
+		PrintWriter out = new PrintWriter(writer);
+		SignUpServlet spyServlet = spy(servlet);
+		
+		doThrow(NoSuchAlgorithmException.class).when(spyServlet).hashPassword(anyString());
+		when(response.getWriter()).thenReturn(out);
+		when(request.getParameter("username")).thenReturn("johnDoe");
+		when(request.getParameter("password")).thenReturn("test123");
+		when(request.getParameter("password2")).thenReturn("test123");
+		spyServlet.doPost(request, response);
+		String result = writer.getBuffer().toString();
+		Assert.assertEquals("signup fail", result);
 		
 		//test thread
 		Thread.currentThread().interrupt();

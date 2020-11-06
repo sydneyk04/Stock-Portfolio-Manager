@@ -4,7 +4,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.time.LocalTime;
 import java.util.concurrent.TimeUnit;
+import java.sql.Timestamp;
+import java.util.Date;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -47,6 +53,7 @@ public class LoginServlet extends HttpServlet {
 			dataFetched = false;
 			String username = request.getParameter("username");
 			String password = request.getParameter("password");
+			String hashPw = hashPassword(password);
 			
 			if(username != null) {
 				if(username.contains(".") || username.contains("$") || 
@@ -54,11 +61,26 @@ public class LoginServlet extends HttpServlet {
 					onAuthenticate(null);
 				}
 			}
-			authenticate(username, password);
+			authenticate(username, hashPw);
 					
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			out.print("login fail - InterruptedException");
+		} catch (NoSuchAlgorithmException e) {
+			out.print("login fail - NoSuchAlgorithmException");
 		}
+	}
+	
+	public String hashPassword(String pw) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+		MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+		byte[] hash = messageDigest.digest(pw.getBytes("UTF-8"));
+		StringBuffer hexString = new StringBuffer();
+		for (int i = 0; i < hash.length; i++) {
+			String hex = Integer.toHexString(0xff & hash[i]);
+			if (hex.length() == 1)
+				hexString.append('0');
+			hexString.append(hex);
+		}
+		return (hexString.toString());
 	}
 	
 	public void authenticate(final String username, final String password) throws InterruptedException, IOException {
@@ -69,13 +91,79 @@ public class LoginServlet extends HttpServlet {
 			@Override
 			public void onDataChange(DataSnapshot snapshot) {
 				if (snapshot.exists() && snapshot.child("password").getValue(String.class).equals(password)) {
-					onAuthenticate(username);
+					//authentic log in
+					if(!lockedout(snapshot, username)) {
+						//not locked out
+						onAuthenticate(username);
+					}
+					else {
+						//locked out
+						onAuthenticate("lockout");
+					}
+				}
+				else if(!snapshot.exists()) {
+					//no matching username
+					onAuthenticate(null);
 				}
 				else {
+					//invalid password 
+					addLockout(snapshot, username);
 					onAuthenticate(null);
 				}
 			}
 	
+			private void addLockout(DataSnapshot snapshot, String username) {
+				// TODO Auto-generated method stub    
+				Integer loginAttempts = snapshot.child("loginAttempts").getValue(Integer.class);
+				if(loginAttempts == 0) {
+					Long currentTime = System.currentTimeMillis();
+					FirebaseDatabase.getInstance().getReference().child("users").child(username).child("loginTime").setValueAsync(currentTime);
+					FirebaseDatabase.getInstance().getReference().child("users").child(username).child("loginAttempts").setValueAsync(loginAttempts + 1);
+				}
+				else{
+					Long databaseTime = snapshot.child("loginTime").getValue(Long.class);
+					Timestamp userTimestamp = new Timestamp(databaseTime);
+					Timestamp lockedOutUntil = new Timestamp(databaseTime + 60000);
+					if(userTimestamp.before(lockedOutUntil)) {
+						//less than one minute and < 3 attempts keep time and add attempt
+						if(loginAttempts < 3) {
+							FirebaseDatabase.getInstance().getReference().child("users").child(username).child("loginAttempts").setValueAsync(loginAttempts + 1);
+						}
+					}
+					else {
+						//reset time and attempts
+						Long currentTime = System.currentTimeMillis();
+						FirebaseDatabase.getInstance().getReference().child("users").child(username).child("loginTime").setValueAsync(currentTime);
+						FirebaseDatabase.getInstance().getReference().child("users").child(username).child("loginAttempts").setValueAsync(1);
+					}
+				}
+			}
+
+			private boolean lockedout(DataSnapshot snapshot, String username) {
+				
+				Long userTimestamp = snapshot.child("loginTime").getValue(Long.class);
+				Long lockedOutUntil = userTimestamp + 60000;
+				Long currentTimestamp = System.currentTimeMillis();
+				
+				if(snapshot.child("loginAttempts").getValue(Integer.class).equals(3)) {
+					//3 lock outs
+					if(lockedOutUntil > currentTimestamp) {
+						//locked out still
+						return true;
+						
+					}
+					else {
+						//no longer locked out, reset loginAttempts to 0
+						FirebaseDatabase.getInstance().getReference().child("users").child(username).child("loginAttempts").setValueAsync(0);
+						return false;
+					}
+				}
+				else {
+					//not locked out
+					return false;
+				}
+			}
+
 			@Override
 			public void onCancelled(DatabaseError error) {
 				System.out.println(error.getMessage());
@@ -117,12 +205,18 @@ public class LoginServlet extends HttpServlet {
 			dataFetched = true;
 			out = response.getWriter();
 			
-			if (username != null) {
+			if(username == "lockout") {
+				out.print("lockout");
+				session.setAttribute("login_error_message", "Account locked for 1 minute");
+				response.sendRedirect(LOGINPG);
+			}
+			else if (username != null) {
 				out.print("login success");
 				session.setAttribute("username", username);
 				//response.sendRedirect(HOMESERVLET);
 				response.sendRedirect(DASHBOARDSERVLET);
-			} else {
+			} 
+			else {
 				out.print("login fail");
 				session.setAttribute("login_error_message", "Invalid login and/or password");
 				response.sendRedirect(LOGINPG);

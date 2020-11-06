@@ -3,6 +3,7 @@ package csci310.servlets;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Map;
 
@@ -75,9 +76,12 @@ public class StockPerformanceServletStaticTest extends Mockito{
     	}  
     
     	@Test
-    	public void testGetUserStock() throws IOException, InterruptedException {
+    	public void testGetUserStock() throws IOException, InterruptedException, ParseException {
     		when(mockedDatabaseReference.child(anyString())).thenReturn(mockedDatabaseReference);
-		 
+    		servlet.from = Calendar.getInstance();
+            servlet.from.add(Calendar.YEAR, -1);
+            servlet.now = Calendar.getInstance();
+    		
     		doAnswer(new Answer<Void>() {
 				public Void answer(InvocationOnMock invocation) {
 					ValueEventListener valueEventListener = (ValueEventListener) invocation.getArguments()[0];
