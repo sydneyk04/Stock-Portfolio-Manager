@@ -418,7 +418,7 @@ public class StepDefinitions {
 	    datePurchased.sendKeys("01/01/2020");
 	}
 
-	@When("I click the submit button")
+	@Then("I click the submit button")
 	public void i_click_the_submit_button() {
 		WebElement submit = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[2]/div/div/div[3]/button[2]"));
 	    submit.click();
@@ -429,12 +429,6 @@ public class StepDefinitions {
 		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 		assertTrue(driver.getPageSource().contains("AAPL"));
 	   
-	}
-
-	@Given("I click the button to remove stocks from my portfolio")
-	public void i_click_the_button_to_remove_stocks_from_my_portfolio() {
-		WebElement button = driver.findElement(By.id("remove1"));
-		button.click();
 	}
 
 
@@ -454,9 +448,53 @@ public class StepDefinitions {
 		assertEquals(msg.getText(), "Sorry, this stock does not exist.");
 	
 	}
+	
+	@Then("I enter an invalid quantity of shares")
+	public void i_enter_an_invalid_quantity_of_shares() {
+		
+	}
+	
+	@Then("I should see an error message saying invalid number of shares")
+	public void i_should_see_an_error_message_saying_invalid_number_of_shares() {
+		
+	}
 
+	@Then("I do not enter a purchase date")
+	public void i_do_not_enter_a_purchase_date() {
+	
+	}
+	
+	@Then("I should see an error message saying I need to enter a purchase date")
+	public void i_should_see_an_error_message_saying_i_need_to_enter_a_purchase_date() {
+		
+	}
+	
+	@Then("I enter a sold date earlier than the purchase date")
+	public void i_enter_a_sold_date_earlier_than_the_purchase_date() {
+		
+	}
+	
+	@Then("I should see an error message saying my sold date is invalid")
+	public void i_should_see_an_error_message_saying_my_sold_date_is_invalid() {
+		
+	}
+	
+	@Given("I click the button to remove stocks from my portfolio")
+	public void i_click_the_button_to_remove_stocks_from_my_portfolio() {
+		WebElement button = driver.findElement(By.id("remove1"));
+		button.click();
+	}
 
-
+	
+	@Then("I confirm that I want to delete the stock")
+	public void i_confirm_that_i_want_to_delete_the_stock() {
+		
+	}
+	
+	@Then("I should be on the dashboard page without the stock")
+	public void i_should_be_on_the_dashboard_page_without_the_stock() {
+		
+	}
 	
 	
 	@Then("I click the button to add stocks to my portfolio using a CSV")
