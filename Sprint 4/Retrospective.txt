@@ -1,0 +1,13 @@
+Participants: Sydney Nguyen, Anna Shott, Kendall Mayo, Sarah Cheung, Hao Sun
+
+What process aspects will be changed? Why?
+•	There were deductions in Integration, so we will merge the latest commit of develop into the branch and test locally first before merging the branch PR.
+•	Because the Travis CI server’s queue was very backed up on the last day of sprint, we will practice the process described in the above bullet point, in the case that this happens again in Sprint 5. 
+•	Since some of the tasks in scrum chart were hidden, we will make sure to include all the tasks in the screenshot of the chart.
+•	A few of the Trello cards had a checklist for subtasks, but they weren't viewable in the screenshots of the chart, so we'll create Trello cards for those subtasks instead.
+•	We had deductions in our implementation score due to failing or the absence of acceptance tests, so we will focus more time on creating acceptance tests this sprint.
+•	Due to a deduction in Coverage, we will focus on unit test coverage this sprint.
+
+What tasks will be added to the product backlog as a result of review
+feedback?
+•	None, since we'll be pushing to complete all the feature requirements this sprint.
