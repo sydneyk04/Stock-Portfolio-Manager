@@ -1,0 +1,30 @@
+F2: (add/remove) 
+- Test all error messages (illegal ticker, negative or 0 value for quantity, user tries to add stock with no date purchased, date sold < date purchased)
+- Add stock
+- Remove stock
+- Bulk csv
+    - malform returns error
+    - Regular returns x number of new 
+- Delete stock from portfolio 
+F3: (visualize) 
+- Check default time unit is to months
+- If you choose different units, it updates on graph
+- Input date range
+- Date error message
+- Confirm changes axis 
+- Portfolio value
+- Percentage change 
+- Select and deselect
+- Minus and plus zoom 
+F4: (historical) 
+- Error messages
+- Successfully add/remove view stock
+- Check for different colors of stocks
+- Toggle view on and off 
+F5: (mobile) 
+- Acceptance tests
+- Adjust graph to fit screen 
+- View stock to fall below add stock block 
+F6: (security)
+- Need https 
+- Https acceptance tests 
