@@ -107,6 +107,7 @@ public class StockPerformanceServlet extends HttpServlet {
 	        	f.setRoundingMode(RoundingMode.HALF_EVEN);
 	        	ArrayList<String> holder = portfolioValHistory.get(portfolioValHistory.size()-1);
 	        	Double val = Double.parseDouble(holder.get(1));
+	        	System.out.println("Portfolio val: " + val);
 	        	session.setAttribute("portfolioVal", f.format(val));
 	        	
 	        	if (portfolioValHistory.size() > 1) {
@@ -115,6 +116,7 @@ public class StockPerformanceServlet extends HttpServlet {
 		        	Double prevVal = Double.parseDouble(prevHolder.get(1));
 		        	Double percentChange = (val - prevVal) / 100;
 		        	session.setAttribute("portfolioPercentage", f.format(percentChange));
+		        	System.out.println("Today's portfolio val: " + val);
 		        	System.out.println("Yesterday's portfolio val: " + prevVal);
 	        	}        	
 	        }
@@ -280,11 +282,20 @@ public class StockPerformanceServlet extends HttpServlet {
 				}
 			}
 			
-			if(!portfolioValHistory.isEmpty()) {
+			if (!portfolioValHistory.isEmpty()) {
 				DecimalFormat f = new DecimalFormat("##.00");
 				ArrayList<String> holder = portfolioValHistory.get(portfolioValHistory.size()-1);
 				Double val = Double.parseDouble(holder.get(1));
 				session.setAttribute("portfolioVal", f.format(val));	
+
+	        	if (portfolioValHistory.size() > 1) {
+	        		// yesterday's portfolio value
+		        	ArrayList<String> prevHolder = portfolioValHistory.get(portfolioValHistory.size()-2);
+		        	Double prevVal = Double.parseDouble(prevHolder.get(1));
+		        	Double percentChange = (val - prevVal) / 100;
+		        	session.setAttribute("portfolioPercentage", f.format(percentChange));
+		        	System.out.println("Yesterday's portfolio val: " + prevVal);
+	        	}        	
 			}
 			
 		}
@@ -313,12 +324,22 @@ public class StockPerformanceServlet extends HttpServlet {
 			//build the graph using the list of stocks
 			buildGraph();
 			
-			if(!portfolioValHistory.isEmpty()) {
+			if (!portfolioValHistory.isEmpty()) {
 				DecimalFormat f = new DecimalFormat("##.00");
 				ArrayList<String> holder = portfolioValHistory.get(portfolioValHistory.size()-1);
 				System.out.println(holder);
 				Double val = Double.parseDouble(holder.get(1));
 				session.setAttribute("portfolioVal", f.format(val));	
+	        	
+	        	if (portfolioValHistory.size() > 1) {
+	        		// yesterday's portfolio value
+		        	ArrayList<String> prevHolder = portfolioValHistory.get(portfolioValHistory.size()-2);
+		        	Double prevVal = Double.parseDouble(prevHolder.get(1));
+		        	Double percentChange = (val - prevVal) / 100;
+		        	session.setAttribute("portfolioPercentage", f.format(percentChange));
+		        	System.out.println("Today's portfolio val: " + val);
+		        	System.out.println("Yesterday's portfolio val: " + prevVal);
+	        	}        	
 			} else {
 				session.setAttribute("portfolioVal", "0.00");	
 			}

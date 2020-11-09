@@ -187,7 +187,16 @@
           <div class="row">
           	<div class="col-md-12 col-sm-12 bg-white">
                	<div class="portfolio_value">
-               		<h3>Portfolio Value Today: $<%if(portfolioVal != null){%><%=portfolioVal%><%}%></h3>
+               		<h3>Portfolio Value Today: 
+               			<%if(portfolioVal != null) {%> 
+               				<%if (portfolioVal.startsWith(".")) {
+               					portfolioVal = "0." + portfolioVal.substring(1);
+               				}%>
+               				$<%=portfolioVal%>
+               			<%} else {%>
+               				$0.00
+               			<%}%>
+               		</h3>
                 </div>
             </div>
             <div class="col-md-12 col-sm-12 bg-white">
@@ -195,11 +204,11 @@
                     <div class="portfolio_percentage">
 	                    <%if (portfolioPercentage == null || portfolioPercentage == "0.00" || portfolioPercentage == "0") {%> 
 	                    	<h4><i id="percentChangeArrow"></i>0.00%</h4>
-	                    <%} else if (portfolioPercentage.contains("-")) {%>
-	                    	<%if (portfolioPercentage.contains("-.")) { portfolioPercentage = "-0." + portfolioPercentage.substring(2); }%>
+	                    <%} else if (portfolioPercentage.contains("-")) {
+	                    	if (portfolioPercentage.contains("-.")) { portfolioPercentage = "-0." + portfolioPercentage.substring(2); }%>
 	                    	<h4 style="color: red;"><i id="percentChangeArrow" class="glyphicon glyphicon-arrow-down"></i> <%=portfolioPercentage%>%</h4>
-	                    <%} else {%>
-	                    	<%if (portfolioPercentage.charAt(0) == '.') { portfolioPercentage = "0." + portfolioPercentage.substring(1); }%>
+	                    <%} else {
+	                    	if (portfolioPercentage.charAt(0) == '.') { portfolioPercentage = "0." + portfolioPercentage.substring(1); }%>
 	                    	<h4 style="color: green;"><i id="percentChangeArrow" class="glyphicon glyphicon-arrow-up"></i> <%=portfolioVal%>%</h4>
 	                    <%}%>
                     </div>
