@@ -17,6 +17,7 @@
 	String invalid_error = (String) session.getAttribute("invalid_error");
 	String failedAdd = (String) session.getAttribute("failedAdd");
 	String portfolioVal = (String) session.getAttribute("portfolioVal");
+	String portfolioPercentage = (String) session.getAttribute("portfolioPercentage");
 	List<ArrayList> view = (List<ArrayList>) session.getAttribute("view");
 	List<ArrayList> myStocks = (List<ArrayList>) session.getAttribute("myStocks");
 	
@@ -184,6 +185,31 @@
 
 
           <div class="row">
+          	<div class="col-md-12 col-sm-12 bg-white">
+               	<div class="portfolio_value">
+               		<h3>Portfolio Value Today: $<%if(portfolioVal != null){%><%=portfolioVal%><%}%></h3>
+                </div>
+            </div>
+            <div class="col-md-12 col-sm-12 bg-white">
+                  <div class="x_title">
+                    <div class="portfolio_percentage">
+	                    <%if (portfolioPercentage == null || portfolioPercentage == "0.00" || portfolioPercentage == "0") {%> 
+	                    	<h4><i id="percentChangeArrow"></i>0.00%</h4>
+	                    <%} else if (portfolioPercentage.contains("-")) {%>
+	                    	<%if (portfolioPercentage.contains("-.")) { portfolioPercentage = "-0." + portfolioPercentage.substring(2); }%>
+	                    	<h4 style="color: red;"><i id="percentChangeArrow" class="glyphicon glyphicon-arrow-down"></i> <%=portfolioPercentage%>%</h4>
+	                    <%} else {%>
+	                    	<%if (portfolioPercentage.charAt(0) == '.') { portfolioPercentage = "0." + portfolioPercentage.substring(1); }%>
+	                    	<h4 style="color: green;"><i id="percentChangeArrow" class="glyphicon glyphicon-arrow-up"></i> <%=portfolioVal%>%</h4>
+	                    <%}%>
+                    </div>
+                    <form name="formname" id="toggleSP" style="margin: 0px; padding: 0px; display:inline;" action="/dashboard" method="POST">
+						<input type="hidden" name="action" value="toggleSP">
+						<button style="text-align:left;display:inline;" type="submit" id="displayButton" class="btn btn-info btn-sm">Toggle S&P</button>
+	  				</form>
+                    <div class="clearfix"></div>
+                  </div>
+            </div>
             <div class="col-md-12 col-sm-12 ">
               <div class="dashboard_graph">
 
@@ -237,18 +263,7 @@
 						})
 				</script>
 
-								</div>
-                <div class="col-md-3 col-sm-3  bg-white">
-                  <div class="x_title">
-                    <h2>Portfolio Value Today: $<%if(portfolioVal != null){%><%=portfolioVal%><%}%></h2>
-                    <form name="formname" id="toggleSP" action="/dashboard" method="POST">
-						<input type="hidden" name="action" value="toggleSP">
-						<br><br><button style="text-align:left;display:inline;" type="submit" id="displayButton" class="btn btn-light btn-sm">Toggle S&P</button>
-	  				</form>
-                    <div class="clearfix"></div>
-                  </div>
-                </div>
-
+				</div>
                 <div class="clearfix"></div>
               </div>
             </div>

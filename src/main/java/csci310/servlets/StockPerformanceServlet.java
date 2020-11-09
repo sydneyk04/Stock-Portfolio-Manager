@@ -1,38 +1,31 @@
 package csci310.servlets;
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.net.URI;
+import java.text.DateFormat;
+import java.text.DateFormatSymbols;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-
-import java.net.*;
-import java.io.*;
-import java.text.DateFormat;
-import java.text.DateFormatSymbols;
-import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
@@ -44,7 +37,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
-import yahoofinance.Stock;
 import yahoofinance.YahooFinance;
 import yahoofinance.histquotes.HistoricalQuote;
 import yahoofinance.histquotes.Interval;
@@ -110,10 +102,21 @@ public class StockPerformanceServlet extends HttpServlet {
 	        }
 	
 	        if (!portfolioValHistory.isEmpty()) {
+	        	// today's portfolio value
 	        	DecimalFormat f = new DecimalFormat("##.00");
+	        	f.setRoundingMode(RoundingMode.HALF_EVEN);
 	        	ArrayList<String> holder = portfolioValHistory.get(portfolioValHistory.size()-1);
 	        	Double val = Double.parseDouble(holder.get(1));
-	        	session.setAttribute("portfolioVal", f.format(val));	
+	        	session.setAttribute("portfolioVal", f.format(val));
+	        	
+	        	if (portfolioValHistory.size() > 1) {
+	        		// yesterday's portfolio value
+		        	ArrayList<String> prevHolder = portfolioValHistory.get(portfolioValHistory.size()-2);
+		        	Double prevVal = Double.parseDouble(prevHolder.get(1));
+		        	Double percentChange = (val - prevVal) / 100;
+		        	session.setAttribute("portfolioPercentage", f.format(percentChange));
+		        	System.out.println("Yesterday's portfolio val: " + prevVal);
+	        	}        	
 	        }
 	
 	        //build the graph using the list of stocks
