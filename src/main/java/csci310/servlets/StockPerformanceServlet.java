@@ -423,7 +423,7 @@ public class StockPerformanceServlet extends HttpServlet {
 				String numOfShares = s.get(2);
 				String purchase = s.get(3);
 				String sell = s.get(4);
-				
+				String calculatedInPortfolio = s.get(5);
 				ArrayList<String> holder = new ArrayList<String>();
 				String json;
 				try {
@@ -433,6 +433,8 @@ public class StockPerformanceServlet extends HttpServlet {
 					holder.add(numOfShares);
 					holder.add(purchase);
 					holder.add(sell);
+					holder.add(calculatedInPortfolio);
+					view.add(holder);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -441,8 +443,6 @@ public class StockPerformanceServlet extends HttpServlet {
 					e.printStackTrace();
 				}
 				
-				
-				view.add(holder);
 				
 			}
 			
