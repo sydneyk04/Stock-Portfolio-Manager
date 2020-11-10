@@ -1,6 +1,9 @@
 <%@ page import="csci310.*" %>
 <%@ page import ="java.util.ArrayList"%>
 <%@ page import ="java.util.List"%>
+<%@ page import ="java.util.Calendar"%>
+<%@ page import ="java.util.GregorianCalendar"%>
+
 <!DOCTYPE html>
 <%
 	// Disable Caching
@@ -12,6 +15,8 @@
 		response.sendRedirect("../login.jsp");
 	}
 
+	Calendar from = (Calendar) session.getAttribute("from");
+	Calendar now = (Calendar) session.getAttribute("now");
 	String chart = (String) session.getAttribute("chart");
 	String username = (String) session.getAttribute("username");
 	String invalid_error = (String) session.getAttribute("invalid_error");
@@ -200,10 +205,9 @@
                   <!-- <canvas id="chartContainer" width="1000" height="400"></canvas> -->
                   <div id="chartContainer" style="width: 1000px; height: 400px" ></div>
                   <%-- <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script> --%>
-				  				<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+				  <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
                   <%= chart%>
-                  </script>
-
+              
 					<div class="col-md-3 col-sm-6" id="performanceRangePicker">
 						<p>Choose a range for display</p>
 						<form id="performanceRangeForm" action="/dashboard" method="post">
@@ -250,7 +254,12 @@
                 <div class="col-md-3 col-sm-3  bg-white">
                   <div class="x_title">
                     <h2>Portfolio Value Today: $<%if(portfolioVal != null){%><%=portfolioVal%><%}%></h2>
-                    <form name="formname" id="toggleSP" action="/dashboard" method="POST">
+                   	<!-- <form name="formname" id="zoom" action="/dashboard" method="POST">
+						<input type="hidden" name="action" value="zoom">
+						<button type="submit" id="zoomBtn" >Zoom Graph</button>
+                    	<button id="resetBtn"style="text-align:left;display:inline;" >Reset to Default</button>
+					</form> -->
+                   	<form name="formname" id="toggleSP" action="/dashboard" method="POST">
 						<input type="hidden" name="action" value="toggleSP">
 						<br><br><button style="text-align:left;display:inline;" type="submit" id="displayButton" class="btn btn-light btn-sm">Toggle S&P</button>
 	  				</form>
@@ -633,7 +642,7 @@
 					<h2>View stocks</h2>
 					  <strong id="login_error" style="color:red"><%if(invalid_error != null){ %> <%= invalid_error%> <% } %></strong>
 					<!-- Button trigger modal -->
-                    <br><button type="button" data-toggle="modal" data-target="#viewStockModal">Add Stock to Graph</button>
+                    <br><button type="button" data-toggle="modal" data-target="#viewStockModal">View Stock</button>
                     <br><br>
                     
 					<%if(view!=null){for(int i=0; i<view.size(); i++) {%>
@@ -643,7 +652,11 @@
                              <br><p style="text-align:left;display:inline;">   # Shares: </p><p style="text-align:left; display:inline; font-weight:bold;"><%=view.get(i).get(2) %></p>
                              <br><p style="text-align:left;display:inline;">   Purchase Date: </p><p style="text-align:left; display:inline; font-weight:bold;"><%=view.get(i).get(3) %></p>
                              <br><p style="text-align:left;display:inline;">   Sell Date: </p><p style="text-align:left; display:inline; font-weight:bold;"><%=view.get(i).get(4) %></p>
-
+							 <form name="formname" action="/dashboard" method="POST">
+	                            <input type="hidden" name="action" value="showViewStock">
+	                            <input type="hidden" name="ticker" value="<%=view.get(i).get(0) %>">
+	                            <button style="text-align:left; display:inline; font-weight:bold;">Toggle on Graph</button>
+	                         </form>
                              <form name="formname" action="/dashboard" method="POST">
 	                            <input type="hidden" name="action" value="removeViewStock">
 	                            <input type="hidden" name="removeTicker" value="<%=view.get(i).get(0) %>">
@@ -715,7 +728,7 @@
 		                          <div class="modal-footer">
 		                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 
-		                        <button type="submit" class="btn btn-primary">Add to my Graph</button>
+		                        <button type="submit" class="btn btn-primary">View Stock</button>
                             </form>
 
 

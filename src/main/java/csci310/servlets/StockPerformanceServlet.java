@@ -71,7 +71,6 @@ public class StockPerformanceServlet extends HttpServlet {
 		session = request.getSession();
 		response.setContentType("text/plain");
 		out = response.getWriter();
-		System.out.println("Hello from doGet");
 		
 		myStocks.clear();
 		jsons.clear();
@@ -81,7 +80,7 @@ public class StockPerformanceServlet extends HttpServlet {
         String username = session.getAttribute("username").toString();
         //default time period is 1Y
         from = Calendar.getInstance();
-        from.add(Calendar.YEAR, -1);
+        from.add(Calendar.MONTH, -3);
         now = Calendar.getInstance();
  
 	        try {
@@ -98,6 +97,8 @@ public class StockPerformanceServlet extends HttpServlet {
 			}
 	
 	        //set stocks as session variable for front end
+	        session.setAttribute("from", from);
+	        session.setAttribute("now", now);
 	        session.setAttribute("myStocks", myStocks);
 	        session.setAttribute("view", view);
 	        session.setAttribute("invalid_error", null);
@@ -128,7 +129,6 @@ public class StockPerformanceServlet extends HttpServlet {
 		out = response.getWriter();
 		response.setStatus(HttpServletResponse.SC_OK);
 		session = request.getSession();
-		System.out.println("Hello from doPost");
 		String action = request.getParameter("action");
 		//if user wants to toggle hide/show on graph - DONE
 		if(action.equals("portfolioState")) {
@@ -152,6 +152,22 @@ public class StockPerformanceServlet extends HttpServlet {
 		
 		} 
 		
+		else if(action.equals("showViewStock")) {
+			System.out.println("Action is 'showViewStock'");
+			String ticker = request.getParameter("ticker");
+			for(int i=0; i<view.size(); i++) {
+				if(view.get(i).get(0).equals(ticker)){
+					if(view.get(i).get(5).equals("Yes")) {
+						view.get(i).set(5, "No");
+					}else {
+						view.get(i).set(5, "Yes");
+					}
+				}
+			}
+			
+			buildGraph();
+		}
+		
 		else if(action.equals("toggleSP")) {
 			System.out.println("Action is 'toggleSP'");
 			if(myStocks.get(0).get(5).equals("Yes")) {
@@ -159,8 +175,6 @@ public class StockPerformanceServlet extends HttpServlet {
 			}else {
 				myStocks.get(0).set(5, "Yes");
 			}
-
-			
 			buildGraph();
 		} 
 		
@@ -187,6 +201,7 @@ public class StockPerformanceServlet extends HttpServlet {
 					holder.add(numOfShares);
 					holder.add(purchase);
 					holder.add(sell);
+					holder.add("Yes");
 					view.add(holder);
 					buildGraph();
 				//if not valid stock name
@@ -569,13 +584,15 @@ public class StockPerformanceServlet extends HttpServlet {
 
 		//add any stocks you want to view
 		for(int i=0; i<view.size(); i++) {
-			theChart += "{\n" +
-						"type: \"line\",\n" + 
-						"name: \"" + view.get(i).get(0) + "\",\n" +
-						"showInLegend: true,\n" +
-						"yValueFormatString: \"$##0.00\",\n" + 
-						"dataPoints :" + view.get(i).get(1) +
-					"},\n";	
+			if(view.get(i).get(5).equals("Yes")) {
+				theChart += "{\n" +
+							"type: \"line\",\n" + 
+							"name: \"" + view.get(i).get(0) + "\",\n" +
+							"showInLegend: true,\n" +
+							"yValueFormatString: \"$##0.00\",\n" + 
+							"dataPoints :" + view.get(i).get(1) +
+						"},\n";	
+			}
 		}
 		
 		//add the end code
