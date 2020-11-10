@@ -291,8 +291,7 @@
 					      <div class="modal-footer">
 						     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
 							 <input type="hidden" name="action" value="addCSV">
-								 <input type="hidden" id="csvContent" name="csvContent" value="">
-							 <button type="button" class="btn btn-primary" data-dismiss="modal" id="csvAddButton">Upload File</button>
+							 <button type="submit" id="upload-file-button" class="btn btn-primary" data-dismiss="modal" id="csvAddButton">Upload File</button>
 						  </div>
 						</form>
 					    </div>
