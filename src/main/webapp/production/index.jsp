@@ -177,16 +177,16 @@
     <div class="container body">
       <div class="main_container">
         <!-- top navigation -->
-         <header id="top_nav" style="height:60px; background:#787878;">
+         <header id="top_nav" style="height:70px; background:#787878;">
   			<nav id="banner" class="navbar navbar-dark bg-secondary justify-content-left">
 		      	<div id="banner-content" class="navbar-brand" style="color:white;font-size:45px;font-family: 'Raleway', sans-serif;">
-		      		<a href="index.jsp" style="text-decoration: none; color:white;" >
+		      		<a href="index.jsp" style="text-decoration: none; color:white; font-size:4vw;" >
 				    	USC CS 310 Stock Portfolio Management
 					</a>
 		      	</div>
 		      	<div>
 		    
-					<form name="formname" action="/dashboard" method="POST">
+					<form name="formname" action="/dashboard" method="POST" style="margin: 10px 0px 2px 0px;">
 						<input type="hidden" name="action" value="logout">
 						<button id="logout-button" type="submit" class="btn btn-primary btn-md justify-content-start">
 							Logout <i class="icon-signout"></i>
@@ -246,7 +246,7 @@
                 <div class="col-md-9 col-sm-9 ">
                 	<!--   <div id="chart_plot_01" class="demo-placeholder"></div> -->
                   <!-- <canvas id="chartContainer" width="1000" height="400"></canvas> -->
-                  <div id="chartContainer" style="width: 1000px; height: 400px" ></div>
+                  <div id="chartContainer" style="width: 100%; height: 400px" ></div>
                   <%-- <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script> --%>
 				  <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
                   <%= chart%>
