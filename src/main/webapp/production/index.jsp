@@ -186,7 +186,7 @@
 
           <div class="row">
           	<div class="col-md-12 col-sm-12 bg-white">
-               	<div class="portfolio_value">
+               	<div class="portfolio_value" id="portfolio-value-today">
                		<h3>Portfolio Value Today: 
                			<%if(portfolioVal != null) {%> 
                				<%if (portfolioVal.startsWith(".")) {
@@ -201,7 +201,7 @@
             </div>
             <div class="col-md-12 col-sm-12 bg-white">
                   <div class="x_title">
-                    <div class="portfolio_percentage">
+                    <div class="portfolio_percentage" id="portfolio-percentage-change">
 	                    <%if (portfolioPercentage == null || portfolioPercentage == "0.00" || portfolioPercentage == "0") {%> 
 	                    	<h4><i id="percentChangeArrow"></i>0.00%</h4>
 	                    <%} else if (portfolioPercentage.contains("-")) {
@@ -306,7 +306,7 @@
 						  <form class="" id="csvAddForm" action="/dashboard" method="post">
 							 <div class="modal-body">
 					      	 <a href="exampleStockCSV.csv" download="example">
-					     	 <button type="button" style="background: darkgrey;" class="btn btn-primary">Download Example CSV</button>
+					     	 <button type="button" id="example-csv-button" style="background: darkgrey;" class="btn btn-primary">Download Example CSV</button>
 					     	 </a>
 
 						      <div id="dvImportSegments" class="fileupload">
@@ -317,9 +317,9 @@
 							 </div>
 					        </div>
 					      <div class="modal-footer">
-						     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+						     <button type="button" id="cancel-csv-button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
 							 <input type="hidden" name="action" value="addCSV">
-							 <button type="submit" class="btn btn-primary" data-dismiss="modal" id="csvAddButton">Upload File</button>
+							 <button type="submit" id="upload-file-button" class="btn btn-primary" data-dismiss="modal" id="csvAddButton">Upload File</button>
 						  </div>
 						</form>
 					    </div>
@@ -339,7 +339,7 @@
                       <%if(myStocks!=null){for(int i=1; i<myStocks.size(); i++){ %>
 	                      <li id="li-<%=myStocks.get(i).get(0) %>" class="d-flex">
 	                          <div style="display:inline; float: left; width: 15%;">
-	                            <button type="button" style="background:lightgrey; border:none; border-radius:5px; color:white;" class="flat" data-toggle="modal" data-target="#removeStockModal-<%=myStocks.get(i).get(0)%>">X</button>
+	                            <button type="button" id="manage-portfolio-removeStockButton-<%=myStocks.get(i).get(0)%>" style="background:lightgrey; border:none; border-radius:5px; color:white;" class="flat" data-toggle="modal" data-target="#removeStockModal-<%=myStocks.get(i).get(0)%>">X</button>
 	                            <!-- Modal for Remove Stock -->
 	                            <div class="modal fade" id="removeStockModal-<%=myStocks.get(i).get(0)%>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	                              <div class="modal-dialog" role="document">
@@ -419,7 +419,7 @@
                     <!-- Button trigger modal --><br><br>
                     <div class="addstockbutton">
                     <strong id="login_error" style="color:red"><%if(failedAdd != null){ %> <%= failedAdd%> <% } %></strong>
-                    <br><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addStockModal">Add Stock</button>
+                    <br><button id="manage-portfolio-add-stock-button" type="button" class="btn btn-primary" data-toggle="modal" data-target="#addStockModal">Add Stock</button>
                    
 
 
@@ -440,13 +440,13 @@
 		                              <div style="float: left; width: 45%; overflow: scroll; margin-right:2.5%; margin-left:2.5%; display:table-cell;">
 		                                <div style="margin-right:5px;">
 		                                  <p style="text-align:center;">Ticker*</p>
-		                                  <input class="stockinput" type="text" id="ticker" name="ticker" required>
+		                                  <input class="stockinput" type="text" id="add-stock-ticker" name="ticker" required>
 		                                </div>
 		                              </div>
 		                              <div style="float: left; width: 45%; overflow: scroll; margin-left:2.5%; display:table-cell;">
 		                                <div style="margin-right:5px;">
 		                                  <p style="text-align:center;"># Shares*</p>
-		                                  <input class="stockinput" type="text" id="shares" name="numOfShares" required>
+		                                  <input class="stockinput" type="text" id="add-stock-shares" name="numOfShares" required>
 		                                </div>
 		                              </div>
 		                            </div>
@@ -455,13 +455,13 @@
 		                              <div style="float: left; width: 45%; overflow: scroll; margin-right:2.5%; margin-left:2.5%; display:table-cell;">
 		                                <div style="margin-right:5px;">
 		                                  <p style="text-align:center;">Date Purchased*</p>
-		                                  <input class="stockinput" type="date" id="datePurchased" name="datePurchased" required>
+		                                  <input class="stockinput" type="date" id="add-stock-datePurchased" name="datePurchased" required>
 		                                </div>
 		                              </div>
 		                              <div style="float: left; width: 45%; overflow: scroll; margin-left:2.5%; display:table-cell;">
 		                                <div style="margin-right:5px;">
 		                                  <p style="text-align:center;">Date Sold</p>
-		                                  <input class="stockinput" type="date" id="dateSold" name="dateSold">
+		                                  <input class="stockinput" type="date" id="add-stock-dateSold" name="dateSold">
 		                                </div>
 		                              </div>
 		                            </div>
@@ -472,8 +472,8 @@
 		                            </div>
 		                          </div>
 		                          <div class="modal-footer">
-		                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-		                          <button type="submit" class="btn btn-primary" data-dismiss="modal" id="stockaddbutton">Add Stock</button>
+		                          <button id="modal-manage-portfolio-cancel-button" type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+		                          <button id="modal-manage-portfolio-add-stock-button" type="submit" class="btn btn-primary" data-dismiss="modal" id="stockaddbutton">Add Stock</button>
 	 						</form>
 							<%-- add stock form --%>
 							<script type="text/javascript">
@@ -687,18 +687,18 @@
                             </button>
                           </div>
                           <div class="modal-body">
-                            <div class="inputrow">
+                            <div class="inputrow" style="width: 100%;">
 
 
                             <form name="formname" action="/dashboard" method="POST">
 	                            <input type="hidden" name="action" value="viewStock">
-		                              <div style="float: left; width: 30%; overflow: scroll; margin-right:2.5%; margin-left:2.5%; display:table-cell;">
+		                              <div style="float: left; width: 45%; overflow: scroll; margin-right:2.5%; margin-left:2.5%; display:table-cell;">
 		                                <div style="margin-right:5px;">
 		                                  <p style="text-align:center;">Ticker*</p>
 		                                  <input class="stockinput" type="text" id="ticker" name="ticker" required>
 		                                </div>
 		                              </div>
-		                              <div style="float: left; width: 30%; overflow: scroll; margin-left:2.5%; display:table-cell;">
+		                              <div style="float: left; width: 45%; overflow: scroll; margin-left:2.5%; display:table-cell;">
 		                                <div style="margin-right:5px;">
 		                                  <p style="text-align:center;"># Shares*</p>
 		                                  <input class="stockinput" type="text" id="shares" name="numOfShares" required>
@@ -706,20 +706,20 @@
 		                              </div>
 		                            </div>
 		                            <br>
-		                            <div class="inputrow">
-		                              <div style="float: left; width: 30%; overflow: scroll; margin-right:2.5%; display:table-cell;">
+		                            <div class="inputrow" style="width: 100%;">
+		                              <div style="float: left; width: 45%; overflow: scroll; margin-right:2.5%; margin-left:2.5%; display:table-cell;">
 		                                <div style="margin-right:5px;">
 		                                  <p style="text-align:center;">Date Purchased*</p>
 		                                  <input class="stockinput" type="date" id="datePurchased" name="datePurchased" required>
 		                                </div>
 		                              </div>
-		                              <div style="float: left; width: 30%; overflow: scroll; margin-right:2.5%; margin-left:2.5%; display:table-cell;">
+		                              <div style="float: left; width: 45%; overflow: scroll; margin-left:2.5%; display:table-cell;">
 		                                <div style="margin-right:5px;">
 		                                  <p style="text-align:center;">Date Sold</p>
 		                                  <input class="stockinput" type="date" id="dateSold" name="dateSold">
 		                                </div>
 		                              </div>
-		                              <div style="float: left; width: 30%; overflow: scroll; margin-left:2.5%; display:table-cell;">
+		                              <div style="float: left; width: 95%; overflow: scroll; margin-left:2.5%; display:table-cell;">
 		                                <div style="margin-right:5px;">
 		                                  <p style="text-align:center;">Note: date must be in mm/dd/YYYY</p>
 		                                </div>
