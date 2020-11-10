@@ -276,6 +276,7 @@
 					        </button>
 					      </div>
 						  <form class="" id="csvAddForm" action="/dashboard" method="post">
+						  <input type="hidden" name="action" value="addCSV">
 							 <div class="modal-body">
 					      	 <a href="exampleStockCSV.csv" download="example">
 					     	 <button type="button" style="background: darkgrey;" class="btn btn-primary">Download Example CSV</button>
@@ -290,7 +291,7 @@
 					        </div>
 					      <div class="modal-footer">
 						     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-							 <input type="hidden" name="action" value="addCSV">
+							 
 							 <button type="submit" id="upload-file-button" class="btn btn-primary" data-dismiss="modal" id="csvAddButton">Upload File</button>
 						  </div>
 						</form>
