@@ -13,6 +13,14 @@
 
 	if (session.getAttribute("username") == null) {
 		response.sendRedirect("../login.jsp");
+		
+		session.setAttribute("from", null);
+		session.setAttribute("now", null);
+		session.setAttribute("chart", null);
+		session.setAttribute("invalid_error", null);
+		session.setAttribute("failedAdd", null);
+		session.setAttribute("portfolioVal", null);
+		session.setAttribute("portfolioPercentage", null);
 	}
 
 	Calendar from = (Calendar) session.getAttribute("from");
