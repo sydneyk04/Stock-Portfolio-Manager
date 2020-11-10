@@ -682,6 +682,13 @@ public class StepDefinitions {
 	    button.click();
 	}
 	
+	@When("I click the Add to Portfolio button in view")
+	public void i_click_the_add_to_portfolio_button_in_view() {
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		WebElement button = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div[1]/div/form[3]/button")));
+	    button.click();
+	}
+	
 	@Then("I should see the S&P stock added to the graph")
 	public void i_should_see_the_S_P_stock_added_to_the_graph() {
 		JavascriptExecutor js = (JavascriptExecutor) driver;
@@ -743,6 +750,18 @@ public class StepDefinitions {
 	public void i_should_be_told_to_fill_out_all_info() {
 		WebElement stock = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[3]/button[2]"));
 		assertTrue(stock!=null);
+	}
+	
+	@Then("I should see the stock in my portfolio")
+	public void i_should_see_the_stock_in_my_portfolio() {
+		WebElement stock = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/ul/li[1]/div[2]"));
+		assertTrue(stock!=null);
+	}
+	
+	@Then("I should see an error message in my portfolio")
+	public void i_should_see_an_error_message_in_my_portfolio() {
+		WebElement error = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/strong"));
+		assertTrue(error!=null);
 	}
 	
 	

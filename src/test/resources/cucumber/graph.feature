@@ -71,3 +71,17 @@ Feature: Using the graph and other basic functionality on dashboard
    	When I click the view stock button
     And I fill out some stock info
     Then I should be told to fill out all info
+    
+  Scenario: Add to portfolio from view stock
+    Given I am logged in on the dashboard page
+   	When I click the view stock button
+    And I fill out correct stock info
+    And I click the Add to Portfolio button in view
+    Then I should see the stock in my portfolio
+    
+ Scenario: Add stock you already own to portfolio from view stock
+    Given I am logged in on the dashboard page
+   	When I click the view stock button
+    And I fill out correct stock info
+    And I click the Add to Portfolio button in view
+    Then I should see an error message in my portfolio
