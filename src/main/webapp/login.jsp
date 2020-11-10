@@ -8,6 +8,11 @@
 	
 	session.setAttribute("username", null);
 	session.setAttribute("myStocks", null);
+	session.setAttribute("from", null);
+	session.setAttribute("now", null);
+	session.setAttribute("chart", null);
+	session.setAttribute("invalid_error", null);
+	session.setAttribute("failedAdd", null);
 	session.setAttribute("portfolioVal", null);
 	session.setAttribute("portfolioPercentage", null);
 
@@ -34,8 +39,14 @@
 			session.setAttribute("username", null);
 			session.setAttribute("login_error_message", null);
 			session.setAttribute("myStocks", null);
+			session.setAttribute("from", null);
+			session.setAttribute("now", null);
+			session.setAttribute("chart", null);
+			session.setAttribute("invalid_error", null);
+			session.setAttribute("failedAdd", null);
 			session.setAttribute("portfolioVal", null);
 			session.setAttribute("portfolioPercentage", null);
+
 		}
 	</script>
   
