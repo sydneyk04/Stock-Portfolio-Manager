@@ -556,6 +556,7 @@ public class StepDefinitions {
 		WebElement button = driver.findElement(By.id("datepicker"));
 		button.sendKeys("01/01/2020 - 09/09/2020");
 	}
+	
 	@When("I click the confirm button")
 	public void i_click_the_confirm_button() {
 		driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
@@ -564,17 +565,28 @@ public class StepDefinitions {
 		
 		JavascriptExecutor executor = (JavascriptExecutor)driver;
 		executor.executeScript("arguments[0].click();", submit);
-		
-	    //submit.click();
 	}
+	
+	@When("I have more than two lines on the graph")
+	public void i_have_more_than_two_lines_on_the_graph() {
+		WebElement stock = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/ul/li[1]"));	
+	}
+	
 	
 	/**************************
 	 * PORTFOLIO PERFORMANCE FEATURE (AKA GRAPH FEATURE)
 	 **************************/
 	@Then("I should see the graph date range change")
 	public void i_should_see_the_graph_date_range_change() {
-		WebElement graph = null;
-	    assertNull(graph);
+		JavascriptExecutor js = (JavascriptExecutor) driver;
+		Long start = (Long) js.executeScript("return getStartDate();");
+		assertTrue(start == 7);
+	}
+	
+	@Then("I should see the graph value update")
+	public void i_should_see_the_graph_value_update() {
+		WebElement g = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div/div/div[2]/div[1]/div/canvas[2]"));
+		assertTrue(g != null);
 	}
 	
 	@When("I click the button to add the S&P")
@@ -592,13 +604,29 @@ public class StepDefinitions {
 	
 	@Then("I should see the S&P stock added to the graph")
 	public void i_should_see_the_S_P_stock_added_to_the_graph() {
-		WebElement graph = driver.findElement(By.xpath("//*[@id=\"chartContainer\"]/div/canvas[2]"));
-		assertTrue(graph != null);
+		JavascriptExecutor js = (JavascriptExecutor) driver;
+		String sp = (String) js.executeScript("return getSP();");
+		assertTrue(sp.contentEquals("Yes"));
 	}
 	
 	@Then("I should not be able to click the date")
 	public void i_should_not_be_able_to_click_the_date() {
 		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/production/index.jsp"));
+	}
+	
+	@Then("I should see two different colored lines")
+	public void i_should_see_two_different_colored_lines() {
+		WebElement g = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div/div/div[2]/div[1]/div/canvas[2]"));
+		WebElement l = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div/div/div[2]/div[1]/div/a"));
+		assertTrue(!g.getCssValue("color").contentEquals(l.getCssValue("color")));
+	}
+	
+	@Then("The default time frame should be 3 months")
+	public void the_default_time_frame_should_be_3_months() {
+		JavascriptExecutor js = (JavascriptExecutor) driver;
+		Long start = (Long) js.executeScript("return getStartDate();");
+		Long end = (Long) js.executeScript("return getEndDate();");
+		assertTrue(end-start == 3);
 	}
 	
 	/**************************

@@ -219,6 +219,7 @@
 					</div>
 
 					<script type="text/javascript">
+						var startDate = moment().subtract(3, 'month').month();
 						$('#datepicker').daterangepicker({
 							startDate: moment().subtract(1, 'year'),
 							endDate: moment(),
@@ -235,6 +236,14 @@
 							$('input[name=from]').val(picker.startDate.format('YYYY-MM-DD'));
 							$('input[name=to]').val(picker.endDate.format('YYYY-MM-DD'));
 						})
+						
+						function getStartDate() {
+						    return moment().subtract(3, 'month').month();
+						}
+						
+						function getEndDate() {
+						    return moment().month();
+						}
 				</script>
 
 								</div>
