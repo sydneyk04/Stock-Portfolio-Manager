@@ -555,32 +555,49 @@ public class StepDefinitions {
 	
 	@Then("I enter an invalid quantity of shares")
 	public void i_enter_an_invalid_quantity_of_shares() {
-		
+		WebElement ticker = driver.findElement(By.id("add-stock-ticker"));
+		ticker.sendKeys("AAPL");
+		WebElement date = driver.findElement(By.id("add-stock-datePurchased"));
+		date.sendKeys("01/01/2020");
+		WebElement shares = driver.findElement(By.id("add-stock-shares"));
+		shares.sendKeys("0");
 	}
 	
 	@Then("I should see an error message saying invalid number of shares")
 	public void i_should_see_an_error_message_saying_invalid_number_of_shares() {
-		
+		WebElement error = driver.findElement(By.id("errormsg"));
+		assertTrue(error.getText().contains("invalid number of shares"));
 	}
 
 	@Then("I do not enter a purchase date")
 	public void i_do_not_enter_a_purchase_date() {
-	
+		WebElement ticker = driver.findElement(By.id("add-stock-ticker"));
+		ticker.sendKeys("AAPL");
+		WebElement shares = driver.findElement(By.id("add-stock-shares"));
+		shares.sendKeys("1");
 	}
 	
 	@Then("I should see an error message saying I need to enter a purchase date")
 	public void i_should_see_an_error_message_saying_i_need_to_enter_a_purchase_date() {
-		
+		assertTrue(driver.getCurrentUrl().contains("index"));
 	}
 	
 	@Then("I enter a sold date earlier than the purchase date")
 	public void i_enter_a_sold_date_earlier_than_the_purchase_date() {
-		
+		WebElement ticker = driver.findElement(By.id("add-stock-ticker"));
+		ticker.sendKeys("AAPL");
+		WebElement date = driver.findElement(By.id("add-stock-datePurchased"));
+		date.sendKeys("01/10/2020");
+		WebElement dateSold = driver.findElement(By.id("add-stock-dateSold"));
+		dateSold.sendKeys("01/10/2020");
+		WebElement shares = driver.findElement(By.id("add-stock-shares"));
+		shares.sendKeys("0");
 	}
 	
 	@Then("I should see an error message saying my sold date is invalid")
 	public void i_should_see_an_error_message_saying_my_sold_date_is_invalid() {
-		
+		WebElement error = driver.findElement(By.id("errormsg"));
+		assertTrue(error.getText().contains("invalid sold date"));
 	}
 	
 	/**************************

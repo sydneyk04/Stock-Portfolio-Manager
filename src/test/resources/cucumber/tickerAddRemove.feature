@@ -20,6 +20,7 @@ Feature: Adding and removing stocks from portfolio
 	And I click the Add Stock button in the popup window for the portfolio
     Then I should see an error message saying stock ticker was not found
     
+
   Scenario: Unsuccessfully adding a stock to portfolio with bad quantity
    	Given I am logged in on the dashboard page
    	When I click the Add Stock button for the portfolio
