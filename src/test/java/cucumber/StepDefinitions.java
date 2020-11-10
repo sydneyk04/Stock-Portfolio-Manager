@@ -602,6 +602,37 @@ public class StepDefinitions {
 	}
 	
 	/**************************
+	 * Select/Deselect All FEATURE
+	 **************************/
+	@When("I click the selectall button")
+	public void i_click_the_selectall_button() {
+		WebElement button = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/form/button"));
+		button.click();
+	}
+	
+	@Then("I should see all stocks displayed on the graph")
+	public void i_should_see_all_stocks_displayed_on_the_graph() {
+		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/production/index.jsp"));
+	}
+	
+	@Then("I should see all stocks displayed in the view stocks list")
+	public void i_should_see_all_stocks_displayed_in_the_view_stocks_list() {
+		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/production/index.jsp"));
+	}
+	@When("I click the deselectall button")
+	public void i_click_the_deselectall_button() {
+		WebElement button = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[2]/form/button"));
+		button.click();
+	}
+	@Then("I should see no stocks displayed on the graph")
+	public void i_should_see_no_stocks_displayed_on_the_graph() {
+		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/production/index.jsp"));
+	}
+	@Then("I should see no stocks displayed in the view stocks list")
+	public void i_should_see_no_stocks_displayed_in_the_view_stocks_list() {
+		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/production/index.jsp"));
+	}
+	/**************************
 	 * APP COMPATIBILITY FEATURE
 	 **************************/
 	@When("I resize the window to {int}%")

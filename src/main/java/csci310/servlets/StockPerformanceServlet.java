@@ -122,6 +122,7 @@ public class StockPerformanceServlet extends HttpServlet {
 
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws IOException, ServletException {
 		response.setContentType("text/html;charset=UTF-8");
@@ -373,7 +374,69 @@ public class StockPerformanceServlet extends HttpServlet {
 				e.printStackTrace();
 			}
 			buildGraph();
-		} 
+		}
+		//selectall, add alls stocks to view
+		else if(action.equals("selectViewAll")){
+			view.clear();
+			for(int i = 0; i < myStocks.size(); i++) {
+				ArrayList<String> s = myStocks.get(i);
+				String ticker = s.get(0);
+				String numOfShares = s.get(2);
+				String purchase = s.get(3);
+				String sell = s.get(4);
+				
+				ArrayList<String> holder = new ArrayList<String>();
+				String json;
+				try {
+					json = viewStock(ticker, numOfShares, purchase, sell);
+					holder.add(ticker);
+					holder.add(json);
+					holder.add(numOfShares);
+					holder.add(purchase);
+					holder.add(sell);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
+				view.add(holder);
+				
+			}
+			
+			buildGraph();
+			session.setAttribute("myStocks", myStocks);
+			session.setAttribute("view", view);
+			try {
+				calculatePortfolio();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		//deselect all stocks
+		else if(action.equals("deselectViewAll")) {
+			view.clear();
+			buildGraph();
+			session.setAttribute("myStocks", myStocks);
+			session.setAttribute("view", view);
+			try {
+				calculatePortfolio();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	String viewStock(String ticker, String numOfShares, String purchase, String sell) throws IOException, ParseException {
