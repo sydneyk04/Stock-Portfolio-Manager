@@ -20,6 +20,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import io.cucumber.java.After;
@@ -602,6 +603,85 @@ public class StepDefinitions {
 	    button.click();
 	}
 	
+	@When("I click the view stock button")
+	public void i_click_the_view_stock_button() {
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		
+		WebElement button = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[1]/div/div[2]/div[2]/button")));
+	    button.click();
+	}
+	
+	@When("I fill out correct stock info")
+	public void i_fill_out_correct_stock_info() {
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		WebElement tickerBox = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[2]/div[1]/form/div[1]/div/input")));
+		WebElement shareBox = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[2]/div[1]/form/div[2]/div/input"));
+		WebElement dpBox = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[2]/div[2]/div[1]/div/input"));
+		
+		String ticker = "SNAP";
+		String shares = "1";
+		String datePurchased = "05-22-2020";
+		
+		tickerBox.sendKeys(ticker);
+		shareBox.sendKeys(shares);
+		dpBox.sendKeys(datePurchased);
+		
+		WebElement button = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[3]/button[2]"));
+	    button.click();
+	}
+	
+	@When("I fill out incorrect stock info")
+	public void i_fill_out_incorrect_stock_info() {
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		WebElement tickerBox = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[2]/div[1]/form/div[1]/div/input")));
+		WebElement shareBox = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[2]/div[1]/form/div[2]/div/input"));
+		WebElement dpBox = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[2]/div[2]/div[1]/div/input"));
+		
+		//invalid ticker
+		String ticker = "fgyh";
+		String shares = "1";
+		String datePurchased = "05-22-2020";
+		
+		tickerBox.sendKeys(ticker);
+		shareBox.sendKeys(shares);
+		dpBox.sendKeys(datePurchased);
+		
+		WebElement button = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[3]/button[2]"));
+	    button.click();
+	}
+	
+	@When("I fill out some stock info")
+	public void i_fill_out_some_stock_info() {
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		WebElement tickerBox = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[2]/div[1]/form/div[1]/div/input")));
+		WebElement shareBox = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[2]/div[1]/form/div[2]/div/input"));
+		WebElement dpBox = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[2]/div[2]/div[1]/div/input"));
+		
+		//invalid ticker
+		String ticker = "fgyh";
+		String datePurchased = "05-22-2020";
+		
+		tickerBox.sendKeys(ticker);
+		dpBox.sendKeys(datePurchased);
+		
+		WebElement button = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[3]/button[2]"));
+	    button.click();
+	}
+	
+	@When("I click the remove stock button in view")
+	public void i_click_the_remove_stock_button_in_view() {
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		WebElement button = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div[1]/div/form[2]/button")));
+	    button.click();
+	}
+	
+	@When("I click the toggle stock button in view")
+	public void i_click_the_toggle_stock_button_in_view() {
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		WebElement button = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div[1]/div/form[1]/button")));
+	    button.click();
+	}
+	
 	@Then("I should see the S&P stock added to the graph")
 	public void i_should_see_the_S_P_stock_added_to_the_graph() {
 		JavascriptExecutor js = (JavascriptExecutor) driver;
@@ -628,6 +708,43 @@ public class StepDefinitions {
 		Long end = (Long) js.executeScript("return getEndDate();");
 		assertTrue(end-start == 3);
 	}
+	
+	@Then("I should see the stock on the graph")
+	public void i_should_see_the_stock_on_the_graph() {
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		WebElement stock = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div[1]/div")));
+		assertTrue(stock != null);
+	}
+	
+	@Then("I should see a view stock error")
+	public void i_should_see_a_view_stock_error() {
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		WebElement error = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[1]/div/div[2]/div[2]/strong")));
+		assertTrue(error != null);
+	}
+	
+	@Then("The stock should be removed")
+	public void the_stock_should_be_removed() {
+		try {
+			WebElement stock = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div[1]/div"));
+	    } catch (NoSuchElementException e) {
+	    	assertTrue(true);
+	    }
+	}
+	
+	@Then("The stock should not be shown on the graph")
+	public void the_stock_should_not_be_shown_on_the_graph() {
+		JavascriptExecutor js = (JavascriptExecutor) driver;
+		String sp = (String) js.executeScript("return getSP();");
+		assertTrue(sp.contentEquals("Yes"));
+	}
+	
+	@Then("I should be told to fill out all info")
+	public void i_should_be_told_to_fill_out_all_info() {
+		WebElement stock = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[3]/button[2]"));
+		assertTrue(stock!=null);
+	}
+	
 	
 	/**************************
 	 * APP COMPATIBILITY FEATURE

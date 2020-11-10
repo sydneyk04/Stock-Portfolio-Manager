@@ -39,3 +39,35 @@ Feature: Using the graph and other basic functionality on dashboard
    	When I enter an appropriate date range
     And I click the date range confirm button
     Then I should see the graph value update
+    
+  Scenario: View stock on graph
+    Given I am logged in on the dashboard page
+   	When I click the view stock button
+    And I fill out correct stock info
+    Then I should see the stock on the graph
+    
+  Scenario: Add invalid element to view stock
+    Given I am logged in on the dashboard page
+   	When I click the view stock button
+    And I fill out incorrect stock info
+    Then I should see a view stock error
+    
+  Scenario: Remove View Stock
+    Given I am logged in on the dashboard page
+   	When I click the view stock button
+    And I fill out correct stock info
+    And I click the remove stock button in view
+    Then The stock should be removed
+    
+  Scenario: Toggle View Stock
+    Given I am logged in on the dashboard page
+   	When I click the view stock button
+    And I fill out correct stock info
+    And I click the toggle stock button in view
+    Then The stock should not be shown on the graph
+    
+  Scenario: Don't enter every field
+    Given I am logged in on the dashboard page
+   	When I click the view stock button
+    And I fill out some stock info
+    Then I should be told to fill out all info
