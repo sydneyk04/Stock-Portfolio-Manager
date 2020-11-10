@@ -397,15 +397,6 @@ public class StockPerformanceServletTest extends Mockito {
         servlet.now = Calendar.getInstance();
 		
         servlet.getUserStock("johnDoe");
-        ArrayList<String> stock = new ArrayList<String>();
-		stock.add("TSLA");
-		stock.add("Tesla");
-		stock.add("1");
-		stock.add("2020-01-10");
-		stock.add("2020-10-10");
-		stock.add("Yes");
-		servlet.myStocks.add(stock);
-		servlet.view.add(stock);
 		StockPerformanceServlet spyServlet = spy(servlet);
 		
 		when(request.getParameter("action")).thenReturn("selectViewAll");
