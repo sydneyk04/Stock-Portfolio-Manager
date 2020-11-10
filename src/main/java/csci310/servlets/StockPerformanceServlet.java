@@ -130,6 +130,7 @@ public class StockPerformanceServlet extends HttpServlet {
 	
 	@Override
 	protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws IOException, ServletException {
+		System.out.println("dopost");
 		response.setContentType("text/html;charset=UTF-8");
 		out = response.getWriter();
 		response.setStatus(HttpServletResponse.SC_OK);
@@ -257,6 +258,11 @@ public class StockPerformanceServlet extends HttpServlet {
 			} catch (ParseException e1) {
 				e1.printStackTrace();
 			}
+
+			//if invalid date
+			if(datePurchased.after(Calendar.getInstance())) {
+				session.setAttribute("failedAdd", "Please enter a valid date.");			
+			}
 			
 			//if you already own the stock dont let user add it and remove from view?
 			for(int i=0; i<myStocks.size(); i++) {
@@ -354,7 +360,7 @@ public class StockPerformanceServlet extends HttpServlet {
 		        	session.setAttribute("portfolioPercentage", f.format(percentChange));
 		        	System.out.println("Today's portfolio val: " + val);
 		        	System.out.println("Yesterday's portfolio val: " + prevVal);
-	        	}        	
+	        	}       
 			} else {
 				session.setAttribute("portfolioVal", "0.00");	
 			}
