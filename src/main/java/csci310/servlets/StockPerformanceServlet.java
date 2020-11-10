@@ -258,10 +258,20 @@ public class StockPerformanceServlet extends HttpServlet {
 			} catch (ParseException e1) {
 				e1.printStackTrace();
 			}
-
+			
+			// if invalid number of shares 
+			if(Double.parseDouble(numOfShares) <= 0) {
+				session.setAttribute("failedAdd", "Invalid number of shares");
+			}
+			
 			//if invalid date
 			if(datePurchased.after(Calendar.getInstance())) {
 				session.setAttribute("failedAdd", "Please enter a valid date.");			
+			}
+			
+			// if date sold before date purchased
+			if(datePurchased.after(sellDate)) {
+				session.setAttribute("failedAdd", "Date sold cannot be before date purchased.");
 			}
 			
 			//if you already own the stock dont let user add it and remove from view?
