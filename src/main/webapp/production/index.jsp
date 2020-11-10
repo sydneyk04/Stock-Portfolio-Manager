@@ -98,6 +98,7 @@
   	</script>
 
 	<script>
+		
 		/*
 	 	 * App security: Back button pressed - prevent user from going back to dashboard afterwards
 	 	 */
@@ -476,6 +477,8 @@
 								document.getElementById("stockaddbutton").addEventListener("click", function() {
 									addForm.submit();
 								});
+								
+								
 							</script>
                           </div>
                         </div>

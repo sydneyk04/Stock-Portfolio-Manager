@@ -532,7 +532,8 @@ public class StepDefinitions {
 	
 	@When("I select an appropriate date range")
 	public void i_select_an_appropriate_date_range() {
-		WebElement button = driver.findElement(By.xpath("/html/body/div[2]/div[1]/ul/li[2]"));
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		WebElement button = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[2]/div[1]/ul/li[2]")));
 		button.click();
 	}
 	
@@ -555,7 +556,10 @@ public class StepDefinitions {
 	@When("I enter an appropriate date range")
 	public void i_enter_an_appropriate_date_range() {
 		WebElement button = driver.findElement(By.id("datepicker"));
-		button.sendKeys("01/01/2020 - 09/09/2020");
+		button.click();
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		WebElement button2 = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[2]/div[1]/ul/li[2]")));
+		button2.click();
 	}
 	
 	@When("I click the confirm button")
@@ -586,8 +590,9 @@ public class StepDefinitions {
 	
 	@Then("I should see the graph value update")
 	public void i_should_see_the_graph_value_update() {
-		WebElement g = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div/div/div[2]/div[1]/div/canvas[2]"));
-		assertTrue(g != null);
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		WebElement stock = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[1]/div/div[1]/div/div/div[2]/div[1]/div/div[1]")));
+		assertTrue(stock != null);
 	}
 	
 	@When("I click the button to add the S&P")
@@ -691,9 +696,9 @@ public class StepDefinitions {
 	
 	@Then("I should see the S&P stock added to the graph")
 	public void i_should_see_the_S_P_stock_added_to_the_graph() {
-		JavascriptExecutor js = (JavascriptExecutor) driver;
-		String sp = (String) js.executeScript("return getSP();");
-		assertTrue(sp.contentEquals("Yes"));
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		WebElement stock = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[1]/div/div[1]/div/div/div[2]/div[1]/div/div[1]")));
+		assertTrue(stock != null);
 	}
 	
 	@Then("I should not be able to click the date")
