@@ -7,6 +7,10 @@
 	response.setDateHeader ("Expires", 0);
 	
 	session.setAttribute("username", null);
+	session.setAttribute("login_error_message", null);
+	session.setAttribute("myStocks", null);
+	session.setAttribute("portfolioVal", null);
+	session.setAttribute("portfolioPercentage", null);
 
 	String error_message = (String) session.getAttribute("login_error_message");
 %>
@@ -29,6 +33,8 @@
 			session.setAttribute("username", null);
 			session.setAttribute("login_error_message", null);
 			session.setAttribute("myStocks", null);
+			session.setAttribute("portfolioVal", null);
+			session.setAttribute("portfolioPercentage", null);
 		}
 	</script>
   
