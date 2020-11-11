@@ -352,7 +352,7 @@
                       <%if(myStocks!=null){for(int i=1; i<myStocks.size(); i++){ %>
 	                      <li id="li-<%=myStocks.get(i).get(0) %>" class="d-flex">
 	                          <div style="display:inline; float: left; width: 15%;">
-	                            <button type="button" id="manage-portfolio-removeStockButton-<%=myStocks.get(i).get(0)%>" style="background:red; border:none; border-radius:5px; color:white;" class="flat" data-toggle="modal" data-target="#removeStockModal-<%=myStocks.get(i).get(0)%>">Delete Stock</button>
+	                            <button type="button" id="manage-portfolio-removeStockButton-<%=myStocks.get(i).get(0)%>" style="background:red; border:none; border-radius:5px; color:white;" data-toggle="modal" data-target="#removeStockModal-<%=myStocks.get(i).get(0)%>">Delete Stock</button>
 	                            <!-- Modal for Remove Stock -->
 	                            <div class="modal fade" id="removeStockModal-<%=myStocks.get(i).get(0)%>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	                              <div class="modal-dialog" role="document">
@@ -365,12 +365,17 @@
 	                                  </div>
 	                                  <div class="modal-footer">
 	                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-
-										<form class="" id="removeStock-<%=myStocks.get(i).get(0)%>" action="/dashboard" method="POST">
+										  <form name="formname" id="removeStock-<%=myStocks.get(i).get(0)%>" action="/dashboard" method="POST">
+				                            <input type="hidden" name="action" value="removeStock">
+				                            <input type="hidden" name="removeStockTicker" value="<%=myStocks.get(i).get(0) %>">
+				                            <button class="btn btn-primary" >Remove</button>
+				                         </form>
+	
+										<%-- <form class="" id="removeStock-<%=myStocks.get(i).get(0)%>" action="/dashboard" method="POST">
 											<input type="hidden" name="action" value="removeStock">
 											<input type="hidden" name="removeStockTicker" value="<%=myStocks.get(i).get(0) %>">
 											<button type="submit" class="btn btn-primary deletestock" data-dismiss="modal" id="stockremovebutton<%=myStocks.get(i).get(0)%>">Remove Stock</button>
-										</form>
+										</form> --%>
 
 										<%-- remove stock form --%>
 										<script type="text/javascript">
@@ -682,7 +687,7 @@
 					<h2>View stocks</h2>
 					  <strong id="login_error" style="color:red"><%if(invalid_error != null){ %> <%= invalid_error%> <% } %></strong>
 					<!-- Button trigger modal -->
-                    <br><button type="button" data-toggle="modal" data-target="#viewStockModal">View Stock</button>
+                    <br><button type="button" data-toggle="modal" class="btn btn-primary" data-target="#viewStockModal">View Stock</button>
                     <br><br>
 
 					<%if(view!=null){for(int i=0; i<view.size(); i++) {%>
