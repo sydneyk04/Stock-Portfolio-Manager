@@ -91,3 +91,14 @@ Feature: Using the graph and other basic functionality on dashboard
    	When I click calculate in portfolio
     Then the portfolio value should go down
     
+  Scenario: Select all stocks to view on graph
+  	Given I am logged in on the dashboard page
+  	When I click the selectall button
+  	Then I should see all stocks displayed on the graph
+  	And I should see all stocks displayed in the view stocks list
+  	
+  Scenario: Deselect all stocks to view on graph
+  	Given I am logged in on the dashboard page
+  	When I click the deselectall button
+  	Then I should see no stocks displayed on the graph
+  	And I should see no stocks displayed in the view stocks list

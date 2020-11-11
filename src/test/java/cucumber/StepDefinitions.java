@@ -330,7 +330,7 @@ public class StepDefinitions {
 	}
 	
 	@Then("I should be redirected to the signup page")
-	public void redirect_signup()
+	public void i_should_be_redirected_to_the_signup_page()
 	{
 		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/signup.jsp"));
 	}
@@ -376,27 +376,18 @@ public class StepDefinitions {
 		
 		element.click();
 	}
-	
-	@When("I am on the dashboard page for two minutes")
-	public void i_am_on_the_dashboard_page_for_two_minutes() {
-		try {
-			Thread.sleep(120100);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
 
 	@Then("I should be on the login page")
 	public void i_should_be_on_the_login_page() {
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(5000); // wait time for page to load
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		
 		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/login.jsp"));
 	}
-
+	
 	/**************************
 	 * ADD/STOCK FEATURE
 	 **************************/
@@ -406,59 +397,110 @@ public class StepDefinitions {
 	}
 
 	@Given("I click the button to add stocks to my portfolio")
-	public void i_click_the_button_to_add_stocks_to_my_portfolio() {
-		
-		WebElement addButton = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/button"));
-		Actions action = new Actions(driver); 
-		action.moveToElement(addButton);
-		addButton = wait.until(elementToBeClickable(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/button")));
-		addButton.click();
+	public void i_click_the_button_to_add_stocks_to_my_portfolio() {		
+		// "Add Stock" button for Manage Portfolio section
+		WebElement addButton;
 		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			addButton = driver.findElement(By.id("manage-portfolio-add-stock-button"));
+		} catch (NoSuchElementException e) {
+			addButton = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/button"));
 		}
+		addButton.click();
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 	}
-
-	@Given("I enter a stock ticker not in my portfolio and a certain number of shares")
-	public void i_enter_a_stock_ticker_not_in_my_portfolio_and_a_certain_number_of_shares() {
-	    WebElement ticker = driver.findElement(By.id("ticker"));
+	
+	@When("I click the Add Stock button for the portfolio")
+	public void i_click_the_Add_Stock_button_for_the_portfolio() {
+		// "Add Stock" button for Manage Portfolio section
+		WebElement addButton;
+		try {
+			addButton = driver.findElement(By.id("manage-portfolio-add-stock-button"));
+		} catch (NoSuchElementException e) {
+			addButton = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/button"));
+		}
+		addButton.click();
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+	}
+	
+	@When("I add a new stock to the user portfolio")
+	public void i_add_a_new_stock_to_the_user_portfolio() {
+		WebElement ticker = driver.findElement(By.id("add-stock-ticker"));
 	    ticker.sendKeys("AAPL");
-	    WebElement shares = driver.findElement(By.id("shares"));
+	    WebElement shares = driver.findElement(By.id("add-stock-shares"));
 	    shares.sendKeys("10");
-	    WebElement datePurchased = driver.findElement(By.id("datePurchased"));
+	    WebElement datePurchased = driver.findElement(By.id("add-stock-datePurchased"));
 	    datePurchased.sendKeys("01/01/2020");
+	    WebElement dateSold = driver.findElement(By.id("add-stock-dateSold"));
+	    dateSold.sendKeys("12/01/2020");
+	    driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+		driver.findElement(By.id("modal-manage-portfolio-add-stock-button")).click();
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+	}
+	
+	@When("I remove a stock in the user portfolio")
+	public void i_remove_a_stock_in_the_user_portfolio() {
+		try {
+			WebElement removeButton = driver.findElement(By.id("manage-portfolio-removeStockButton-AAPL"));
+			removeButton.click();
+		} catch (NoSuchElementException e) {
+			i_add_a_new_stock_to_the_user_portfolio();
+			WebElement removeButton = driver.findElement(By.id("manage-portfolio-removeStockButton-AAPL"));
+			removeButton.click();
+		}		
 	}
 
-	@When("I click the submit button")
-	public void i_click_the_submit_button() {
-		WebElement submit = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[2]/div/div/div[3]/button[2]"));
-		submit.click();
+	@When("I enter a stock ticker not in my portfolio and a certain number of shares")
+	public void i_enter_a_stock_ticker_not_in_my_portfolio_and_a_certain_number_of_shares() {
+		WebElement ticker = driver.findElement(By.id("add-stock-ticker"));
+	    ticker.sendKeys("AAPL");
+	    WebElement shares = driver.findElement(By.id("add-stock-shares"));
+	    shares.sendKeys("10");
+	    WebElement datePurchased = driver.findElement(By.id("add-stock-datePurchased"));
+	    datePurchased.sendKeys("01/01/2020");
+	    WebElement dateSold = driver.findElement(By.id("add-stock-dateSold"));
+	    dateSold.sendKeys("12/01/2020");
+	    driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 	}
 
-	@Then("I should see the value of my portfolio increase and the stocks in my portfolio be updated")
-	public void i_should_see_the_value_of_my_portfolio_increase_and_the_stocks_in_my_portfolio_be_updated() {
-		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-		assertTrue(driver.getPageSource().contains("AAPL"));
-	   
+	@When("I click the Add Stock button in the popup window for the portfolio")
+	public void i_click_the_add_stock_button_in_the_popup_window_for_the_portfolio() {
+		// Modal's "Add Stock" button for Manage Portfolio section
+		WebElement addButton;
+		try {
+			addButton = driver.findElement(By.id("manage-portfolio-add-stock-button"));
+		} catch (NoSuchElementException e) {
+			addButton = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div/div/div/div[3]/button[2]"));
+		}
+		try {
+			addButton.click();
+		} catch (Exception e) {
+			JavascriptExecutor executor = (JavascriptExecutor) driver;
+			executor.executeScript("arguments[0].click();", addButton);
+		}
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
 	}
 
-	@Given("I click the button to remove stocks from my portfolio")
+	@When("I click the button to remove stocks from my portfolio")
 	public void i_click_the_button_to_remove_stocks_from_my_portfolio() {
-		WebElement button = driver.findElement(By.id("remove1"));
-		button.click();
+		try {
+			WebElement removeButton = driver.findElement(By.id("manage-portfolio-removeStockButton-AAPL"));
+			removeButton.click();
+		} catch (NoSuchElementException e) {
+			i_add_a_new_stock_to_the_user_portfolio();
+			WebElement removeButton = driver.findElement(By.id("manage-portfolio-removeStockButton-AAPL"));
+			removeButton.click();
+		}		
 	}
 
-
-	@Given("I enter an invalid stock ticker and number of shares")
+	@When("I enter an invalid stock ticker and number of shares")
 	public void i_enter_an_invalid_stock_ticker_and_number_of_shares() {
-	    WebElement ticker = driver.findElement(By.id("ticker"));
+	    WebElement ticker = driver.findElement(By.id("add-stock-ticker"));
 	    ticker.sendKeys("NKLA");
-	    WebElement shares = driver.findElement(By.id("shares"));
+	    WebElement shares = driver.findElement(By.id("add-stock-shares"));
 	    shares.sendKeys("20");
-	    WebElement datePurchased = driver.findElement(By.id("datePurchased"));
+	    WebElement datePurchased = driver.findElement(By.id("add-stock-datePurchased"));
 	    datePurchased.sendKeys("01/01/2020");
+	    driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 	}
 
 	@Then("I should see an error message saying stock ticker was not found")
@@ -468,23 +510,77 @@ public class StepDefinitions {
 	
 	}	
 	
-	@Then("I click the button to add stocks to my portfolio using a CSV")
+	@Then("I should see the value of my portfolio decrease and the stocks in my portfolio be updated")
+	public void i_should_see_the_value_of_my_portfolio_decrease_and_the_stocks_in_my_portfolio_be_updated() {
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+		WebElement element = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div[1]/div/h3"));
+		String portfolioVal = element.getAttribute("innerHTML");
+		int start = portfolioVal.indexOf('$') + 1;
+		int end = portfolioVal.indexOf('.') + 3;
+		String info = portfolioVal.substring(start, end);
+		//assertTrue(driver.getPageSource().contains("AAPL"));
+		assertNotNull(driver.findElement(By.id("chartContainer")));
+		assertTrue(Double.valueOf(info) >= 0);
+	}
+	
+	@Then("I should see the value of my portfolio increase and the stocks in my portfolio be updated")
+	public void i_should_see_the_value_of_my_portfolio_increase_and_the_stocks_in_my_portfolio_be_updated() {
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+		WebElement element = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div[1]/div/h3"));
+		String portfolioVal = element.getAttribute("innerHTML");
+		int start = portfolioVal.indexOf('$') + 1;
+		int end = portfolioVal.indexOf('.') + 3;
+		String info = portfolioVal.substring(start, end);
+		//assertTrue(driver.getPageSource().contains("AAPL"));
+		assertNotNull(driver.findElement(By.id("chartContainer")));
+		assertTrue(Double.valueOf(info) > 0);
+	}
+	
+	@Then("I should see the portfolio value increase and the percentage change")
+	public void i_should_see_the_portfolio_value_increase_and_the_percentage_change() {
+		WebElement element = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div[1]/div/h3"));
+		System.out.println("Portfolio value: " + element.getAttribute("innerHTML"));
+		String portfolioVal = element.getAttribute("innerHTML");
+		System.out.println("Portfolio value: " + portfolioVal + " with string len of " + portfolioVal.length());
+		int start = portfolioVal.indexOf('$') + 1;
+		int end = portfolioVal.indexOf('.') + 3;
+		System.out.println("start: " + start + ", end: " + end);
+		String info = portfolioVal.substring(start, end);
+		System.out.println("Portfolio value substring: " + info);
+		assertNotNull(driver.findElement(By.id("portfolio-percentage-change")));
+		assertTrue(Double.valueOf(info) > 0);
+	}
+	
+	@Then("I should see the portfolio value decrease and the percentage change")
+	public void i_should_see_the_portfolio_value_decrease_and_the_percentage_change() {
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		WebElement element = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div[1]/div/h3"));
+		String portfolioVal = element.getAttribute("innerHTML");
+		System.out.println("Portfolio value: " + portfolioVal + " with string len of " + portfolioVal.length());
+		int start = portfolioVal.indexOf('$') + 1;
+		int end = portfolioVal.indexOf('.') + 3;
+		System.out.println("start: " + start + ", end: " + end);
+		String info = portfolioVal.substring(start, end);
+		System.out.println("Portfolio value substring: " + info);
+		assertNotNull(driver.findElement(By.id("portfolio-percentage-change")));
+		assertTrue(Double.valueOf(info) >= 0);
+	}
+	
+	
+	/**************************
+	 * CSV ADD STOCK FEATURE
+	 **************************/
+	@When("I click the button to add stocks to my portfolio using a CSV")
 	public void i_click_the_button_to_add_stocks_to_my_portfolio_using_a_CSV() {
 		WebElement csvButton = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/button"));
 		Actions action = new Actions(driver); 
 		action.moveToElement(csvButton);
 		csvButton = wait.until(elementToBeClickable(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/button")));
 		csvButton.click();
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 	}
-
 	
-	@Then("I choose a CSV file")
+	@When("I choose a CSV file")
 	public void i_choose_a_CSV_file() {
 		WebElement modal = wait.until(presenceOfElementLocated(By.id("exampleModal")));
 		//WebElement upload = driver.findElement(By.id("txtFileUpload"));
@@ -493,25 +589,39 @@ public class StepDefinitions {
 		upload.sendKeys(file.getAbsolutePath());
 	}
 	
-	@Then("I click the button to upload the file")
+	@When("I click the button to upload the file")
 	public void i_click_the_button_to_upload_the_file() {
 		//WebElement csvButton = driver.findElement(By.id("csvAddButton"));
-		WebElement csvButton = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[1]/div/div/form/div[2]/button[2]"));
+		WebElement uploadButton;
+		try {
+			uploadButton = driver.findElement(By.id("upload-file-button"));
+		} catch (NoSuchElementException e) {
+			uploadButton = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[1]/div/div/form/div[2]/button[2]"));
+		}
+		uploadButton.click();
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+	}
+	
+	@When("I click the button to download an example CSV file")
+	public void i_click_the_button_to_download_an_example_CSV_file() {
+		//WebElement modal = wait.until(presenceOfElementLocated(By.id("exampleModal")));
+		//WebElement csvButton = driver.findElement(By.id("exampleButton"));
+		WebElement csvButton = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[1]/div/div/form/div[1]/a/button"));
 		csvButton.click();
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 	}
 	
 	@Then("I should see the new stocks added")
 	public void i_should_see_the_new_stocks_added() {
-		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-		assertTrue(driver.getPageSource().contains("AMZN"));
-	}
-	
-	@Then("I click the button to download an example CSV file")
-	public void i_click_the_button_to_download_an_example_CSV_file() {
-		WebElement modal = wait.until(presenceOfElementLocated(By.id("exampleModal")));
-		//WebElement csvButton = driver.findElement(By.id("exampleButton"));
-		WebElement csvButton = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[1]/div/div/form/div[1]/a/button"));
-		csvButton.click();
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+		//assertTrue(driver.getPageSource().contains("AMZN"));
+		WebElement element = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div[1]/div/h3"));
+		String portfolioVal = element.getAttribute("innerHTML");
+		int start = portfolioVal.indexOf('$') + 1;
+		int end = portfolioVal.indexOf('.') + 3;
+		String info = portfolioVal.substring(start, end);
+		assertNotNull(driver.findElement(By.id("portfolio-percentage-change")));
+		assertTrue(Double.valueOf(info) >= 0);
 	}
 	
 	@Then("I should see a file downloaded")
@@ -612,13 +722,23 @@ public class StepDefinitions {
 	@When("I click the button to add the S&P")
 	public void i_click_the_button_to_add_the_S_P() {
 		//WebElement button = driver.findElement(By.id("displaybutton"));
-		WebElement button = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div/div/div[3]/div/form/button"));
+		WebElement button;
+		try {
+			button = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div[2]/div/form/button"));
+		} catch (NoSuchElementException e) {
+			button = driver.findElement(By.id("displaybutton"));
+		}
 	    button.click();
 	}
 	
 	@When("I click the button to remove the S&P")
 	public void i_click_the_button_to_remove_the_S_P() {
-		WebElement button = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div/div/div[3]/div/form/button"));
+		WebElement button;
+		try {
+			button = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div[2]/div/form/button"));
+		} catch (NoSuchElementException e) {
+			button = driver.findElement(By.id("displaybutton"));
+		}
 	    button.click();
 	}
 	
@@ -785,6 +905,38 @@ public class StepDefinitions {
 	
 	
 	/**************************
+	 * Select/Deselect All FEATURE
+	 **************************/
+	@When("I click the selectall button")
+	public void i_click_the_selectall_button() {
+		WebElement button = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/form/button"));
+		button.click();
+	}
+	
+	@Then("I should see all stocks displayed on the graph")
+	public void i_should_see_all_stocks_displayed_on_the_graph() {
+		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/production/index.jsp"));
+	}
+	
+	@Then("I should see all stocks displayed in the view stocks list")
+	public void i_should_see_all_stocks_displayed_in_the_view_stocks_list() {
+		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/production/index.jsp"));
+	}
+	@When("I click the deselectall button")
+	public void i_click_the_deselectall_button() {
+		WebElement button = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[2]/form/button"));
+		button.click();
+	}
+	@Then("I should see no stocks displayed on the graph")
+	public void i_should_see_no_stocks_displayed_on_the_graph() {
+		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/production/index.jsp"));
+	}
+	@Then("I should see no stocks displayed in the view stocks list")
+	public void i_should_see_no_stocks_displayed_in_the_view_stocks_list() {
+		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/production/index.jsp"));
+	}
+	
+	/**************************
 	 * APP COMPATIBILITY FEATURE
 	 **************************/
 	@When("I resize the window to {int}%")
@@ -800,6 +952,56 @@ public class StepDefinitions {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@Then("I should be on the login page with full view of the top banner")
+	public void i_should_be_on_the_login_page_with_full_view_of_the_top_banner() {
+		try {
+			Thread.sleep(5000); // wait time for page to load
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		Dimension size = driver.manage().window().getSize();
+		WebElement element = driver.findElement(By.id("banner-content"));
+		
+		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/login.jsp"));
+		assertTrue(element.getSize().height <= size.height);
+		assertTrue(element.getSize().width <= size.width);
+	}
+	
+	@Then("I should be redirected to the signup page with full view of the top banner")
+	public void i_should_be_redirected_to_the_signup_page_with_full_view_of_the_top_banner() {
+		try {
+			Thread.sleep(5000); // wait time for page to load
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		Dimension size = driver.manage().window().getSize();
+		WebElement element = driver.findElement(By.id("banner-content"));
+		
+		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/signup.jsp"));
+		assertTrue(element.getSize().height <= size.height);
+		assertTrue(element.getSize().width <= size.width);
+	}
+	
+	@Then("I should have full view of the top banner and graph")
+	public void i_should_have_full_view_of_the_top_banner_and_graph() {
+		try {
+			Thread.sleep(5000); // wait time for page to load
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		Dimension size = driver.manage().window().getSize();
+		WebElement element = driver.findElement(By.id("banner-content"));
+		WebElement graph = driver.findElement(By.id("chartContainer"));
+		
+		assertTrue(element.getSize().height <= size.height);
+		assertTrue(element.getSize().width <= size.width);
+		assertTrue(graph.getSize().width <= size.width);
+		assertTrue(graph.getSize().width <= size.width);
 	}
 	
 	/**************************
@@ -917,6 +1119,15 @@ public class StepDefinitions {
 		assertTrue(url.equalsIgnoreCase("https://localhost:8443/"));
 	}
 
+	@When("I am on the dashboard page for two minutes")
+	public void i_am_on_the_dashboard_page_for_two_minutes() {
+		try {
+			Thread.sleep(120000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS); // few sec for page load
+	}
 
 	@After()
 	public void after() {

@@ -7,8 +7,18 @@
 	response.setDateHeader ("Expires", 0);
 	
 	session.setAttribute("username", null);
+	session.setAttribute("myStocks", null);
+	session.setAttribute("from", null);
+	session.setAttribute("now", null);
+	session.setAttribute("chart", null);
+	session.setAttribute("invalid_error", null);
+	session.setAttribute("failedAdd", null);
+	session.setAttribute("portfolioVal", null);
+	session.setAttribute("portfolioPercentage", null);
 
 	String error_message = (String) session.getAttribute("login_error_message");
+	
+	session.setAttribute("login_error_message", null);
 %>
 <html>
   <head>
@@ -29,6 +39,14 @@
 			session.setAttribute("username", null);
 			session.setAttribute("login_error_message", null);
 			session.setAttribute("myStocks", null);
+			session.setAttribute("from", null);
+			session.setAttribute("now", null);
+			session.setAttribute("chart", null);
+			session.setAttribute("invalid_error", null);
+			session.setAttribute("failedAdd", null);
+			session.setAttribute("portfolioVal", null);
+			session.setAttribute("portfolioPercentage", null);
+
 		}
 	</script>
   
@@ -36,7 +54,7 @@
     <header style="height:70px; background:#787878;">
   			<nav id="banner" class="navbar navbar-dark bg-secondary navbar-static-top justify-content-left">
 		      	<div id="banner-content" class="navbar-brand" style="color:white;font-size:45px;font-family: 'Raleway', sans-serif;">
-		      		<a href="index.jsp" style="text-decoration: none; color:white;" >
+		      		<a href="index.jsp" style="text-decoration: none; color:white; font-size:4vw;" >
 				   		USC CS 310 Stock Portfolio Management 
 					</a>
 		      	</div>

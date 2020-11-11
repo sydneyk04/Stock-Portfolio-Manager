@@ -1,38 +1,31 @@
 package csci310.servlets;
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.net.URI;
+import java.text.DateFormat;
+import java.text.DateFormatSymbols;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-
-import java.net.*;
-import java.io.*;
-import java.text.DateFormat;
-import java.text.DateFormatSymbols;
-import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
@@ -44,7 +37,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
-import yahoofinance.Stock;
 import yahoofinance.YahooFinance;
 import yahoofinance.histquotes.HistoricalQuote;
 import yahoofinance.histquotes.Interval;
@@ -111,10 +103,23 @@ public class StockPerformanceServlet extends HttpServlet {
 	        }
 	
 	        if (!portfolioValHistory.isEmpty()) {
+	        	// today's portfolio value
 	        	DecimalFormat f = new DecimalFormat("##.00");
+	        	f.setRoundingMode(RoundingMode.HALF_EVEN);
 	        	ArrayList<String> holder = portfolioValHistory.get(portfolioValHistory.size()-1);
 	        	Double val = Double.parseDouble(holder.get(1));
-	        	session.setAttribute("portfolioVal", f.format(val));	
+	        	System.out.println("Portfolio val: " + val);
+	        	session.setAttribute("portfolioVal", f.format(val));
+	        	
+	        	if (portfolioValHistory.size() > 1) {
+	        		// yesterday's portfolio value
+		        	ArrayList<String> prevHolder = portfolioValHistory.get(portfolioValHistory.size()-2);
+		        	Double prevVal = Double.parseDouble(prevHolder.get(1));
+		        	Double percentChange = (val - prevVal) / 100;
+		        	session.setAttribute("portfolioPercentage", f.format(percentChange));
+		        	System.out.println("Today's portfolio val: " + val);
+		        	System.out.println("Yesterday's portfolio val: " + prevVal);
+	        	}        	
 	        }
 	
 	        //build the graph using the list of stocks
@@ -123,8 +128,10 @@ public class StockPerformanceServlet extends HttpServlet {
 
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws IOException, ServletException {
+		System.out.println("dopost");
 		response.setContentType("text/html;charset=UTF-8");
 		out = response.getWriter();
 		response.setStatus(HttpServletResponse.SC_OK);
@@ -253,6 +260,21 @@ public class StockPerformanceServlet extends HttpServlet {
 				e1.printStackTrace();
 			}
 			
+			// if invalid number of shares 
+			if(Double.parseDouble(numOfShares) <= 0) {
+				session.setAttribute("failedAdd", "Invalid number of shares");
+			}
+			
+			//if invalid date
+			if(datePurchased.after(Calendar.getInstance())) {
+				session.setAttribute("failedAdd", "Please enter a valid date.");			
+			}
+			
+			// if date sold before date purchased
+			if(datePurchased.after(sellDate)) {
+				session.setAttribute("failedAdd", "Date sold cannot be before date purchased.");
+			}
+			
 			//if you already own the stock dont let user add it and remove from view?
 			for(int i=0; i<myStocks.size(); i++) {
 				if(myStocks.get(i).get(0).equals(ticker)){
@@ -292,11 +314,20 @@ public class StockPerformanceServlet extends HttpServlet {
 				}
 			}
 			
-			if(!portfolioValHistory.isEmpty()) {
+			if (!portfolioValHistory.isEmpty()) {
 				DecimalFormat f = new DecimalFormat("##.00");
 				ArrayList<String> holder = portfolioValHistory.get(portfolioValHistory.size()-1);
 				Double val = Double.parseDouble(holder.get(1));
 				session.setAttribute("portfolioVal", f.format(val));	
+
+	        	if (portfolioValHistory.size() > 1) {
+	        		// yesterday's portfolio value
+		        	ArrayList<String> prevHolder = portfolioValHistory.get(portfolioValHistory.size()-2);
+		        	Double prevVal = Double.parseDouble(prevHolder.get(1));
+		        	Double percentChange = (val - prevVal) / 100;
+		        	session.setAttribute("portfolioPercentage", f.format(percentChange));
+		        	System.out.println("Yesterday's portfolio val: " + prevVal);
+	        	}        	
 			}
 			
 		}
@@ -325,12 +356,22 @@ public class StockPerformanceServlet extends HttpServlet {
 			//build the graph using the list of stocks
 			buildGraph();
 			
-			if(!portfolioValHistory.isEmpty()) {
+			if (!portfolioValHistory.isEmpty()) {
 				DecimalFormat f = new DecimalFormat("##.00");
 				ArrayList<String> holder = portfolioValHistory.get(portfolioValHistory.size()-1);
 				System.out.println(holder);
 				Double val = Double.parseDouble(holder.get(1));
 				session.setAttribute("portfolioVal", f.format(val));	
+	        	
+	        	if (portfolioValHistory.size() > 1) {
+	        		// yesterday's portfolio value
+		        	ArrayList<String> prevHolder = portfolioValHistory.get(portfolioValHistory.size()-2);
+		        	Double prevVal = Double.parseDouble(prevHolder.get(1));
+		        	Double percentChange = (val - prevVal) / 100;
+		        	session.setAttribute("portfolioPercentage", f.format(percentChange));
+		        	System.out.println("Today's portfolio val: " + val);
+		        	System.out.println("Yesterday's portfolio val: " + prevVal);
+	        	}       
 			} else {
 				session.setAttribute("portfolioVal", "0.00");	
 			}
@@ -388,7 +429,69 @@ public class StockPerformanceServlet extends HttpServlet {
 				e.printStackTrace();
 			}
 			buildGraph();
-		} 
+		}
+		//selectall, add alls stocks to view
+		else if(action.equals("selectViewAll")){
+			view.clear();
+			for(int i = 0; i < myStocks.size(); i++) {
+				ArrayList<String> s = myStocks.get(i);
+				String ticker = s.get(0);
+				String numOfShares = s.get(2);
+				String purchase = s.get(3);
+				String sell = s.get(4);
+				String calculatedInPortfolio = s.get(5);
+				ArrayList<String> holder = new ArrayList<String>();
+				String json;
+				try {
+					json = viewStock(ticker, numOfShares, purchase, sell);
+					holder.add(ticker);
+					holder.add(json);
+					holder.add(numOfShares);
+					holder.add(purchase);
+					holder.add(sell);
+					holder.add(calculatedInPortfolio);
+					view.add(holder);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
+			}
+			
+			buildGraph();
+			session.setAttribute("myStocks", myStocks);
+			session.setAttribute("view", view);
+			try {
+				calculatePortfolio();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		//deselect all stocks
+		else if(action.equals("deselectViewAll")) {
+			view.clear();
+			buildGraph();
+			session.setAttribute("myStocks", myStocks);
+			session.setAttribute("view", view);
+			try {
+				calculatePortfolio();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	String viewStock(String ticker, String numOfShares, String purchase, String sell) throws IOException, ParseException {
