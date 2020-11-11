@@ -557,12 +557,6 @@
                         align-items: center;
                         border: none;
                       }
-                      .addstockbuttonview{
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        border: none;
-                      }
                     </style>
                  
 
@@ -731,7 +725,7 @@
 	                         	<input type="hidden" name="datePurchased" value=<%=view.get(i).get(3) %>>
 	                         	<input type="hidden" name="dateSold" value=<%=view.get(i).get(4) %>>
 	                            <input type="hidden" name="action" value="addStock">
-	                       	 	<button id="btn-view-add<%=view.get(i).get(0) %>" type="submit" class="addstockbuttonview" style="text-align:left; display:inline; font-weight:bold;">Add to Portfolio</button>
+	                       	 	<button id="btn-view-add<%=view.get(i).get(0) %>" type="submit" class="addstockbutton" style="text-align:left; display:inline; font-weight:bold;">Add to Portfolio</button>
                              </form>
                              <br>
                            </div>
