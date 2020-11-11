@@ -93,43 +93,7 @@ public class StockPerformanceServlet extends HttpServlet {
 				e.printStackTrace();
 			}
 	        
-	        //update zoom values
-	        Calendar tempDate = (Calendar)from.clone();
-	        DateFormatSymbols symbols = new DateFormatSymbols();
-	        
-	        Long daysBetween = ChronoUnit.DAYS.between(from.toInstant(), now.toInstant());
-	        int inAdjust = Math.toIntExact(daysBetween/4);
-	        tempDate.add(Calendar.DATE, inAdjust);
-	        int year = tempDate.get(Calendar.YEAR);
-			int month = tempDate.get(Calendar.MONTH);
-			int day = tempDate.get(Calendar.DAY_OF_MONTH);
-			String zoomInFrom = year + "-" + (month + 1) + "-" + day;	
-			tempDate = (Calendar)now.clone();
-		    tempDate.add(Calendar.DATE, inAdjust);
-		    year = tempDate.get(Calendar.YEAR);
-			month = tempDate.get(Calendar.MONTH);
-			day = tempDate.get(Calendar.DAY_OF_MONTH);
-			String zoomInNow = year + "-" + (month + 1) + "-" + day;
-		
-	        int outAdjust = Math.toIntExact(daysBetween/2);
-			tempDate = (Calendar)now.clone();
-		    tempDate.add(Calendar.DATE, -outAdjust);
-		    year = tempDate.get(Calendar.YEAR);
-			month = tempDate.get(Calendar.MONTH);
-			day = tempDate.get(Calendar.DAY_OF_MONTH);
-			String zoomOutFrom = year + "-" + (month + 1) + "-" + day;
-			tempDate = (Calendar)now.clone();
-		    tempDate.add(Calendar.DATE, outAdjust);
-		    year = tempDate.get(Calendar.YEAR);
-			month = tempDate.get(Calendar.MONTH);
-			day = tempDate.get(Calendar.DAY_OF_MONTH);
-			String zoomOutNow = year + "-" + (month + 1) + "-" + day;
-			
-	        session.setAttribute("zoomInFrom", zoomInFrom);
-	        session.setAttribute("zoomInNow", zoomInNow);
-	        session.setAttribute("zoomOutFrom", zoomOutFrom);
-	        session.setAttribute("zoomOutNow", zoomOutNow);   
-	        session.setAttribute("zoomError", null);
+	        setZoomValues(from, now);
 	        
 	        session.setAttribute("myStocks", myStocks);
 	        session.setAttribute("view", view);
@@ -471,40 +435,7 @@ public class StockPerformanceServlet extends HttpServlet {
 			}
 			
 			//set new  zoom values based on new range
-	        Calendar tempDate = (Calendar)from.clone();
-	        DateFormatSymbols symbols = new DateFormatSymbols();
-	        Long daysBetween = ChronoUnit.DAYS.between(from.toInstant(), now.toInstant());
-	        int inAdjust = Math.toIntExact(daysBetween/4);
-	        int outAdjust = Math.toIntExact(daysBetween/2);
-	        tempDate.add(Calendar.DATE, inAdjust);
-	        int year = tempDate.get(Calendar.YEAR);
-			int month = tempDate.get(Calendar.MONTH);
-			int day = tempDate.get(Calendar.DAY_OF_MONTH);
-			String zoomInFrom = year + "-" + (month + 1) + "-" + day;	
-			tempDate = (Calendar)now.clone();
-		    tempDate.add(Calendar.DATE, inAdjust);
-		    year = tempDate.get(Calendar.YEAR);
-			month = tempDate.get(Calendar.MONTH);
-			day = tempDate.get(Calendar.DAY_OF_MONTH);
-			String zoomInNow = year + "-" + (month + 1) + "-" + day;
-			tempDate = (Calendar)now.clone();
-		    tempDate.add(Calendar.DATE, -outAdjust);
-		    year = tempDate.get(Calendar.YEAR);
-			month = tempDate.get(Calendar.MONTH);
-			day = tempDate.get(Calendar.DAY_OF_MONTH);
-			String zoomOutFrom = year + "-" + (month + 1) + "-" + day;
-			tempDate = (Calendar)now.clone();
-		    tempDate.add(Calendar.DATE, outAdjust);
-		    year = tempDate.get(Calendar.YEAR);
-			month = tempDate.get(Calendar.MONTH);
-			day = tempDate.get(Calendar.DAY_OF_MONTH);
-			String zoomOutNow = year + "-" + (month + 1) + "-" + day;
-			
-	        session.setAttribute("zoomInFrom", zoomInFrom);
-	        session.setAttribute("zoomInNow", zoomInNow);
-	        session.setAttribute("zoomOutFrom", zoomOutFrom);
-	        session.setAttribute("zoomOutNow", zoomOutNow);   
-	        
+	        setZoomValues(from, now);
 			
 			buildGraph();
 		}
@@ -529,6 +460,8 @@ public class StockPerformanceServlet extends HttpServlet {
 				e1.printStackTrace();
 			}
 			
+			System.out.println("Current graph range: " + fromString + " - " + toString);
+			
 			//set new values for future, this is where i do all calculations and checks
 			setZoomValues(zoomFrom, zoomNow);
 			
@@ -536,13 +469,11 @@ public class StockPerformanceServlet extends HttpServlet {
 			//if new values are same as current ones
 			if(session.getAttribute("zoomInFrom") == zoomFrom && session.getAttribute("zoomInNow") == zoomNow) {
 				session.setAttribute("zoomError", "You can not zoom in anymore!");
-			}
-			
-			if(session.getAttribute("zoomOutFrom") == zoomFrom && session.getAttribute("zoomOutNow") == zoomNow) {
+			} else if(session.getAttribute("zoomOutFrom") == zoomFrom && session.getAttribute("zoomOutNow") == zoomNow) {
 				session.setAttribute("zoomError", "You can not zoom out anymore!");
 			}
 			
-			
+			//otherwise perform the zoom
 			if(session.getAttribute("zoomError") == null) {
 				from = (Calendar) zoomFrom.clone();
 		        now = (Calendar) zoomNow.clone();
@@ -646,77 +577,108 @@ public class StockPerformanceServlet extends HttpServlet {
 	}
 	
 	void setZoomValues(Calendar zoomFrom, Calendar zoomNow) {
-//		session.setAttribute("zoomInFrom", zoomInFrom);
-//        session.setAttribute("zoomInNow", zoomInNow);
-//        session.setAttribute("zoomOutFrom", zoomOutFrom);
-//        session.setAttribute("zoomOutNow", zoomOutNow); 
-		
-		//check if we r trying to zoom in or out
-		
-		
+		String zoomInFrom = "";
+		String zoomInNow = "";
+		String zoomOutFrom = "";
+		String zoomOutNow = "";
 		
 		//check future dates
-		Long daysBetween = ChronoUnit.DAYS.between(zoomFrom.toInstant(), zoomNow.toInstant());
-        int inAdjust = Math.toIntExact(daysBetween/4);
-        int outAdjust = Math.toIntExact(daysBetween/2);
+		Long daysBetween = Math.abs(ChronoUnit.DAYS.between(zoomFrom.toInstant(), zoomNow.toInstant()));   
+        System.out.println("Days btwn: " + daysBetween);
+        
+        DateFormatSymbols symbols = new DateFormatSymbols();
+        
+        //set zoom in values
+        //if range is one week, don't let them zoom in anymore
+	    if(daysBetween < 7) {
+	    	 session.setAttribute("zoomInFrom", zoomFrom);
+	         session.setAttribute("zoomInNow", zoomNow);
+        }
+	    //otherwise, make the time frame smaller
+	    else {
+	    	//start by splitting 
+	    	int inAdjust = Math.toIntExact(daysBetween/4);
+	    	Calendar tempIn = (Calendar)zoomFrom.clone();
+	        tempIn.add(Calendar.DATE, inAdjust);
+	        Calendar tempOut = (Calendar)zoomFrom.clone();
+	        tempOut.add(Calendar.DATE, -inAdjust);
+	        daysBetween = Math.abs(ChronoUnit.DAYS.between(tempIn.toInstant(), tempOut.toInstant()));
+	       
+	        System.out.println(daysBetween);
+	        //if below 7 adjust so that it is no longer btwn 7
+	        if(daysBetween < 7) {
+	        	tempIn = (Calendar)zoomFrom.clone();
+	        	 tempOut = (Calendar)zoomFrom.clone();
+	        	while(daysBetween < 7) {
+	    	        tempIn.add(Calendar.DATE, -1);
+	    	        tempOut.add(Calendar.DATE, 1);
+	    	        daysBetween = ChronoUnit.DAYS.between(tempIn.toInstant(), tempOut.toInstant());
+	    	        System.out.println(daysBetween);
+	        	}
+	            int year = tempIn.get(Calendar.YEAR);
+				int month = tempIn.get(Calendar.MONTH);
+				int day = tempIn.get(Calendar.DAY_OF_MONTH);
+				zoomInFrom = year + "-" + (month + 1) + "-" + day;
+				session.setAttribute("zoomInFrom", zoomFrom);
+				
+			    year = tempOut.get(Calendar.YEAR);
+				month = tempOut.get(Calendar.MONTH);
+				day = tempOut.get(Calendar.DAY_OF_MONTH);
+				zoomInNow = year + "-" + (month + 1) + "-" + day;
+		        session.setAttribute("zoomInNow", zoomNow);
+	        }
 	        
-        System.out.println("days btwn: " + daysBetween);
-        
-        //if you can not zoom in anymore, set
-	    if(daysBetween <= 6) {
-        	session.setAttribute("zoomError", "You can not zoom in anymore!");
+	        //otherwise set new values
+	        else {
+	        	int year = tempIn.get(Calendar.YEAR);
+				int month = tempIn.get(Calendar.MONTH);
+				int day = tempIn.get(Calendar.DAY_OF_MONTH);
+				zoomInFrom = year + "-" + (month + 1) + "-" + day;
+				session.setAttribute("zoomInFrom", zoomFrom);
+				
+			    year = tempOut.get(Calendar.YEAR);
+				month = tempOut.get(Calendar.MONTH);
+				day = tempOut.get(Calendar.DAY_OF_MONTH);
+				zoomInNow = year + "-" + (month + 1) + "-" + day;
+		        session.setAttribute("zoomInNow", zoomNow);
+	        }
+	    }
+	    
+	    //set zoom out values
+	    //if range is 365, don't let them zoom out anymore
+	    if(daysBetween >= 365) {
+	    	 session.setAttribute("zoomOutFrom", zoomFrom);
+	         session.setAttribute("zoomOutNow", zoomNow);
         }
-        
-        if(daysBetween+(outAdjust*2) > 365) {
-        	session.setAttribute("zoomError", "You can not zoom out anymore!");
-        }
+	    
+	    //otherwise, make the time frame bigger
+	    else {
+	    	int outAdjust = Math.toIntExact(daysBetween/2);
+	    	//start by splitting 
+	    	Calendar tempIn = (Calendar)zoomFrom.clone();
+	        tempIn.add(Calendar.DATE, -outAdjust);
+	        Calendar tempOut = (Calendar)zoomFrom.clone();
+	        tempOut.add(Calendar.DATE, outAdjust);
+	        
+	        daysBetween = Math.abs(ChronoUnit.DAYS.between(tempIn.toInstant(), tempOut.toInstant()));
+	       
+	        System.out.println(daysBetween);
+	        //if below 7 adjust so that it is no longer btwn 7
+	    	if(daysBetween+(outAdjust*2) > 365) {
+	        	
+	        }
+	    	else {
+	    		
+	    	}
+	    }
 
-        //zoom calendar in and set new zoom variables
-        if(session.getAttribute("zoomError") == null) {DateFormatSymbols symbols = new DateFormatSymbols();
-		 
-		//set new  zoom values based on new range
-        Calendar tempDate = (Calendar)from.clone();
-        tempDate.add(Calendar.DATE, inAdjust);
-        int year = tempDate.get(Calendar.YEAR);
-		int month = tempDate.get(Calendar.MONTH);
-		int day = tempDate.get(Calendar.DAY_OF_MONTH);
-		String zoomInFrom = year + "-" + (month + 1) + "-" + day;
-		
-		tempDate = (Calendar)now.clone();
-	    tempDate.add(Calendar.DATE, -inAdjust);
-	    year = tempDate.get(Calendar.YEAR);
-		month = tempDate.get(Calendar.MONTH);
-		day = tempDate.get(Calendar.DAY_OF_MONTH);
-		String zoomInNow = year + "-" + (month + 1) + "-" + day;
-		
-		tempDate = (Calendar)now.clone();
-	    tempDate.add(Calendar.DATE, outAdjust);
-	    year = tempDate.get(Calendar.YEAR);
-		month = tempDate.get(Calendar.MONTH);
-		day = tempDate.get(Calendar.DAY_OF_MONTH);
-		String zoomOutNow = year + "-" + (month + 1) + "-" + day;
-		
-		tempDate = (Calendar)from.clone();
-	    tempDate.add(Calendar.DATE, -outAdjust);
-	    year = tempDate.get(Calendar.YEAR);
-		month = tempDate.get(Calendar.MONTH);
-		day = tempDate.get(Calendar.DAY_OF_MONTH);
-		String zoomOutFrom = year + "-" + (month + 1) + "-" + day;
-		
-		
 		
 		System.out.println("setting:");
 		System.out.println("zoom in from: " + zoomInFrom);
 		System.out.println("zoom in now: " + zoomInNow);
 		System.out.println("zoom out from: " + zoomOutFrom);
 		System.out.println("zoom out now: " + zoomOutNow);
-		
-        session.setAttribute("zoomInFrom", zoomInFrom);
-        session.setAttribute("zoomInNow", zoomInNow);
-        session.setAttribute("zoomOutFrom", zoomOutFrom);
-        session.setAttribute("zoomOutNow", zoomOutNow);  
-    
-    }
+	
 	}
 	
 	String viewStock(String ticker, String numOfShares, String purchase, String sell) throws IOException, ParseException {
