@@ -341,7 +341,7 @@
 					      </div>
 						  <form class="" id="csvAddForm" action="/dashboard" method="post">
 							 <div class="modal-body">
-					      	 <a href="exampleStockCSV.csv" download="example">
+					      	 <a href="exampleStockCSV.csv" download="exampleStockCSV.csv">
 					     	 <button type="button" id="example-csv-button" style="background: darkgrey;" class="btn btn-primary">Download Example CSV</button>
 					     	 </a>
 
