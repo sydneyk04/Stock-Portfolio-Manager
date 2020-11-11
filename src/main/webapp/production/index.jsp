@@ -25,8 +25,11 @@
 
 	Calendar from = (Calendar) session.getAttribute("from");
 	Calendar now = (Calendar) session.getAttribute("now");
-	String zoomFrom = (String) session.getAttribute("zoomFrom");
-	String zoomNow = (String) session.getAttribute("zoomNow");
+	String zoomInFrom = (String) session.getAttribute("zoomInFrom");
+	String zoomInNow = (String) session.getAttribute("zoomInNow");
+	String zoomOutFrom = (String) session.getAttribute("zoomOutFrom");
+	String zoomOutNow = (String) session.getAttribute("zoomOutNow");
+	String zoomError = (String) session.getAttribute("zoomError");
 	String chart = (String) session.getAttribute("chart");
 	String username = (String) session.getAttribute("username");
 	String invalid_error = (String) session.getAttribute("invalid_error");
@@ -232,13 +235,20 @@
 							<input type="hidden" name="action" value="toggleSP">
 							<button style="text-align:left;display:inline;" type="submit" id="displayButton" class="btn btn-info btn-md">Toggle S&P</button>
 		  				</form>
-		  				 <form name="formname"" id="zoomBtn" style=" display:inline-block;" action="/dashboard" method="POST">
-							<input type="hidden" name="action" value="changeTimePeriod">
-							<input type="hidden" id="rangeFrom" name="from" value="<%=zoomFrom%>">
-							<input type="hidden" id="rangeTo" name="to" value="<%=zoomNow%>">
-							<button style="text-align:left;display:inline;" type="submit" id="displayButton" class="btn btn-info btn-md">Zoom Graph</button>
+		  				 <form name="formname"" id="zoomInBtn" style=" display:inline-block;" action="/dashboard" method="POST">
+							<input type="hidden" name="action" value="zoom">
+							<input type="hidden" id="rangeFrom" name="from" value="<%=zoomInFrom%>">
+							<input type="hidden" id="rangeTo" name="to" value="<%=zoomInNow%>">
+							<button style="text-align:left;display:inline;" type="submit" id="displayButton" class="btn btn-info btn-md">Zoom In</button>
+		  				</form>
+		  				<form name="formname"" id="zoomOutBtn" style=" display:inline-block;" action="/dashboard" method="POST">
+							<input type="hidden" name="action" value="zoom">
+							<input type="hidden" id="rangeFrom" name="from" value="<%=zoomOutFrom%>">
+							<input type="hidden" id="rangeTo" name="to" value="<%=zoomOutNow%>">
+							<button style="text-align:left;display:inline;" type="submit" id="displayButton" class="btn btn-info btn-md">Zoom Out</button>
 		  				</form>
 	  				</div>
+	  				<strong id="zoom_error" style="color:red; margin-left: 20%;"><%if(zoomError != null){ %> <%= zoomError%> <% } %></strong>  
                     <div class="clearfix"></div>
                   </div>
             </div>

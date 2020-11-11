@@ -633,6 +633,10 @@ public class StockPerformanceServletTest extends Mockito {
 	
 	@Test
 	public void testSetZoomValues() throws IOException {
-		servlet.setZoomValues();
+		Calendar from = Calendar.getInstance();
+		from.add(Calendar.YEAR, -1);
+		Calendar now = Calendar.getInstance();
+		servlet.setZoomValues(from, now);
+		assertTrue(true);
 	}
 }
