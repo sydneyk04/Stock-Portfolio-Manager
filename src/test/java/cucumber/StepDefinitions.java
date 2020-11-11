@@ -329,7 +329,7 @@ public class StepDefinitions {
 	}
 	
 	@Then("I should be redirected to the signup page")
-	public void redirect_signup()
+	public void i_should_be_redirected_to_the_signup_page()
 	{
 		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/signup.jsp"));
 	}
@@ -737,6 +737,56 @@ public class StepDefinitions {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@Then("I should be on the login page with full view of the top banner")
+	public void i_should_be_on_the_login_page_with_full_view_of_the_top_banner() {
+		try {
+			Thread.sleep(5000); // wait time for page to load
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		Dimension size = driver.manage().window().getSize();
+		WebElement element = driver.findElement(By.id("banner-content"));
+		
+		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/login.jsp"));
+		assertTrue(element.getSize().height <= size.height);
+		assertTrue(element.getSize().width <= size.width);
+	}
+	
+	@Then("I should be redirected to the signup page with full view of the top banner")
+	public void i_should_be_redirected_to_the_signup_page_with_full_view_of_the_top_banner() {
+		try {
+			Thread.sleep(5000); // wait time for page to load
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		Dimension size = driver.manage().window().getSize();
+		WebElement element = driver.findElement(By.id("banner-content"));
+		
+		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/signup.jsp"));
+		assertTrue(element.getSize().height <= size.height);
+		assertTrue(element.getSize().width <= size.width);
+	}
+	
+	@Then("I should have full view of the top banner and graph")
+	public void i_should_have_full_view_of_the_top_banner_and_graph() {
+		try {
+			Thread.sleep(5000); // wait time for page to load
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		Dimension size = driver.manage().window().getSize();
+		WebElement element = driver.findElement(By.id("banner-content"));
+		WebElement graph = driver.findElement(By.id("chartContainer"));
+		
+		assertTrue(element.getSize().height <= size.height);
+		assertTrue(element.getSize().width <= size.width);
+		assertTrue(graph.getSize().width <= size.width);
+		assertTrue(graph.getSize().width <= size.width);
 	}
 	
 	/**************************
