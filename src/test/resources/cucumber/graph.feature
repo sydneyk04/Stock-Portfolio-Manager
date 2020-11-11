@@ -66,7 +66,7 @@ Feature: Using the graph and other basic functionality on dashboard
     And I click the toggle stock button in view
     Then The stock should not be shown on the graph
     
-  Scenario: Don't enter every field
+  Scenario: Don't enter every field in view stock
     Given I am logged in on the dashboard page
    	When I click the view stock button
     And I fill out some stock info
@@ -85,3 +85,9 @@ Feature: Using the graph and other basic functionality on dashboard
     And I fill out correct stock info
     And I click the Add to Portfolio button in view
     Then I should see an error message in my portfolio
+    
+  Scenario: Calculate stock in portfolio value
+    Given I am logged in on the dashboard page
+   	When I click calculate in portfolio
+    Then the portfolio value should go down
+    
