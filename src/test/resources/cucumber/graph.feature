@@ -79,7 +79,7 @@ Feature: Using the graph and other basic functionality on dashboard
     And I click the Add to Portfolio button in view
     Then I should see the stock in my portfolio
     
- Scenario: Add stock you already own to portfolio from view stock
+  Scenario: Add stock you already own to portfolio from view stock
     Given I am logged in on the dashboard page
    	When I click the view stock button
     And I fill out correct stock info

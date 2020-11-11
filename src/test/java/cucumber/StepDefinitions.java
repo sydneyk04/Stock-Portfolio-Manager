@@ -712,12 +712,21 @@ public class StepDefinitions {
 		WebElement button = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[1]/div"));
 	    //button.click();
 	}
+	
 	@Then("the portfolio value should go down")
 	public void the_portfolio_value_should_go_down() {
 		//WebElement button = driver.findElement(By.id("displaybutton"));
-		WebElement button = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div/div/div[3]/div/h2"));
-	    String portfolio = button.getText();
-	    assertTrue(portfolio != null);
+//		WebElement button = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div/div/div[3]/div/h2"));
+//	    String portfolio = button.getText();
+//	    assertTrue(portfolio != null);
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+		WebElement element = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div[1]/div/h3"));
+		String portfolioVal = element.getAttribute("innerHTML");
+		int start = portfolioVal.indexOf('$') + 1;
+		int end = portfolioVal.indexOf('.') + 3;
+		String info = portfolioVal.substring(start, end);
+		assertNotNull(driver.findElement(By.id("chartContainer")));
+		assertTrue(Double.valueOf(info) >= 0);
 	}
 	@When("I click the button to add the S&P")
 	public void i_click_the_button_to_add_the_S_P() {
@@ -752,49 +761,132 @@ public class StepDefinitions {
 	
 	@When("I fill out correct stock info")
 	public void i_fill_out_correct_stock_info() {
-		WebDriverWait wait = new WebDriverWait(driver, 10);
-		WebElement tickerBox = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[2]/div[1]/form/div[1]/div/input")));
-		WebElement shareBox = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[2]/div[1]/form/div[2]/div/input"));
-		WebElement dpBox = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[2]/div[2]/div[1]/div/input"));
+		//WebDriverWait wait = new WebDriverWait(driver, 10);
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		WebElement tickerBox;
+		WebElement shareBox;
+		WebElement dpBox;
+		WebElement dsBox;
+		
+		// put in separate try-catch blocks in case one element is found the first time but the other is not
+		try {
+			tickerBox = driver.findElement(By.id("view-ticker"));
+		} catch (Exception e) {
+			//tickerBox = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[2]/div[1]/form/div[1]/div/input"));
+			tickerBox = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div[2]/div/div/form/div[1]/div[1]/div[1]/div/input"));
+		}
+		try {
+			shareBox = driver.findElement(By.id("view-shares"));
+		} catch (Exception e) {
+			//shareBox = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[2]/div[1]/form/div[2]/div/input"));
+			shareBox = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div[2]/div/div/form/div[1]/div[1]/div[2]/div/input"));
+		}
+		try {
+			dpBox = driver.findElement(By.id("view-datePurchased"));
+		} catch (Exception e) {
+			//dpBox = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[2]/div[2]/div[1]/div/input"));
+			dpBox = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div[2]/div/div/form/div[1]/div[2]/div[1]/div/input"));
+		}
+		try {
+			dsBox = driver.findElement(By.id("view-dateSold"));
+		} catch (Exception e) {
+			dsBox = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div[2]/div/div/form/div[1]/div[2]/div[2]/div/input"));
+		}
 		
 		String ticker = "SNAP";
 		String shares = "1";
 		String datePurchased = "05-22-2020";
+		String dateSold = "12-22-2020";
 		
 		tickerBox.sendKeys(ticker);
 		shareBox.sendKeys(shares);
 		dpBox.sendKeys(datePurchased);
+		dsBox.sendKeys(dateSold);
 		
-		WebElement button = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[3]/button[2]"));
+		WebElement button;
+		try {
+			button = driver.findElement(By.id("btn-view-stock"));
+		} catch (Exception e) {
+			//button = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[3]/button[2]"));
+			button = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div[2]/div/div/form/div[2]/button[2]"));
+		}
 	    button.click();
+	    driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 	}
 	
 	@When("I fill out incorrect stock info")
 	public void i_fill_out_incorrect_stock_info() {
-		WebDriverWait wait = new WebDriverWait(driver, 10);
-		WebElement tickerBox = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[2]/div[1]/form/div[1]/div/input")));
-		WebElement shareBox = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[2]/div[1]/form/div[2]/div/input"));
-		WebElement dpBox = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[2]/div[2]/div[1]/div/input"));
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		WebElement tickerBox;
+		WebElement shareBox;
+		WebElement dpBox;
+		WebElement dsBox;
+		
+		// put in separate try-catch blocks in case one element is found the first time but the other is not
+		try {
+			tickerBox = driver.findElement(By.id("view-ticker"));
+		} catch (Exception e) {
+			//tickerBox = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[2]/div[1]/form/div[1]/div/input"));
+			tickerBox = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div[2]/div/div/form/div[1]/div[1]/div[1]/div/input"));
+		}
+		try {
+			shareBox = driver.findElement(By.id("view-shares"));
+		} catch (Exception e) {
+			//shareBox = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[2]/div[1]/form/div[2]/div/input"));
+			shareBox = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div[2]/div/div/form/div[1]/div[1]/div[2]/div/input"));
+		}
+		try {
+			dpBox = driver.findElement(By.id("view-datePurchased"));
+		} catch (Exception e) {
+			//dpBox = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[2]/div[2]/div[1]/div/input"));
+			dpBox = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div[2]/div/div/form/div[1]/div[2]/div[1]/div/input"));
+		}
+		try {
+			dsBox = driver.findElement(By.id("view-dateSold"));
+		} catch (Exception e) {
+			dsBox = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div[2]/div/div/form/div[1]/div[2]/div[2]/div/input"));
+		}
 		
 		//invalid ticker
 		String ticker = "fgyh";
 		String shares = "1";
 		String datePurchased = "05-22-2020";
+		String dateSold = "12-22-2020";
 		
 		tickerBox.sendKeys(ticker);
 		shareBox.sendKeys(shares);
 		dpBox.sendKeys(datePurchased);
+		dsBox.sendKeys(dateSold);
 		
-		WebElement button = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[3]/button[2]"));
+		WebElement button;
+		try {
+			button = driver.findElement(By.id("btn-view-stock"));
+		} catch (Exception e) {
+			//button = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[3]/button[2]"));
+			button = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div[2]/div/div/form/div[2]/button[2]"));
+		}
 	    button.click();
 	}
 	
 	@When("I fill out some stock info")
 	public void i_fill_out_some_stock_info() {
-		WebDriverWait wait = new WebDriverWait(driver, 10);
-		WebElement tickerBox = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[2]/div[1]/form/div[1]/div/input")));
-		WebElement shareBox = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[2]/div[1]/form/div[2]/div/input"));
-		WebElement dpBox = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[2]/div[2]/div[1]/div/input"));
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		WebElement tickerBox;
+		WebElement dpBox;
+		
+		// put in separate try-catch blocks in case one element is found the first time but the other is not
+		try {
+			tickerBox = driver.findElement(By.id("view-ticker"));
+		} catch (Exception e) {
+			//tickerBox = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[2]/div[1]/form/div[1]/div/input"));
+			tickerBox = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div[2]/div/div/form/div[1]/div[1]/div[1]/div/input"));
+		}
+		try {
+			dpBox = driver.findElement(By.id("view-datePurchased"));
+		} catch (Exception e) {
+			//dpBox = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[2]/div[2]/div[1]/div/input"));
+			dpBox = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div[2]/div/div/form/div[1]/div[2]/div[1]/div/input"));
+		}
 		
 		//invalid ticker
 		String ticker = "fgyh";
@@ -803,28 +895,53 @@ public class StepDefinitions {
 		tickerBox.sendKeys(ticker);
 		dpBox.sendKeys(datePurchased);
 		
-		WebElement button = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[3]/button[2]"));
+		WebElement button;
+		try {
+			button = driver.findElement(By.id("btn-view-stock"));
+		} catch (Exception e) {
+			//button = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[3]/button[2]"));
+			button = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div[2]/div/div/form/div[2]/button[2]"));
+		}
 	    button.click();
 	}
 	
 	@When("I click the remove stock button in view")
 	public void i_click_the_remove_stock_button_in_view() {
-		WebDriverWait wait = new WebDriverWait(driver, 10);
-		WebElement button = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div[1]/div/form[2]/button")));
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		WebElement button;
+		try {
+			button = driver.findElement(By.id("btn-view-removeSNAP"));
+		} catch (Exception e) {
+			button = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div[1]/div/form[2]/button"));
+		}
 	    button.click();
 	}
 	
 	@When("I click the toggle stock button in view")
 	public void i_click_the_toggle_stock_button_in_view() {
-		WebDriverWait wait = new WebDriverWait(driver, 10);
-		WebElement button = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div[1]/div/form[1]/button")));
-	    button.click();
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		WebElement button;
+		try {
+			button = driver.findElement(By.id("btn-view-toggleSNAP"));
+		} catch (Exception e) {
+			button = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div[1]/div/form[1]/button"));
+		}
+		button.click();
 	}
 	
 	@When("I click the Add to Portfolio button in view")
 	public void i_click_the_add_to_portfolio_button_in_view() {
-		WebDriverWait wait = new WebDriverWait(driver, 10);
-		WebElement button = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div[1]/div/form[3]/button")));
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		WebElement button;
+		try {
+			button = driver.findElement(By.id("btn-view-addSNAP"));
+		} catch (Exception e) {
+			try {
+				button = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div[1]/div/form[3]/button"));
+			} catch (Exception e2) {
+				button = driver.findElement(By.className("addstockbuttonview"));
+			}	
+		}
 	    button.click();
 	}
 	
@@ -887,8 +1004,15 @@ public class StepDefinitions {
 	
 	@Then("I should be told to fill out all info")
 	public void i_should_be_told_to_fill_out_all_info() {
-		WebElement stock = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[3]/button[2]"));
-		assertTrue(stock!=null);
+		WebElement stock = null;
+		try {
+			stock = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[3]/button[2]"));
+		} catch (Exception e) {
+			assertNull(stock);
+		}
+		
+		//assertTrue(stock!=null);
+		assertNull(stock);
 	}
 	
 	@Then("I should see the stock in my portfolio")

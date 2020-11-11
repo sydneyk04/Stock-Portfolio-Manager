@@ -557,6 +557,12 @@
                         align-items: center;
                         border: none;
                       }
+                      .addstockbuttonview{
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        border: none;
+                      }
                     </style>
                  
 
@@ -712,12 +718,12 @@
 							 <form name="formname" action="/dashboard" method="POST">
 	                            <input type="hidden" name="action" value="showViewStock">
 	                            <input type="hidden" name="ticker" value="<%=view.get(i).get(0) %>">
-	                            <button style="text-align:left; display:inline; font-weight:bold;">Toggle on Graph</button>
+	                            <button id="btn-view-toggle<%=view.get(i).get(0) %>" style="text-align:left; display:inline; font-weight:bold;">Toggle on Graph</button>
 	                         </form>
                              <form name="formname" action="/dashboard" method="POST">
 	                            <input type="hidden" name="action" value="removeViewStock">
 	                            <input type="hidden" name="removeTicker" value="<%=view.get(i).get(0) %>">
-	                            <button style="text-align:left; display:inline; font-weight:bold;">Remove</button>
+	                            <button id="btn-view-remove<%=view.get(i).get(0) %>" style="text-align:left; display:inline; font-weight:bold;">Remove</button>
 	                         </form>
 	                         <form name="formname" action="/dashboard" method="POST">
 	                         	<input type="hidden" name="ticker" value=<%=view.get(i).get(0) %>>
@@ -725,7 +731,7 @@
 	                         	<input type="hidden" name="datePurchased" value=<%=view.get(i).get(3) %>>
 	                         	<input type="hidden" name="dateSold" value=<%=view.get(i).get(4) %>>
 	                            <input type="hidden" name="action" value="addStock">
-	                       	 	<button type="submit" class="addstockbutton" style="text-align:left; display:inline; font-weight:bold;">Add to Portfolio</button>
+	                       	 	<button id="btn-view-add<%=view.get(i).get(0) %>" type="submit" class="addstockbuttonview" style="text-align:left; display:inline; font-weight:bold;">Add to Portfolio</button>
                              </form>
                              <br>
                            </div>
@@ -749,13 +755,13 @@
 	                              <div style="float: left; width: 45%; overflow: scroll; margin-right:2.5%; margin-left:2.5%; display:table-cell;">
 	                                <div style="margin-right:5px;">
 	                                  <p style="text-align:center;">Ticker*</p>
-	                                  <input class="stockinput" type="text" id="ticker" name="ticker" required>
+	                                  <input class="stockinput" type="text" id="view-ticker" name="ticker" required>
 	                                </div>
 	                              </div>
 	                              <div style="float: left; width: 45%; overflow: scroll; margin-left:2.5%; display:table-cell;">
 	                                <div style="margin-right:5px;">
 	                                  <p style="text-align:center;"># Shares*</p>
-	                                  <input class="stockinput" type="text" id="shares" name="numOfShares" required>
+	                                  <input class="stockinput" type="text" id="view-shares" name="numOfShares" required>
 	                                </div>
 	                              </div>
 	                            </div>
@@ -764,13 +770,13 @@
 	                              <div style="float: left; width: 45%; overflow: scroll; margin-right:2.5%; margin-left:2.5%; display:table-cell;">
 	                                <div style="margin-right:5px;">
 	                                  <p style="text-align:center;">Date Purchased*</p>
-	                                  <input class="stockinput" type="date" id="datePurchased" name="datePurchased" required>
+	                                  <input class="stockinput" type="date" id="view-datePurchased" name="datePurchased" required>
 	                                </div>
 	                              </div>
 	                              <div style="float: left; width: 45%; overflow: scroll; margin-left:2.5%; display:table-cell;">
 	                                <div style="margin-right:5px;">
 	                                  <p style="text-align:center;">Date Sold</p>
-	                                  <input class="stockinput" type="date" id="dateSold" name="dateSold">
+	                                  <input class="stockinput" type="date" id="view-dateSold" name="dateSold">
 	                                </div>
 	                              </div>
 	                              <div style="float: left; width: 95%; overflow: scroll; margin-left:2.5%; display:table-cell;">
@@ -781,8 +787,8 @@
 	                            </div>
 	                          </div>
 	                          <div class="modal-footer">
-	                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-							  <button type="submit" class="btn btn-primary">View Stock</button>
+	                          <button type="button" class="btn btn-secondary" id="btn-view-close" data-dismiss="modal">Close</button>
+							  <button type="submit" class="btn btn-primary" id="btn-view-stock">View Stock</button>
 							</div>
                           </form>
                         </div>
