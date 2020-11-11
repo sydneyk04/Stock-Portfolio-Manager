@@ -398,7 +398,17 @@ public class StockPerformanceServlet extends HttpServlet {
 			String fromString = request.getParameter("from");
 			String toString = request.getParameter("to");
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			Calendar newFrom = Calendar.getInstance();
+			Calendar minFrom = Calendar.getInstance();
+			minFrom.add(Calendar.YEAR, -1);
+			minFrom.add(Calendar.DATE, -1);
 			try {
+				newFrom.setTime(sdf.parse(fromString));
+				if(newFrom.compareTo(minFrom) < 0) {
+					session.setAttribute("graphRangeError", "Invalid date");
+					return;
+				}
+				session.setAttribute("graphRangeError", "");
 				from.setTime(sdf.parse(fromString));
 				now.setTime(sdf.parse(toString));
 			} catch (ParseException e1) {

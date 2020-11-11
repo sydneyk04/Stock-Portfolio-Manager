@@ -263,7 +263,9 @@
 							<div class="input-datarange input-group date">
 								<input type="text" class="input-sm form-control" id="datepicker" />
 							</div>
-
+							<p style="color: red;"><%if(null!=session.getAttribute("graphRangeError") && !(((String)session.getAttribute("graphRangeError")).isEmpty()) ) {
+								%>Invalid date<%
+							}%></p>
 							<button type="submit" id="graphRangeFormSubmitButton" class="btn btn-primary btn-md" name="button">Confirm</button>
 						</form>
 					</div>
@@ -288,9 +290,7 @@
 						$('#datepicker').on('apply.daterangepicker', function(ev, picker) {
 							$('input[name=from]').val(picker.startDate.format('YYYY-MM-DD'));
 							$('input[name=to]').val(picker.endDate.format('YYYY-MM-DD'));
-							if(picker.startDate >= picker.endDate) {
-								$("#graphRangeFormSubmitButton").disabled = true;
-							}
+							
 						})
 				</script>
 
@@ -460,7 +460,7 @@
 
                     <br><button id="manage-portfolio-add-stock-button" type="button" class="btn btn-primary" data-toggle="modal" data-target="#addStockModal">Add Stock</button>
 
-                   
+
 
 
                     <!-- Modal For Add Stock-->
