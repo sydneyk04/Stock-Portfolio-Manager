@@ -630,4 +630,9 @@ public class StockPerformanceServletTest extends Mockito {
 		servlet.myStocks.clear();
 		assertTrue(servlet.myStocks.isEmpty());
 	}
+	
+	@Test
+	public void testSetZoomValues() throws IOException {
+		servlet.setZoomValues();
+	}
 }
