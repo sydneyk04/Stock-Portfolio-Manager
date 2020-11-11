@@ -19,8 +19,8 @@
 		session.setAttribute("failedAdd", null);
 		session.setAttribute("portfolioVal", null);
 		session.setAttribute("portfolioPercentage", null);
-	
-		response.sendRedirect("../login.jsp");		
+
+		response.sendRedirect("../login.jsp");
 	}
 
 	Calendar from = (Calendar) session.getAttribute("from");
@@ -107,7 +107,7 @@
   	</script>
 
 	<script>
-		
+
 		/*
 	 	 * App security: Back button pressed - prevent user from going back to dashboard afterwards
 	 	 */
@@ -186,7 +186,7 @@
 					</a>
 		      	</div>
 		      	<div>
-		    
+
 					<form name="formname" action="/dashboard" method="POST" style="margin: 10px 0px 2px 0px;">
 						<input type="hidden" name="action" value="logout">
 						<button id="logout-button" type="submit" class="btn btn-primary btn-md justify-content-start">
@@ -201,8 +201,8 @@
           <div class="row">
           	<div class="col-md-12 col-sm-12 bg-white">
                	<div class="portfolio_value" id="portfolio-value-today">
-               		<h3>Portfolio Value Today: 
-               			<%if(portfolioVal != null) {%> 
+               		<h3>Portfolio Value Today:
+               			<%if(portfolioVal != null) {%>
                				<%if (portfolioVal.startsWith(".")) {
                					portfolioVal = "0." + portfolioVal.substring(1);
                				}%>
@@ -216,7 +216,7 @@
             <div class="col-md-12 col-sm-12 bg-white">
                   <div class="x_title">
                     <div class="portfolio_percentage" id="portfolio-percentage-change">
-	                    <%if (portfolioPercentage == null || portfolioPercentage == "0.00" || portfolioPercentage == "0") {%> 
+	                    <%if (portfolioPercentage == null || portfolioPercentage == "0.00" || portfolioPercentage == "0") {%>
 	                    	<h4><i id="percentChangeArrow"></i>0.00%</h4>
 	                    <%} else if (portfolioPercentage.contains("-")) {
 	                    	if (portfolioPercentage.contains("-.")) { portfolioPercentage = "-0." + portfolioPercentage.substring(2); }%>
@@ -251,7 +251,7 @@
                   <%-- <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script> --%>
 				  <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
                   <%= chart%>
-              	
+
 					<div class="col-md-3 col-sm-6" id="performanceRangePicker">
 						<p>Choose a range for display</p>
 						<form id="performanceRangeForm" action="/dashboard" method="post">
@@ -284,11 +284,11 @@
 							$('input[name=from]').val(picker.startDate.format('YYYY-MM-DD'));
 							$('input[name=to]').val(picker.endDate.format('YYYY-MM-DD'));
 						})
-						
+
 						function getStartDate() {
 						    return moment().subtract(3, 'month').month();
 						}
-						
+
 						function getEndDate() {
 						    return moment().month();
 						}
@@ -315,7 +315,9 @@
                 <div class="x_content">
                 <!-- Button trigger modal -->
 					<button type="button"  style="background:lightgrey; border:none; border-radius:5px; color:#73879C;" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Add by CSV</button>
-
+					<p style="color: red;"><%if(null!=session.getAttribute("uploadCSVError")){%>
+					<%=(String) session.getAttribute("uploadCSVError")%>
+					<%}%></p>
 					<!-- Modal -->
 					<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 					  <div class="modal-dialog" role="document">
@@ -342,7 +344,8 @@
 					      <div class="modal-footer">
 						     <button type="button" id="cancel-csv-button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
 							 <input type="hidden" name="action" value="addCSV">
-							 <button type="submit" id="upload-file-button" class="btn btn-primary" data-dismiss="modal" id="csvAddButton">Upload File</button>
+								 <input type="hidden" id="csvContent" name="csvContent" value="">
+							 <button type="button" id="upload-file-button" class="btn btn-primary" data-dismiss="modal" id="csvAddButton">Upload File</button>
 						  </div>
 						</form>
 					    </div>
@@ -351,9 +354,22 @@
 
 					<%-- submit csv form --%>
 					<script type="text/javascript">
-						var removeForm = document.getElementById("csvAddForm");
-						document.getElementById("csvAddButton").addEventListener("click", function() {
-							removeForm.submit();
+						var uploadForm = document.getElementById("csvAddForm");
+						document.getElementById("upload-file-button").addEventListener("click", function() {
+							console.log($('#txtFileUpload'));
+							const file = document.getElementById("txtFileUpload").files[0];
+							if(file) {
+								var reader = new FileReader();
+								reader.readAsText(file, "UTF-8");
+								reader.onload = function(evt) {
+									document.getElementById("csvContent").value = evt.target.result;
+									console.log(document.getElementById("csvContent").value);
+									uploadForm.submit();
+								}
+								reader.onerror = function(evt){
+									document.getElementById("csvContent").value = "error reading file";
+								}
+							}
 						});
 					</script>
 
@@ -380,7 +396,7 @@
 				                            <input type="hidden" name="removeStockTicker" value="<%=myStocks.get(i).get(0) %>">
 				                            <button id="btn-manage-portfolio-removeStockConfirm" class="btn btn-primary" >Remove</button>
 				                         </form>
-	
+
 										<%-- <form class="" id="removeStock-<%=myStocks.get(i).get(0)%>" action="/dashboard" method="POST">
 											<input type="hidden" name="action" value="removeStock">
 											<input type="hidden" name="removeStockTicker" value="<%=myStocks.get(i).get(0) %>">
@@ -464,7 +480,7 @@
 
                     <br><button id="manage-portfolio-add-stock-button" type="button" class="btn btn-primary" data-toggle="modal" data-target="#addStockModal">Add Stock</button>
 
-                   
+
 
 
                     <!-- Modal For Add Stock-->
@@ -477,8 +493,8 @@
                               <span aria-hidden="true">&times;</span>
                             </button>
                           </div>
-                          
-                          
+
+
                            <form name="formname" action="/dashboard" method="POST">
                           	<div class="modal-body">
                               <div class="inputrow" style="width: 100%;">
@@ -522,15 +538,15 @@
 							  <button type="submit" id="modal-manage-portfolio-add-stock-button" class="btn btn-primary">Add Stock</button>
 							</div>
                           </form>
-                          
+
 							<%-- add stock form --%>
 							<script type="text/javascript">
 								var addForm = document.getElementById("addStockForm");
 								document.getElementById("stockaddbutton").addEventListener("click", function() {
 									addForm.submit();
 								});
-								
-								
+
+
 							</script>
                           </div>
                         </div>
@@ -558,7 +574,7 @@
                         border: none;
                       }
                     </style>
-                 
+
 
 
                   <script>
