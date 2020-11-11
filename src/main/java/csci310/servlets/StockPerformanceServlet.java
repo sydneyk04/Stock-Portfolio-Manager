@@ -74,6 +74,10 @@ public class StockPerformanceServlet extends HttpServlet {
         from = Calendar.getInstance();
         from.add(Calendar.MONTH, -3);
         now = Calendar.getInstance();
+        
+        //set stocks as session variable for front end
+        session.setAttribute("from", from);
+        session.setAttribute("now", now);
  
 	        try {
 	        	getUserStock(username);
@@ -87,10 +91,26 @@ public class StockPerformanceServlet extends HttpServlet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-	
-	        //set stocks as session variable for front end
-	        session.setAttribute("from", from);
-	        session.setAttribute("now", now);
+	        
+//	        Calendar tempDate = from;
+//	        DateFormatSymbols symbols = new DateFormatSymbols();
+//	        
+//	        tempDate.add(Calendar.DATE, 7);
+//	        int year = tempDate.get(Calendar.YEAR);
+//			int month = tempDate.get(Calendar.MONTH);
+//			int day = tempDate.get(Calendar.DAY_OF_MONTH);
+//			String zoomFrom = year + "-" + (month + 1) + "-" + day;
+//			
+//			tempDate = now;
+//		    tempDate.add(Calendar.DATE, -7);
+//		    year = tempDate.get(Calendar.YEAR);
+//			month = tempDate.get(Calendar.MONTH);
+//			day = tempDate.get(Calendar.DAY_OF_MONTH);
+//			String zoomNow = year + "-" + (month + 1) + "-" + day;
+//			
+//	        session.setAttribute("zoomFrom", zoomFrom);
+//	        session.setAttribute("zoomNow", zoomNow);
+	        
 	        session.setAttribute("myStocks", myStocks);
 	        session.setAttribute("view", view);
 	        session.setAttribute("invalid_error", null);
@@ -428,6 +448,27 @@ public class StockPerformanceServlet extends HttpServlet {
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
+			
+			//update zoom value
+			Calendar tempDate = from;
+	        DateFormatSymbols symbols = new DateFormatSymbols();
+	        
+	        tempDate.add(Calendar.DATE, 7);
+	        int year = tempDate.get(Calendar.YEAR);
+			int month = tempDate.get(Calendar.MONTH);
+			int day = tempDate.get(Calendar.DAY_OF_MONTH);
+			String zoomFrom = year + "-" + (month + 1) + "-" + day;
+			
+			tempDate = now;
+		    tempDate.add(Calendar.DATE, -7);
+		    year = tempDate.get(Calendar.YEAR);
+			month = tempDate.get(Calendar.MONTH);
+			day = tempDate.get(Calendar.DAY_OF_MONTH);
+			String zoomNow = year + "-" + (month + 1) + "-" + day;
+			
+	        session.setAttribute("zoomFrom", zoomFrom);
+	        session.setAttribute("zoomNow", zoomNow);
+			
 			buildGraph();
 		}
 		//selectall, add alls stocks to view

@@ -25,6 +25,8 @@
 
 	Calendar from = (Calendar) session.getAttribute("from");
 	Calendar now = (Calendar) session.getAttribute("now");
+	String zoomFrom = (String) session.getAttribute("zoomFrom");
+	String zoomNow = (String) session.getAttribute("zoomNow");
 	String chart = (String) session.getAttribute("chart");
 	String username = (String) session.getAttribute("username");
 	String invalid_error = (String) session.getAttribute("invalid_error");
@@ -225,10 +227,18 @@
 	                    	<h4 style="color: green;"><i id="percentChangeArrow" class="glyphicon glyphicon-arrow-up"></i> <%=portfolioVal%>%</h4>
 	                    <%}%>
                     </div>
-                    <form name="formname" id="toggleSP" style="margin: 0px; padding: 0px; display:inline;" action="/dashboard" method="POST">
-						<input type="hidden" name="action" value="toggleSP">
-						<button style="text-align:left;display:inline;" type="submit" id="displayButton" class="btn btn-info btn-md">Toggle S&P</button>
-	  				</form>
+                    <div style="margin: 0px; padding: 0px;">
+	                    <form name="formname" id="toggleSP" style=" display:inline-block;"  action="/dashboard" method="POST">
+							<input type="hidden" name="action" value="toggleSP">
+							<button style="text-align:left;display:inline;" type="submit" id="displayButton" class="btn btn-info btn-md">Toggle S&P</button>
+		  				</form>
+		  				 <form name="formname"" id="zoomBtn" style=" display:inline-block;" action="/dashboard" method="POST">
+							<input type="hidden" name="action" value="changeTimePeriod">
+							<input type="hidden" id="rangeFrom" name="from" value="<%=zoomFrom%>">
+							<input type="hidden" id="rangeTo" name="to" value="<%=zoomNow%>">
+							<button style="text-align:left;display:inline;" type="submit" id="displayButton" class="btn btn-info btn-md">Zoom Graph</button>
+		  				</form>
+	  				</div>
                     <div class="clearfix"></div>
                   </div>
             </div>
