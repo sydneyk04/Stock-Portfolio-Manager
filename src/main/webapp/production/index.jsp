@@ -367,7 +367,7 @@
 	                                    <form class="removeStock" id="removeStock-<%=myStocks.get(i).get(0)%>" action="/dashboard" method="POST">
 											<input type="hidden" name="action" value="removeStock">										
 		                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-											<input type="hidden" name="removeStock" value="<%=myStocks.get(i).get(0) %>">
+											<input type="hidden" name="removeStockTicker" value="<%=myStocks.get(i).get(0) %>">
 											<button type="submit" class="btn btn-primary deletestock" data-dismiss="modal" id="stockremovebutton<%=myStocks.get(i).get(0)%>">Remove Stock</button>
 								   		</form>
 										<%-- remove stock form --%>
