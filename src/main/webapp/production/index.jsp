@@ -374,11 +374,11 @@
 	                                    </button>
 	                                  </div>
 	                                  <div class="modal-footer">
-	                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+	                                    <button type="button" id="btn-manage-portfolio-removeStockCancel" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
 										  <form name="formname" id="removeStock-<%=myStocks.get(i).get(0)%>" action="/dashboard" method="POST">
 				                            <input type="hidden" name="action" value="removeStock">
 				                            <input type="hidden" name="removeStockTicker" value="<%=myStocks.get(i).get(0) %>">
-				                            <button class="btn btn-primary" >Remove</button>
+				                            <button id="btn-manage-portfolio-removeStockConfirm" class="btn btn-danger" >Delete Stock</button>
 				                         </form>
 	
 										<%-- <form class="" id="removeStock-<%=myStocks.get(i).get(0)%>" action="/dashboard" method="POST">
