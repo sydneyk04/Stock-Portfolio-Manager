@@ -108,26 +108,7 @@ public class StockPerformanceServlet extends HttpServlet {
 	        	return;
 	        }
 	
-	        if (!portfolioValHistory.isEmpty()) {
-	        	// today's portfolio value
-	        	DecimalFormat f = new DecimalFormat("##.00");
-	        	f.setRoundingMode(RoundingMode.HALF_EVEN);
-	        	ArrayList<String> holder = portfolioValHistory.get(portfolioValHistory.size()-1);
-	        	Double val = Double.parseDouble(holder.get(1));
-	        	System.out.println("Portfolio val: " + val);
-	        	session.setAttribute("portfolioVal", f.format(val));
-	        	
-	        	if (portfolioValHistory.size() > 1) {
-	        		// yesterday's portfolio value
-		        	ArrayList<String> prevHolder = portfolioValHistory.get(portfolioValHistory.size()-2);
-		        	Double prevVal = Double.parseDouble(prevHolder.get(1));
-		        	Double percentChange = (val - prevVal) / 100;
-		        	session.setAttribute("portfolioPercentage", f.format(percentChange));
-		        	System.out.println("Today's portfolio val: " + val);
-		        	System.out.println("Yesterday's portfolio val: " + prevVal);
-	        	}        	
-	        }
-	
+	       
 	        //build the graph using the list of stocks
 	        buildGraph();    
 		}
@@ -555,7 +536,7 @@ public class StockPerformanceServlet extends HttpServlet {
 	void calculatePortfolio() throws IOException, ParseException {
 		portfolioValHistory = new ArrayList<ArrayList>();
 		//for loop to run through list of users stocks
-		for(int s=1; s<myStocks.size(); s++) {
+		for(int s=0; s<myStocks.size(); s++) {
 			String ticker = (String) myStocks.get(s).get(0);
 			List<HistoricalQuote> history = YahooFinance.get(ticker, from, now, Interval.DAILY).getHistory();
 			
@@ -565,22 +546,52 @@ public class StockPerformanceServlet extends HttpServlet {
 				int month = date.get(Calendar.MONTH);
 				int day = date.get(Calendar.DAY_OF_MONTH);
 				DateFormatSymbols symbols = new DateFormatSymbols();
-				String label = day + " " + symbols.getShortMonths()[month] + " " + year;
-				Double close = history.get(i).getClose().doubleValue();
-				Double shares = Double.parseDouble((String) myStocks.get(s).get(2));
-				
-				//check if user owned stock during this point in time add to portfolio value
 				String holder = year + "-" + (month + 1) + "-" + day;
+				String label = day + " " + symbols.getShortMonths()[month] + " " + year;
+				Double close = 0.00;
+				Double shares = Double.parseDouble((String) myStocks.get(s).get(2));
+				boolean owned = true;
 				
-				boolean owned = ownedCheck(holder, (String)myStocks.get(s).get(3), (String)myStocks.get(s).get(4));
-					
+				//if the stock is not the first one, calculate values, otherwise will initilize a 0 line
+				if(s != 0) {
+					//check if user owned stock during this point in time add to portfolio value
+					close = history.get(i).getClose().doubleValue();
+					owned = ownedCheck(holder, (String)myStocks.get(s).get(3), (String)myStocks.get(s).get(4));
+				}
+				
 				//create portfolio value at that index
 				//if stock is supposed to be calculated in the portfolio
 				if(myStocks.get(s).get(5).equals("Yes")) {
 					addPortfolioValues(i, close, shares, label, owned);
 				}
+				
 			}
 		}
+		
+		session.setAttribute("portfolioVal", 0.00);
+		session.setAttribute("portfolioPercentage", 0);
+		
+		//set portfolio value
+		if (!portfolioValHistory.isEmpty()) {
+        	// today's portfolio value
+        	DecimalFormat f = new DecimalFormat("##.00");
+        	f.setRoundingMode(RoundingMode.HALF_EVEN);
+        	ArrayList<String> holder = portfolioValHistory.get(portfolioValHistory.size()-1);
+        	Double val = Double.parseDouble(holder.get(1));
+        	System.out.println("Portfolio val: " + val);
+        	session.setAttribute("portfolioVal", f.format(val));
+        	
+        	if (portfolioValHistory.size() > 1) {
+        		// yesterday's portfolio value
+	        	ArrayList<String> prevHolder = portfolioValHistory.get(portfolioValHistory.size()-2);
+	        	Double prevVal = Double.parseDouble(prevHolder.get(1));
+	        	Double percentChange = (val - prevVal) / 100;
+	        	session.setAttribute("portfolioPercentage", f.format(percentChange));
+	        	System.out.println("Today's portfolio val: " + val);
+	        	System.out.println("Yesterday's portfolio val: " + prevVal);
+        	}        	
+        }
+	
 		
 		buildPortfolioJSON();
 	

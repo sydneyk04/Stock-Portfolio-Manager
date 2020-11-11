@@ -225,7 +225,7 @@
 	                    	<h4 style="color: red;"><i id="percentChangeArrow" class="glyphicon glyphicon-arrow-down"></i> <%=portfolioPercentage%>%</h4>
 	                    <%} else {
 	                    	if (portfolioPercentage.charAt(0) == '.') { portfolioPercentage = "0." + portfolioPercentage.substring(1); }%>
-	                    	<h4 style="color: green;"><i id="percentChangeArrow" class="glyphicon glyphicon-arrow-up"></i> <%=portfolioVal%>%</h4>
+	                    	<h4 style="color: green;"><i id="percentChangeArrow" class="glyphicon glyphicon-arrow-up"></i> <%=portfolioPercentage%>%</h4>
 	                    <%}%>
                     </div>
                     <form name="formname" id="toggleSP" style="margin: 0px; padding: 0px; display:inline;" action="/dashboard" method="POST">
