@@ -5,7 +5,7 @@ Feature: Adding and removing stocks from portfolio
     When I click the Add Stock button for the portfolio
     And I enter a stock ticker not in my portfolio and a certain number of shares
     And I click the Add Stock button in the popup window for the portfolio
-    Then I should see the value of my portfolio increase and the stocks in my portfolio be updated
+    Then I should see the value of my portfolio increase and my portfolio with the stock
  
   Scenario: Portfolio value increases and percentage changes after adding a stock
     Given I am logged in on the dashboard page

@@ -510,7 +510,20 @@ public class StepDefinitions {
 		assertTrue(Double.valueOf(info) >= 0);
 	}
 	
-	@Then("I should see the value of my portfolio increase and my portfolio without the stock")
+	@Then("I should see the value of my portfolio decrease and my portfolio without the stock")
+	public void i_should_see_the_value_of_my_portfolio_decrease_and_my_portfolio_without_the_stock() {
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+		WebElement element = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div[1]/div/h3"));
+		String portfolioVal = element.getAttribute("innerHTML");
+		int start = portfolioVal.indexOf('$') + 1;
+		int end = portfolioVal.indexOf('.') + 3;
+		String info = portfolioVal.substring(start, end);
+		//assertTrue(driver.getPageSource().contains("AAPL"));
+		assertNotNull(driver.findElement(By.id("chartContainer")));
+		assertTrue(Double.valueOf(info) >= 0);
+	}
+	
+	@Then("I should see the value of my portfolio increase and my portfolio with the stock")
 	public void i_should_see_the_value_of_my_portfolio_increase_and_my_portfolio_without_the_stock() {
 		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 		WebElement element = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div[1]/div/h3"));
