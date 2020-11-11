@@ -109,6 +109,7 @@
   	</script>
 
 	<script>
+		
 		/*
 	 	 * App security: Back button pressed - prevent user from going back to dashboard afterwards
 	 	 */
@@ -179,16 +180,16 @@
     <div class="container body">
       <div class="main_container">
         <!-- top navigation -->
-         <header id="top_nav" style="height:60px; background:#787878;">
+         <header id="top_nav" style="height:70px; background:#787878;">
   			<nav id="banner" class="navbar navbar-dark bg-secondary justify-content-left">
 		      	<div id="banner-content" class="navbar-brand" style="color:white;font-size:45px;font-family: 'Raleway', sans-serif;">
-		      		<a href="index.jsp" style="text-decoration: none; color:white;" >
+		      		<a href="index.jsp" style="text-decoration: none; color:white; font-size:4vw;" >
 				    	USC CS 310 Stock Portfolio Management
 					</a>
 		      	</div>
 		      	<div>
-
-					<form name="formname" action="/dashboard" method="POST">
+		    
+					<form name="formname" action="/dashboard" method="POST" style="margin: 10px 0px 2px 0px;">
 						<input type="hidden" name="action" value="logout">
 						<button id="logout-button" type="submit" class="btn btn-primary btn-md justify-content-start">
 							Logout <i class="icon-signout"></i>
@@ -248,7 +249,7 @@
                 <div class="col-md-9 col-sm-9 ">
                 	<!--   <div id="chart_plot_01" class="demo-placeholder"></div> -->
                   <!-- <canvas id="chartContainer" width="1000" height="400"></canvas> -->
-                  <div id="chartContainer" style="width: 1000px; height: 400px" ></div>
+                  <div id="chartContainer" style="width: 100%; height: 400px" ></div>
                   <%-- <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script> --%>
 				  <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
                   <%= chart%>
@@ -275,6 +276,7 @@
 						let to = new String("<%=graphRangeTo%>");
 						console.log(from);
 
+						var startDate = moment().subtract(3, 'month').month();
 						$('#datepicker').daterangepicker({
 							startDate: moment(from, "YYYY-MM-DD"),
 							endDate: moment(to, "YYYY-MM-DD"),
@@ -293,6 +295,14 @@
 							$('input[name=to]').val(picker.endDate.format('YYYY-MM-DD'));
 
 						})
+						
+						function getStartDate() {
+						    return moment().subtract(3, 'month').month();
+						}
+						
+						function getEndDate() {
+						    return moment().month();
+						}
 				</script>
 
 				</div>
@@ -363,7 +373,7 @@
                       <%if(myStocks!=null){for(int i=1; i<myStocks.size(); i++){ %>
 	                      <li id="li-<%=myStocks.get(i).get(0) %>" class="d-flex">
 	                          <div style="display:inline; float: left; width: 15%;">
-	                            <button type="button" id="manage-portfolio-removeStockButton-<%=myStocks.get(i).get(0)%>" style="background:lightgrey; border:none; border-radius:5px; color:white;" class="flat" data-toggle="modal" data-target="#removeStockModal-<%=myStocks.get(i).get(0)%>">X</button>
+	                            <button type="button" id="manage-portfolio-removeStockButton-<%=myStocks.get(i).get(0)%>" style="background:red; border:none; border-radius:5px; color:white;" data-toggle="modal" data-target="#removeStockModal-<%=myStocks.get(i).get(0)%>">Delete Stock</button>
 	                            <!-- Modal for Remove Stock -->
 	                            <div class="modal fade" id="removeStockModal-<%=myStocks.get(i).get(0)%>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	                              <div class="modal-dialog" role="document">
@@ -375,13 +385,18 @@
 	                                    </button>
 	                                  </div>
 	                                  <div class="modal-footer">
-	                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-
-										<form class="" id="removeStock-<%=myStocks.get(i).get(0)%>" action="/dashboard" method="POST">
+	                                    <button type="button" id="btn-manage-portfolio-removeStockCancel" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+										  <form name="formname" id="removeStock-<%=myStocks.get(i).get(0)%>" action="/dashboard" method="POST">
+				                            <input type="hidden" name="action" value="removeStock">
+				                            <input type="hidden" name="removeStockTicker" value="<%=myStocks.get(i).get(0) %>">
+				                            <button id="btn-manage-portfolio-removeStockConfirm" class="btn btn-primary" >Remove</button>
+				                         </form>
+	
+										<%-- <form class="" id="removeStock-<%=myStocks.get(i).get(0)%>" action="/dashboard" method="POST">
 											<input type="hidden" name="action" value="removeStock">
 											<input type="hidden" name="removeStockTicker" value="<%=myStocks.get(i).get(0) %>">
 											<button type="submit" class="btn btn-primary deletestock" data-dismiss="modal" id="stockremovebutton<%=myStocks.get(i).get(0)%>">Remove Stock</button>
-										</form>
+										</form> --%>
 
 										<%-- remove stock form --%>
 										<script type="text/javascript">
@@ -483,13 +498,13 @@
 	                              <div style="float: left; width: 45%; overflow: scroll; margin-right:2.5%; margin-left:2.5%; display:table-cell;">
 	                                <div style="margin-right:5px;">
 	                                  <p style="text-align:center;">Ticker*</p>
-	                                  <input class="stockinput" type="text" id="ticker" name="ticker" required>
+	                                  <input class="stockinput" type="text" id="add-stock-ticker" name="ticker" required>
 	                                </div>
 	                              </div>
 	                              <div style="float: left; width: 45%; overflow: scroll; margin-left:2.5%; display:table-cell;">
 	                                <div style="margin-right:5px;">
 	                                  <p style="text-align:center;"># Shares*</p>
-	                                  <input class="stockinput" type="text" id="shares" name="numOfShares" required>
+	                                  <input class="stockinput" type="text" id="add-stock-shares" name="numOfShares" required>
 	                                </div>
 	                              </div>
 	                            </div>
@@ -498,13 +513,13 @@
 	                              <div style="float: left; width: 45%; overflow: scroll; margin-right:2.5%; margin-left:2.5%; display:table-cell;">
 	                                <div style="margin-right:5px;">
 	                                  <p style="text-align:center;">Date Purchased*</p>
-	                                  <input class="stockinput" type="date" id="datePurchased" name="datePurchased" required>
+	                                  <input class="stockinput" type="date" id="add-stock-datePurchased" name="datePurchased" required>
 	                                </div>
 	                              </div>
 	                              <div style="float: left; width: 45%; overflow: scroll; margin-left:2.5%; display:table-cell;">
 	                                <div style="margin-right:5px;">
 	                                  <p style="text-align:center;">Date Sold</p>
-	                                  <input class="stockinput" type="date" id="dateSold" name="dateSold">
+	                                  <input class="stockinput" type="date" id="add-stock-dateSold" name="dateSold">
 	                                </div>
 	                              </div>
 	                              <div style="float: left; width: 95%; overflow: scroll; margin-left:2.5%; display:table-cell;">
@@ -515,8 +530,8 @@
 	                            </div>
 	                          </div>
 	                          <div class="modal-footer">
-	                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-							  <button type="submit" class="btn btn-primary">Add Stock</button>
+	                          <button type="button" id="modal-manage-portfolio-cancel-button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+							  <button type="submit" id="modal-manage-portfolio-add-stock-button" class="btn btn-primary">Add Stock</button>
 							</div>
                           </form>
 
@@ -526,6 +541,8 @@
 								document.getElementById("stockaddbutton").addEventListener("click", function() {
 									addForm.submit();
 								});
+								
+								
 							</script>
                           </div>
                         </div>
@@ -694,7 +711,7 @@
 					<h2>View stocks</h2>
 					  <strong id="login_error" style="color:red"><%if(invalid_error != null){ %> <%= invalid_error%> <% } %></strong>
 					<!-- Button trigger modal -->
-                    <br><button type="button" data-toggle="modal" data-target="#viewStockModal">View Stock</button>
+                    <br><button type="button" data-toggle="modal" class="btn btn-primary" data-target="#viewStockModal">View Stock</button>
                     <br><br>
 
 					<%if(view!=null){for(int i=0; i<view.size(); i++) {%>
@@ -707,12 +724,12 @@
 							 <form name="formname" action="/dashboard" method="POST">
 	                            <input type="hidden" name="action" value="showViewStock">
 	                            <input type="hidden" name="ticker" value="<%=view.get(i).get(0) %>">
-	                            <button style="text-align:left; display:inline; font-weight:bold;">Toggle on Graph</button>
+	                            <button id="btn-view-toggle<%=view.get(i).get(0) %>" style="text-align:left; display:inline; font-weight:bold;">Toggle on Graph</button>
 	                         </form>
                              <form name="formname" action="/dashboard" method="POST">
 	                            <input type="hidden" name="action" value="removeViewStock">
 	                            <input type="hidden" name="removeTicker" value="<%=view.get(i).get(0) %>">
-	                            <button style="text-align:left; display:inline; font-weight:bold;">Remove</button>
+	                            <button id="btn-view-remove<%=view.get(i).get(0) %>" style="text-align:left; display:inline; font-weight:bold;">Remove</button>
 	                         </form>
 	                         <form name="formname" action="/dashboard" method="POST">
 	                         	<input type="hidden" name="ticker" value=<%=view.get(i).get(0) %>>
@@ -720,7 +737,7 @@
 	                         	<input type="hidden" name="datePurchased" value=<%=view.get(i).get(3) %>>
 	                         	<input type="hidden" name="dateSold" value=<%=view.get(i).get(4) %>>
 	                            <input type="hidden" name="action" value="addStock">
-	                       	 	<button type="submit" class="addstockbutton" style="text-align:left; display:inline; font-weight:bold;">Add to Portfolio</button>
+	                       	 	<button id="btn-view-add<%=view.get(i).get(0) %>" type="submit" class="addstockbutton" style="text-align:left; display:inline; font-weight:bold;">Add to Portfolio</button>
                              </form>
                              <br>
                            </div>
@@ -744,13 +761,13 @@
 	                              <div style="float: left; width: 45%; overflow: scroll; margin-right:2.5%; margin-left:2.5%; display:table-cell;">
 	                                <div style="margin-right:5px;">
 	                                  <p style="text-align:center;">Ticker*</p>
-	                                  <input class="stockinput" type="text" id="ticker" name="ticker" required>
+	                                  <input class="stockinput" type="text" id="view-ticker" name="ticker" required>
 	                                </div>
 	                              </div>
 	                              <div style="float: left; width: 45%; overflow: scroll; margin-left:2.5%; display:table-cell;">
 	                                <div style="margin-right:5px;">
 	                                  <p style="text-align:center;"># Shares*</p>
-	                                  <input class="stockinput" type="text" id="shares" name="numOfShares" required>
+	                                  <input class="stockinput" type="text" id="view-shares" name="numOfShares" required>
 	                                </div>
 	                              </div>
 	                            </div>
@@ -759,13 +776,13 @@
 	                              <div style="float: left; width: 45%; overflow: scroll; margin-right:2.5%; margin-left:2.5%; display:table-cell;">
 	                                <div style="margin-right:5px;">
 	                                  <p style="text-align:center;">Date Purchased*</p>
-	                                  <input class="stockinput" type="date" id="datePurchased" name="datePurchased" required>
+	                                  <input class="stockinput" type="date" id="view-datePurchased" name="datePurchased" required>
 	                                </div>
 	                              </div>
 	                              <div style="float: left; width: 45%; overflow: scroll; margin-left:2.5%; display:table-cell;">
 	                                <div style="margin-right:5px;">
 	                                  <p style="text-align:center;">Date Sold</p>
-	                                  <input class="stockinput" type="date" id="dateSold" name="dateSold">
+	                                  <input class="stockinput" type="date" id="view-dateSold" name="dateSold">
 	                                </div>
 	                              </div>
 	                              <div style="float: left; width: 95%; overflow: scroll; margin-left:2.5%; display:table-cell;">
@@ -776,8 +793,8 @@
 	                            </div>
 	                          </div>
 	                          <div class="modal-footer">
-	                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-							  <button type="submit" class="btn btn-primary">View Stock</button>
+	                          <button type="button" class="btn btn-secondary" id="btn-view-close" data-dismiss="modal">Close</button>
+							  <button type="submit" class="btn btn-primary" id="btn-view-stock">View Stock</button>
 							</div>
                           </form>
                         </div>
