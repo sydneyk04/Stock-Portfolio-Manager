@@ -465,9 +465,11 @@ public class StepDefinitions {
 	@When("I click the Add Stock button in the popup window for the portfolio")
 	public void i_click_the_add_stock_button_in_the_popup_window_for_the_portfolio() {
 		// Modal's "Add Stock" button for Manage Portfolio section
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 		WebElement addButton;
 		try {
-			addButton = driver.findElement(By.id("manage-portfolio-add-stock-button"));
+			//addButton = driver.findElement(By.id("manage-portfolio-add-stock-button"));
+			addButton = driver.findElement(By.id("modal-manage-portfolio-add-stock-button"));
 		} catch (NoSuchElementException e) {
 			addButton = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div/div/div/div[3]/button[2]"));
 		}
@@ -495,7 +497,7 @@ public class StepDefinitions {
 	@When("I enter an invalid stock ticker and number of shares")
 	public void i_enter_an_invalid_stock_ticker_and_number_of_shares() {
 	    WebElement ticker = driver.findElement(By.id("add-stock-ticker"));
-	    ticker.sendKeys("NKLA");
+	    ticker.sendKeys("NKLAIFJKHSL");
 	    WebElement shares = driver.findElement(By.id("add-stock-shares"));
 	    shares.sendKeys("20");
 	    WebElement datePurchased = driver.findElement(By.id("add-stock-datePurchased"));
@@ -505,9 +507,16 @@ public class StepDefinitions {
 
 	@Then("I should see an error message saying stock ticker was not found")
 	public void i_should_see_an_error_message_saying_stock_ticker_was_not_found() {
-		WebElement msg = driver.findElement(By.id("errormsg"));
-		assertEquals(msg.getText(), "Sorry, this stock does not exist.");
-	
+		//WebElement msg = driver.findElement(By.id("errormsg"));
+		WebElement msg = null;
+		try {
+			msg = driver.findElement(By.id("login_error"));
+		} catch (Exception e) {
+			assertNull(msg);
+		}
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		//assertEquals(msg.getText(), "Sorry, this stock does not exist.");
+		assertEquals(msg.getText(), "Unable to add this stock");
 	}	
 	
 	@Then("I should see the value of my portfolio decrease and the stocks in my portfolio be updated")
