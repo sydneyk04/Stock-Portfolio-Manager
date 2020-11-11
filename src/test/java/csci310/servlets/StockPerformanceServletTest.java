@@ -387,6 +387,92 @@ public class StockPerformanceServletTest extends Mockito {
 		assertNull(session.getAttribute("view"));
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testDoPostSelectViewAll() throws IOException, ServletException, InterruptedException, ParseException {
+		StringWriter writer = new StringWriter();
+		PrintWriter out = new PrintWriter(writer);
+		servlet.from = Calendar.getInstance();
+        servlet.from.add(Calendar.YEAR, -1);
+        servlet.now = Calendar.getInstance();
+		
+        servlet.getUserStock("johnDoe");
+        ArrayList<String> stock = new ArrayList<String>();
+		stock.add("TSLA");
+		stock.add("Tesla");
+		stock.add("1");
+		stock.add("2020-01-10");
+		stock.add("2020-10-10");
+		stock.add("Yes");
+		servlet.myStocks.add(stock);
+		servlet.view.add(stock);
+		StockPerformanceServlet spyServlet = spy(servlet);
+		
+		when(request.getParameter("action")).thenReturn("selectViewAll");
+		when(request.getParameter("from")).thenReturn("2020-01-10");
+		when(request.getParameter("to")).thenReturn("2020-10-10");
+		when(response.getWriter()).thenReturn(out);
+		when(request.getSession()).thenReturn(session);
+		when(session.getAttribute("username")).thenReturn("johnDoe");	
+		when(request.getParameter("ticker")).thenReturn("TSLA");
+		when(request.getParameter(request.getParameter("datePurchased"))).thenReturn("2020-01-10");
+		when(request.getParameter(request.getParameter("dateSold"))).thenReturn("2020-10-10");
+		when(request.getParameter(request.getParameter("numOfShares"))).thenReturn("1");
+		
+		spyServlet.doPost(request, response);
+		assertNull(session.getAttribute("view"));
+		
+		doThrow(ParseException.class).when(spyServlet).calculatePortfolio();
+		spyServlet.doPost(request, response);
+		
+		doThrow(IOException.class).when(spyServlet).calculatePortfolio();
+		spyServlet.doPost(request, response);
+			
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testDoPostDeselectViewAll() throws IOException, ServletException, InterruptedException, ParseException {
+		StringWriter writer = new StringWriter();
+		PrintWriter out = new PrintWriter(writer);
+		servlet.from = Calendar.getInstance();
+        servlet.from.add(Calendar.YEAR, -1);
+        servlet.now = Calendar.getInstance();
+		
+        servlet.getUserStock("johnDoe");
+        ArrayList<String> stock = new ArrayList<String>();
+		stock.add("TSLA");
+		stock.add("Tesla");
+		stock.add("1");
+		stock.add("2020-01-10");
+		stock.add("2020-10-10");
+		stock.add("Yes");
+		servlet.myStocks.add(stock);
+		servlet.view.add(stock);
+		StockPerformanceServlet spyServlet = spy(servlet);
+		
+		when(request.getParameter("action")).thenReturn("deselectViewAll");
+		when(request.getParameter("from")).thenReturn("2020-01-10");
+		when(request.getParameter("to")).thenReturn("2020-10-10");
+		when(response.getWriter()).thenReturn(out);
+		when(request.getSession()).thenReturn(session);
+		when(session.getAttribute("username")).thenReturn("johnDoe");	
+		when(request.getParameter("ticker")).thenReturn("TSLA");
+		when(request.getParameter(request.getParameter("datePurchased"))).thenReturn("2020-01-10");
+		when(request.getParameter(request.getParameter("dateSold"))).thenReturn("2020-10-10");
+		when(request.getParameter(request.getParameter("numOfShares"))).thenReturn("1");
+		
+		spyServlet.doPost(request, response);
+		assertNull(session.getAttribute("view"));
+		
+		doThrow(ParseException.class).when(spyServlet).calculatePortfolio();
+		spyServlet.doPost(request, response);
+		
+		doThrow(IOException.class).when(spyServlet).calculatePortfolio();
+		spyServlet.doPost(request, response);
+	}
+	
 	@Test
 	public void testDoPostThrowParseException() throws IOException, InterruptedException, ParseException, ServletException {	
 		StringWriter writer = new StringWriter();
@@ -404,6 +490,7 @@ public class StockPerformanceServletTest extends Mockito {
 		Assert.assertEquals("", result);
 	}
 	
+
 	@Test
 	public void testAddPortfolioValues() throws IOException, ServletException, InterruptedException {	
 		servlet.portfolioValHistory.clear();
