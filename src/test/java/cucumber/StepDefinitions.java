@@ -34,7 +34,7 @@ import io.cucumber.java.en.When;
  */
 public class StepDefinitions {
 	private static final String ROOT_URL = "http://localhost:8080/";
-	private static final String Https_URL = "https://localhost:8080/";
+	private static final String Https_URL = "https://localhost:8443/";
 	private static final String Signup_URL = "http://localhost:8080/signup.jsp";
 	private static final String Login_URL = "http://localhost:8080/login.jsp";
 	private static final String Dashboard_URL = "http://localhost:8080/production/index.jsp";
@@ -380,7 +380,7 @@ public class StepDefinitions {
 	@When("I am on the dashboard page for two minutes")
 	public void i_am_on_the_dashboard_page_for_two_minutes() {
 		try {
-			Thread.sleep(120000);
+			Thread.sleep(120100);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -878,6 +878,27 @@ public class StepDefinitions {
 	public void i_attempt_to_navigate_to_the_dashboard_page() {
 		driver.get(Dashboard_URL);
 	}
+	
+    /**************************
+	 * HTTPS SECURITY FEATURE
+	 **************************/
+	@When("I navigate to the secure site")
+	public void i_navigate_to_the_secure_site() {
+	    driver.get(Https_URL);
+	}
+
+	@Then("the secure page should use HTTPS")
+	public void the_secure_page_should_use_HTTPS() {
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String url = driver.getCurrentUrl();
+		assertTrue(url.equalsIgnoreCase("https://localhost:8443"));
+	}
+
 
 	@After()
 	public void after() {

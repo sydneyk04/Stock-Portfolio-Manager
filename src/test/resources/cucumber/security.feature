@@ -30,4 +30,8 @@ Feature: Security
     Given I am logged in on the dashboard page
     When I am on the dashboard page for two minutes
     Then I should be on the login page
+  Scenario: Website uses https secure connection
+    Given I am on the landing page
+    When I navigate to the secure site
+    Then the secure page should use HTTPS
 
