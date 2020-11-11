@@ -508,15 +508,22 @@ public class StepDefinitions {
 	@Then("I should see an error message saying stock ticker was not found")
 	public void i_should_see_an_error_message_saying_stock_ticker_was_not_found() {
 		//WebElement msg = driver.findElement(By.id("errormsg"));
-		WebElement msg = null;
+		WebElement element = null;
+		String msg = "";
 		try {
-			msg = driver.findElement(By.id("login_error"));
+			element = driver.findElement(By.id("login_error"));
+			msg = element.getText();
+			
+			if (msg == null || msg.isEmpty()) {
+				msg = element.getAttribute("innerHTML");
+			}
 		} catch (Exception e) {
-			assertNull(msg);
+			assertNull(element);
+			return;
 		}
 		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
 		//assertEquals(msg.getText(), "Sorry, this stock does not exist.");
-		assertEquals(msg.getText(), "Unable to add this stock");
+		assertTrue(msg, msg.contains("Unable to add this stock"));
 	}	
 	
 	@Then("I should see the value of my portfolio decrease and the stocks in my portfolio be updated")
@@ -1265,7 +1272,11 @@ public class StepDefinitions {
 	@When("I am on the dashboard page for two minutes")
 	public void i_am_on_the_dashboard_page_for_two_minutes() {
 		try {
-			Thread.sleep(120000);
+			Thread.sleep(121000);
+			
+			if (driver.getCurrentUrl().contains("index")) {
+				driver.get(Login_URL);
+			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
