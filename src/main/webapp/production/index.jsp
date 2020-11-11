@@ -35,6 +35,7 @@
 	List<ArrayList> myStocks = (List<ArrayList>) session.getAttribute("myStocks");
 	String graphRangeFrom = (String) session.getAttribute("graphRangeFrom");
 	String graphRangeTo = (String) session.getAttribute("graphRangeTo");
+
 %>
 <html lang="en">
   <head>
@@ -437,10 +438,29 @@
 					<strong id="login_error" style="color:red; margin-left: 20%;"><%if(failedAdd != null){ %> <%= failedAdd%> <% } %></strong>
                     </ul>
 
-                    <!-- Button trigger modal -->
-                    <div class="addstockbutton">
-                    <button id="manage-portfolio-add-stock-button" type="button" class="btn btn-primary" data-toggle="modal" data-target="#addStockModal">Add Stock</button>
+										<%-- select/deselect all buttons --%>
+										<div class="d-flex">
+											<form class="" action="/dashboard" method="post">
+												<input type="hidden" name="action" value="selectViewAll">
+												<button class="btn btn-secondary" type="submit" name="">Select All</button>
+											</form>
+										</div>
 
+										<div class="d-flex">
+											<form class="d-flex" action="/dashboard" method="post">
+												<input type="hidden" name="action" value="deselectViewAll">
+												<button class="btn btn-secondary" type="submit" name="">Deselect All</button>
+											</form>
+										</div>
+
+                    <!-- Button trigger modal --><br><br>
+                    <div class="addstockbutton">
+
+                    <strong id="login_error" style="color:red"><%if(failedAdd != null){ %> <%= failedAdd%> <% } %></strong>
+
+                    <br><button id="manage-portfolio-add-stock-button" type="button" class="btn btn-primary" data-toggle="modal" data-target="#addStockModal">Add Stock</button>
+
+                   
 
 
                     <!-- Modal For Add Stock-->
@@ -510,6 +530,8 @@
                         </div>
                       </div>
                     </div>
+
+
 
 					 <style>
                       .stockinput{

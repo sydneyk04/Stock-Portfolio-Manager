@@ -133,6 +133,7 @@ public class StockPerformanceServlet extends HttpServlet {
 
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws IOException, ServletException {
 		System.out.println("dopost");
@@ -263,10 +264,20 @@ public class StockPerformanceServlet extends HttpServlet {
 			} catch (ParseException e1) {
 				e1.printStackTrace();
 			}
-
+			
+			// if invalid number of shares 
+			if(Double.parseDouble(numOfShares) <= 0) {
+				session.setAttribute("failedAdd", "Invalid number of shares");
+			}
+			
 			//if invalid date
 			if(datePurchased.after(Calendar.getInstance())) {
 				session.setAttribute("failedAdd", "Please enter a valid date.");			
+			}
+			
+			// if date sold before date purchased
+			if(datePurchased.after(sellDate)) {
+				session.setAttribute("failedAdd", "Date sold cannot be before date purchased.");
 			}
 			
 			//if you already own the stock dont let user add it and remove from view?
@@ -427,7 +438,70 @@ public class StockPerformanceServlet extends HttpServlet {
 			//set session from and to
 			session.setAttribute("graphRangeFrom", fromString);
 			session.setAttribute("graphRangeTo", toString);
-		} 
+
+		}
+		//selectall, add alls stocks to view
+		else if(action.equals("selectViewAll")){
+			view.clear();
+			for(int i = 0; i < myStocks.size(); i++) {
+				ArrayList<String> s = myStocks.get(i);
+				String ticker = s.get(0);
+				String numOfShares = s.get(2);
+				String purchase = s.get(3);
+				String sell = s.get(4);
+				String calculatedInPortfolio = s.get(5);
+				ArrayList<String> holder = new ArrayList<String>();
+				String json;
+				try {
+					json = viewStock(ticker, numOfShares, purchase, sell);
+					holder.add(ticker);
+					holder.add(json);
+					holder.add(numOfShares);
+					holder.add(purchase);
+					holder.add(sell);
+					holder.add(calculatedInPortfolio);
+					view.add(holder);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
+			}
+			
+			buildGraph();
+			session.setAttribute("myStocks", myStocks);
+			session.setAttribute("view", view);
+			try {
+				calculatePortfolio();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		//deselect all stocks
+		else if(action.equals("deselectViewAll")) {
+			view.clear();
+			buildGraph();
+			session.setAttribute("myStocks", myStocks);
+			session.setAttribute("view", view);
+			try {
+				calculatePortfolio();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	String viewStock(String ticker, String numOfShares, String purchase, String sell) throws IOException, ParseException {
