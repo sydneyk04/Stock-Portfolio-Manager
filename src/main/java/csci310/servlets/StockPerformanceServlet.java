@@ -130,7 +130,7 @@ public class StockPerformanceServlet extends HttpServlet {
 	
 	@Override
 	protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws IOException, ServletException {
-		System.out.println("dopost");
+		System.out.println();
 		response.setContentType("text/html;charset=UTF-8");
 		out = response.getWriter();
 		response.setStatus(HttpServletResponse.SC_OK);
@@ -322,9 +322,10 @@ public class StockPerformanceServlet extends HttpServlet {
 		}
 		
 		else if(action.equals("removeStock")) {
-			System.out.println("hi from remove stock");
+			System.out.println("action is 'removeStock'");
 			String username = session.getAttribute("username").toString();
-			String ticker = request.getParameter("removeStockTicker");
+			String ticker = request.getParameter("removeStock");
+			System.out.println("removing: " + ticker);
 			for(int i=0; i<myStocks.size(); i++) {
 				if(myStocks.get(i).get(0).equals(ticker)){
 					myStocks.remove(i);

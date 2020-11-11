@@ -351,10 +351,10 @@
                     <ul id="stock_list" class="to_do">
                       <%if(myStocks!=null){for(int i=1; i<myStocks.size(); i++){ %>
 	                      <li id="li-<%=myStocks.get(i).get(0) %>" class="d-flex">
-	                          <div style="display:inline; float: left; width: 15%;">
-	                            <button type="button" id="manage-portfolio-removeStockButton-<%=myStocks.get(i).get(0)%>" style="background:lightgrey; border:none; border-radius:5px; color:white;" class="flat" data-toggle="modal" data-target="#removeStockModal-<%=myStocks.get(i).get(0)%>">X</button>
-	                            <!-- Modal for Remove Stock -->
-	                            <div class="modal fade" id="removeStockModal-<%=myStocks.get(i).get(0)%>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                          <div style="display:inline; float: left; width: 15%;">
+                            <button type="button" id="manage-portfolio-removeStockButton-<%=myStocks.get(i).get(0)%>" style="background:lightgrey; border:none; border-radius:5px; color:white;" class="flat" data-toggle="modal" data-target="#removeStockModal-<%=myStocks.get(i).get(0)%>">X</button>
+                            <!-- Modal for Remove Stock -->
+                              <div class="modal fade" id="removeStockModal-<%=myStocks.get(i).get(0)%>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	                              <div class="modal-dialog" role="document">
 	                                <div class="modal-content">
 	                                  <div class="modal-header">
@@ -364,14 +364,12 @@
 	                                    </button>
 	                                  </div>
 	                                  <div class="modal-footer">
-	                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-
-										<form class="" id="removeStock-<%=myStocks.get(i).get(0)%>" action="/dashboard" method="POST">
-											<input type="hidden" name="action" value="removeStock">
-											<input type="hidden" name="removeStockTicker" value="<%=myStocks.get(i).get(0) %>">
+	                                    <form class="removeStock" id="removeStock-<%=myStocks.get(i).get(0)%>" action="/dashboard" method="POST">
+											<input type="hidden" name="action" value="removeStock">										
+		                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+											<input type="hidden" name="removeStock" value="<%=myStocks.get(i).get(0) %>">
 											<button type="submit" class="btn btn-primary deletestock" data-dismiss="modal" id="stockremovebutton<%=myStocks.get(i).get(0)%>">Remove Stock</button>
-										</form>
-	
+								   		</form>
 										<%-- remove stock form --%>
 										<script type="text/javascript">
 	
@@ -386,6 +384,8 @@
 	                                </div>
 	                              </div>
 	                            </div>
+                         
+	                            
 	                          </div>
 	                          <div style="float: left; width: 85%;">
 	                            <div style="display:inline;">
