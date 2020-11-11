@@ -42,7 +42,7 @@ public class StepDefinitions {
 	private final WebDriver driver = new ChromeDriver();
 	private final WebDriverWait wait = new WebDriverWait(driver, 30);
 	private static String entered_pass;
-	
+
 	//https://stackoverflow.com/questions/20536566/creating-a-random-string-with-a-z-and-0-9-in-java
 	protected String getSaltString() {
         String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
@@ -56,7 +56,7 @@ public class StepDefinitions {
         return saltStr;
 
     }
-	
+
 	@Before()
 	public void before() {
 		driver.manage().window().maximize();
@@ -66,11 +66,11 @@ public class StepDefinitions {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**************************
 	 * LANDING PAGE FEATURE
 	 **************************/
-	
+
 
 	@Given("I am on the landing page")
 	public void i_am_on_the_landing_page() {
@@ -78,13 +78,13 @@ public class StepDefinitions {
 	}
 
 	@When("I click the {string} button")
-	public void i_click_the_string_buttton(String linkText) {		
+	public void i_click_the_string_buttton(String linkText) {
 		if(linkText.equals("Login"))
 			driver.findElement(By.xpath("/html/body/div/a[2]")).click();
 		else if(linkText.equalsIgnoreCase("Sign Up"))
-			driver.findElement(By.xpath("/html/body/div/a[1]")).click();	
+			driver.findElement(By.xpath("/html/body/div/a[1]")).click();
 	}
-	
+
 	@Then("I should be brought to the login page")
 	public void i_should_login() {
 		try {
@@ -96,7 +96,7 @@ public class StepDefinitions {
 		String url = driver.getCurrentUrl();
 		assertTrue(url.equalsIgnoreCase("http://localhost:8080/login.jsp"));
 	}
-	
+
 	@Then("I should be brought to the sign up page")
 	public void i_should_signup() {
 		try {
@@ -108,7 +108,7 @@ public class StepDefinitions {
 		String url = driver.getCurrentUrl();
 		assertTrue(url.equalsIgnoreCase("http://localhost:8080/signup.jsp"));
 	}
-	
+
 	@Given("I am on the index page")
 	public void i_am_on_the_index_page() {
 		driver.get(ROOT_URL);
@@ -123,7 +123,7 @@ public class StepDefinitions {
 	public void i_should_see_header(String header) {
 		assertTrue(driver.findElement(By.cssSelector("h2")).getText().contains(header));
 	}
-	
+
 	@Then("I should see text {string}")
 	public void i_should_see_text(String text) {
 		assertTrue(driver.getPageSource().contains(text));
@@ -136,30 +136,30 @@ public class StepDefinitions {
 	public void i_am_on_the_login_page() {
 		driver.get(Login_URL);
 	}
-	
+
 	@When("I enter my username")
 	public void i_enter_my_username() {
 		String usr = "johnDoe";
 		driver.findElement(By.xpath("//*[@id=\"usrname\"]")).sendKeys(usr);
 	}
-	
+
 	@When("I enter my password")
 	public void i_enter_my_password() {
 	    String usr = "test123";
 		driver.findElement(By.xpath("//*[@id=\"password\"]")).sendKeys(usr);
 	}
-	
+
 	@When("I click the login button")
 	public void i_click_the_login_button() {
 	    driver.findElement(By.xpath("//*[@id=\"login-form-submit\"]")).click();
 	}
-	
+
 	@When("I enter an incorrect password")
 	public void i_enter_an_incorrect_password() {
 	  String usr = "test1234";
 		driver.findElement(By.xpath("//*[@id=\"password\"]")).sendKeys(usr);
 	}
-	
+
 	@Then("I should be on the dashboard page")
 	public void i_should_be_on_the_dashboard_page() {
 	    try {
@@ -167,7 +167,7 @@ public class StepDefinitions {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
+
 		assertTrue(driver.getCurrentUrl().equalsIgnoreCase(Dashboard_URL));
 	}
 
@@ -175,16 +175,16 @@ public class StepDefinitions {
 	public void i_should_see_the_incorrect_login_error_message(String string) {
 	  try {
 			Thread.sleep(1000);
-			
+
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
+
 		String info = driver.findElement(By.id("login_error")).getText();
-		
+
 		assertTrue(info.equalsIgnoreCase(string));
 	}
-	
+
 	/**************************
 	 * SIGNUP FEATURE
 	 **************************/
@@ -198,7 +198,7 @@ public class StepDefinitions {
 		String testUser = getSaltString();
 		driver.findElement(By.xpath("//*[@id=\"username\"]")).sendKeys(testUser);
 	}
-	
+
 	@When("I enter an existing username")
 	public void i_enter_an_existing_username() {
 		driver.findElement(By.xpath("//*[@id=\"username\"]")).sendKeys("johnDoe");
@@ -234,8 +234,8 @@ public class StepDefinitions {
 	@When("I leave a password field blank")
 	public void i_leave_a_password_field_blank() {
 	    // Write code here that turns the phrase above into concrete actions
-		
-		
+
+
 	    //throw new io.cucumber.java.PendingException();
 	}
 
@@ -244,7 +244,7 @@ public class StepDefinitions {
 	  assertTrue(driver.findElement(By.id("error")).getText().equalsIgnoreCase(string));
 	}
 
-	
+
 	@Then("I should the alert {string}")
 	public void i_should_the_alert(String string) {
 	  assertTrue(driver.findElement(By.xpath("//*[@id=\"error\"]") ).getText().equalsIgnoreCase(string));
@@ -253,10 +253,10 @@ public class StepDefinitions {
 	@When("I enter the second hidden password field incorrectly")
 	public void i_enter_the_second_hidden_password_field_incorrectly() {
 	  String temp_pass = getSaltString();
-		
+
 		driver.findElement(By.xpath("//*[@id=\"password2\"]")).sendKeys(temp_pass);
 	}
-	
+
 	@Then("I should see an existing username error message {string}")
 	public void i_should_see_a_message_saying_that_my_username_is_already_taken(String string) {
 		WebElement element;
@@ -265,10 +265,10 @@ public class StepDefinitions {
 		} catch (NoSuchElementException e) {
 			element = driver.findElement(By.xpath("//*[@id=\"error\"]"));
 		}
-		
+
 		assertTrue(element.getText().equalsIgnoreCase(string));
 	}
-	
+
 	@Then("I should see an alert {string}")
 	public void i_should_see_an_alert(String string) {
 	  try {
@@ -276,10 +276,10 @@ public class StepDefinitions {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
+
 		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/signup.jsp"));
 	}
-	
+
 	@Then("I should see the alert {string}")
 	public void i_should_see_the_alert(String string) {
 	  try {
@@ -287,10 +287,10 @@ public class StepDefinitions {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
+
 		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/login.jsp"));
 	}
-	
+
 	/**************************
 	 * STOCK PERFORMANCE FEATURE
 	 **************************/
@@ -302,12 +302,12 @@ public class StepDefinitions {
 		i_click_the_login_button();
 		//driver.findElement(By.xpath("//*[@id=\"stockPerformance\"]")).click();
 	}
-	
+
 	@When("I click the top banner")
 	public void i_click_the_top_banner() {
 		driver.findElement(By.xpath("//*[@id=\"banner-content\"]")).click();
 	}
-	
+
 	@Then("I should be on the home page")
 	public void i_should_be_on_the_home_page() {
 		assertTrue(driver.getCurrentUrl().equalsIgnoreCase(Dashboard_URL));
@@ -317,24 +317,24 @@ public class StepDefinitions {
 	public void i_click_cancel() {
 		driver.findElement(By.xpath("/html/body/div/form/button[2]")).click();
 	}
-	
+
 	@Then("I should be redirected to the login page")
 	public void redirect_login()
 	{
 		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/login.jsp"));
 	}
-	
+
 	@When("I click the Signup here hyperlink")
 	public void i_click_signup_here() {
 		driver.findElement(By.xpath("//*[@id=\"login-form\"]/p/a")).click();
 	}
-	
+
 	@Then("I should be redirected to the signup page")
 	public void i_should_be_redirected_to_the_signup_page()
 	{
 		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/signup.jsp"));
 	}
-	
+
   /**************************
 	 * DASHBOARD FEATURE
 	 **************************/
@@ -342,8 +342,8 @@ public class StepDefinitions {
 	public void i_am_logged_in_on_the_dashboard_page() {
 		String usr = "johnDoe";
 		String pw = "test123";
-		
-		driver.get(Login_URL);		
+
+		driver.get(Login_URL);
 		try {
 			driver.findElement(By.xpath("//*[@id=\"usrname\"]")).sendKeys(usr);
 		} catch (NoSuchElementException e) {
@@ -354,9 +354,9 @@ public class StepDefinitions {
 		} catch (NoSuchElementException e) {
 			driver.findElement(By.xpath("/html/body/div/form/div[2]/input")).sendKeys(pw);
 		}
-		
+
 		driver.findElement(By.xpath("//*[@id=\"login-form-submit\"]")).click();
-		
+
 		// Wait time for tester to see the home page before cucumber exits
 		try {
 			Thread.sleep(1000);
@@ -373,7 +373,7 @@ public class StepDefinitions {
 		} catch (NoSuchElementException e) {
 			element = driver.findElement(By.xpath("//*[@id=\"logout-button\"]"));
 		}
-		
+
 		element.click();
 	}
 
@@ -384,10 +384,10 @@ public class StepDefinitions {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
+
 		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/login.jsp"));
 	}
-	
+
 	/**************************
 	 * ADD/STOCK FEATURE
 	 **************************/
@@ -397,7 +397,7 @@ public class StepDefinitions {
 	}
 
 	@Given("I click the button to add stocks to my portfolio")
-	public void i_click_the_button_to_add_stocks_to_my_portfolio() {		
+	public void i_click_the_button_to_add_stocks_to_my_portfolio() {
 		// "Add Stock" button for Manage Portfolio section
 		WebElement addButton;
 		try {
@@ -408,7 +408,7 @@ public class StepDefinitions {
 		addButton.click();
 		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 	}
-	
+
 	@When("I click the Add Stock button for the portfolio")
 	public void i_click_the_Add_Stock_button_for_the_portfolio() {
 		// "Add Stock" button for Manage Portfolio section
@@ -421,7 +421,7 @@ public class StepDefinitions {
 		addButton.click();
 		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 	}
-	
+
 	@When("I add a new stock to the user portfolio")
 	public void i_add_a_new_stock_to_the_user_portfolio() {
 		WebElement ticker = driver.findElement(By.id("add-stock-ticker"));
@@ -436,7 +436,7 @@ public class StepDefinitions {
 		driver.findElement(By.id("modal-manage-portfolio-add-stock-button")).click();
 		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
 	}
-	
+
 	@When("I remove a stock in the user portfolio")
 	public void i_remove_a_stock_in_the_user_portfolio() {
 		try {
@@ -446,7 +446,7 @@ public class StepDefinitions {
 			i_add_a_new_stock_to_the_user_portfolio();
 			WebElement removeButton = driver.findElement(By.id("manage-portfolio-removeStockButton-AAPL"));
 			removeButton.click();
-		}		
+		}
 	}
 
 	@When("I enter a stock ticker not in my portfolio and a certain number of shares")
@@ -491,7 +491,7 @@ public class StepDefinitions {
 			i_add_a_new_stock_to_the_user_portfolio();
 			WebElement removeButton = driver.findElement(By.id("manage-portfolio-removeStockButton-AAPL"));
 			removeButton.click();
-		}		
+		}
 	}
 
 	@When("I enter an invalid stock ticker and number of shares")
@@ -513,7 +513,7 @@ public class StepDefinitions {
 		try {
 			element = driver.findElement(By.id("login_error"));
 			msg = element.getText();
-			
+
 			if (msg == null || msg.isEmpty()) {
 				msg = element.getAttribute("innerHTML");
 			}
@@ -524,8 +524,8 @@ public class StepDefinitions {
 		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
 		//assertEquals(msg.getText(), "Sorry, this stock does not exist.");
 		assertTrue(msg, msg.contains("Unable to add this stock"));
-	}	
-	
+	}
+
 	@Then("I should see the value of my portfolio decrease and the stocks in my portfolio be updated")
 	public void i_should_see_the_value_of_my_portfolio_decrease_and_the_stocks_in_my_portfolio_be_updated() {
 		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
@@ -538,7 +538,7 @@ public class StepDefinitions {
 		assertNotNull(driver.findElement(By.id("chartContainer")));
 		assertTrue(Double.valueOf(info) >= 0);
 	}
-	
+
 	@Then("I should see the value of my portfolio increase and the stocks in my portfolio be updated")
 	public void i_should_see_the_value_of_my_portfolio_increase_and_the_stocks_in_my_portfolio_be_updated() {
 		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
@@ -551,7 +551,7 @@ public class StepDefinitions {
 		assertNotNull(driver.findElement(By.id("chartContainer")));
 		assertTrue(Double.valueOf(info) > 0);
 	}
-	
+
 	@Then("I should see the portfolio value increase and the percentage change")
 	public void i_should_see_the_portfolio_value_increase_and_the_percentage_change() {
 		WebElement element = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div[1]/div/h3"));
@@ -566,7 +566,7 @@ public class StepDefinitions {
 		assertNotNull(driver.findElement(By.id("portfolio-percentage-change")));
 		assertTrue(Double.valueOf(info) > 0);
 	}
-	
+
 	@Then("I should see the portfolio value decrease and the percentage change")
 	public void i_should_see_the_portfolio_value_decrease_and_the_percentage_change() {
 		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
@@ -581,21 +581,21 @@ public class StepDefinitions {
 		assertNotNull(driver.findElement(By.id("portfolio-percentage-change")));
 		assertTrue(Double.valueOf(info) >= 0);
 	}
-	
-	
+
+
 	/**************************
 	 * CSV ADD STOCK FEATURE
 	 **************************/
 	@When("I click the button to add stocks to my portfolio using a CSV")
 	public void i_click_the_button_to_add_stocks_to_my_portfolio_using_a_CSV() {
 		WebElement csvButton = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/button"));
-		Actions action = new Actions(driver); 
+		Actions action = new Actions(driver);
 		action.moveToElement(csvButton);
 		csvButton = wait.until(elementToBeClickable(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/button")));
 		csvButton.click();
 		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 	}
-	
+
 	@When("I choose a CSV file")
 	public void i_choose_a_CSV_file() {
 		WebElement modal = wait.until(presenceOfElementLocated(By.id("exampleModal")));
@@ -604,7 +604,7 @@ public class StepDefinitions {
 		File file = new File("exampleStockCSV.csv");
 		upload.sendKeys(file.getAbsolutePath());
 	}
-	
+
 	@When("I click the button to upload the file")
 	public void i_click_the_button_to_upload_the_file() {
 		//WebElement csvButton = driver.findElement(By.id("csvAddButton"));
@@ -617,7 +617,7 @@ public class StepDefinitions {
 		uploadButton.click();
 		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 	}
-	
+
 	@When("I click the button to download an example CSV file")
 	public void i_click_the_button_to_download_an_example_CSV_file() {
 		//WebElement modal = wait.until(presenceOfElementLocated(By.id("exampleModal")));
@@ -626,7 +626,7 @@ public class StepDefinitions {
 		csvButton.click();
 		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 	}
-	
+
 	@Then("I should see the new stocks added")
 	public void i_should_see_the_new_stocks_added() {
 		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
@@ -639,14 +639,14 @@ public class StepDefinitions {
 		assertNotNull(driver.findElement(By.id("portfolio-percentage-change")));
 		assertTrue(Double.valueOf(info) >= 0);
 	}
-	
+
 	@Then("I should see a file downloaded")
 	public void i_should_see_a_file_downloaded() {
 		String url = driver.getCurrentUrl();
 		assertTrue(url.equalsIgnoreCase(Dashboard_URL));
-		
+
 	}
-	
+
 	/**************************
 	 * GRAPH FEATURE
 	 **************************/
@@ -655,80 +655,87 @@ public class StepDefinitions {
 		WebElement button = driver.findElement(By.id("datepicker"));
 		button.click();
 	}
-	
+
 	@When("I select an appropriate date range")
 	public void i_select_an_appropriate_date_range() {
 		WebDriverWait wait = new WebDriverWait(driver, 10);
 		WebElement button = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[2]/div[1]/ul/li[2]")));
 		button.click();
 	}
-	
+
 	@When("I click the date range confirm button")
 	public void i_click_the_date_range_confirm_button() {
 		driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
 		//WebElement submit = driver.findElement(By.xpath("//*[@id=\"performanceRangeForm\"]/button"));
 		WebElement submit = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div/div/div[2]/div[2]/form/button"));
-		
+
 		JavascriptExecutor executor = (JavascriptExecutor)driver;
 		executor.executeScript("arguments[0].click();", submit);
 	}
-	
-	@When("I try to enter an invalid date")
+
+	@When("I enter a sell date after purchase date")
 	public void i_try_to_enter_an_invalid_date() {
 		WebElement button = driver.findElement(By.id("datepicker"));
-		button.sendKeys("09/09/2019 - 09/09/2020");
+		button.sendKeys("09/09/2020 - 01/01/2020");
 	}
-	
+
 	@When("I enter an appropriate date range")
 	public void i_enter_an_appropriate_date_range() {
 		WebElement button = driver.findElement(By.id("datepicker"));
-		button.click();
-		WebDriverWait wait = new WebDriverWait(driver, 10);
-		WebElement button2 = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[2]/div[1]/ul/li[2]")));
-		button2.click();
+		button.sendKeys("01/01/2020 - 09/09/2020");
+		WebElement applyBtn = driver.findElement(By.xpath("/html/body/div[2]/div[4]/button[2]"));
+		applyBtn.click();
 	}
-	
+	@When("I enter a date range with purchase date before 1y")
+	public void i_enter_a_date_range_with_purchase_date_before_1y() {
+		WebElement button = driver.findElement(By.id("datepicker"));
+		button.sendKeys("01/01/2019 - 09/09/2020");
+		WebElement applyBtn = driver.findElement(By.xpath("/html/body/div[2]/div[4]/button[2]"));
+		applyBtn.click();
+
+	}
+
 	@When("I click the confirm button")
 	public void i_click_the_confirm_button() {
 		driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
 		//WebElement submit = driver.findElement(By.xpath("//*[@id=\"performanceRangeForm\"]/button"));
 		WebElement submit = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div/div/div[2]/div[2]/form/button"));
-		
+
 		JavascriptExecutor executor = (JavascriptExecutor)driver;
 		executor.executeScript("arguments[0].click();", submit);
 	}
-	
+
 	@When("I have more than two lines on the graph")
 	public void i_have_more_than_two_lines_on_the_graph() {
-		WebElement stock = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/ul/li[1]"));	
+		WebElement stock = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/ul/li[1]"));
 	}
-	
-	
+
+
 	/**************************
 	 * PORTFOLIO PERFORMANCE FEATURE (AKA GRAPH FEATURE)
 	 **************************/
-	
+
 	@Then("I should see the graph date range change")
 	public void i_should_see_the_graph_date_range_change() {
 		JavascriptExecutor js = (JavascriptExecutor) driver;
 		Long start = (Long) js.executeScript("return getStartDate();");
 		assertTrue(start == 7);
 	}
-	
+
 	@Then("I should see the graph value update")
 	public void i_should_see_the_graph_value_update() {
 		WebDriverWait wait = new WebDriverWait(driver, 10);
 		WebElement stock = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[1]/div/div[1]/div/div/div[2]/div[1]/div/div[1]")));
 		assertTrue(stock != null);
 	}
-	
+
 	@When("I click calculate in portfolio")
 	public void i_click_calculate_in_portfolio() {
 		//WebElement button = driver.findElement(By.id("displaybutton"));
 		WebElement button = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[1]/div"));
 	    //button.click();
 	}
-	
+
 	@Then("the portfolio value should go down")
 	public void the_portfolio_value_should_go_down() {
 		//WebElement button = driver.findElement(By.id("displaybutton"));
@@ -755,7 +762,7 @@ public class StepDefinitions {
 		}
 	    button.click();
 	}
-	
+
 	@When("I click the button to remove the S&P")
 	public void i_click_the_button_to_remove_the_S_P() {
 		WebElement button;
@@ -766,15 +773,15 @@ public class StepDefinitions {
 		}
 	    button.click();
 	}
-	
+
 	@When("I click the view stock button")
 	public void i_click_the_view_stock_button() {
 		WebDriverWait wait = new WebDriverWait(driver, 10);
-		
+
 		WebElement button = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[1]/div/div[2]/div[2]/button")));
 	    button.click();
 	}
-	
+
 	@When("I fill out correct stock info")
 	public void i_fill_out_correct_stock_info() {
 		//WebDriverWait wait = new WebDriverWait(driver, 10);
@@ -783,7 +790,7 @@ public class StepDefinitions {
 		WebElement shareBox;
 		WebElement dpBox;
 		WebElement dsBox;
-		
+
 		// put in separate try-catch blocks in case one element is found the first time but the other is not
 		try {
 			tickerBox = driver.findElement(By.id("view-ticker"));
@@ -808,17 +815,17 @@ public class StepDefinitions {
 		} catch (Exception e) {
 			dsBox = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div[2]/div/div/form/div[1]/div[2]/div[2]/div/input"));
 		}
-		
+
 		String ticker = "SNAP";
 		String shares = "1";
 		String datePurchased = "05-22-2020";
 		String dateSold = "12-22-2020";
-		
+
 		tickerBox.sendKeys(ticker);
 		shareBox.sendKeys(shares);
 		dpBox.sendKeys(datePurchased);
 		dsBox.sendKeys(dateSold);
-		
+
 		WebElement button;
 		try {
 			button = driver.findElement(By.id("btn-view-stock"));
@@ -829,7 +836,7 @@ public class StepDefinitions {
 	    button.click();
 	    driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 	}
-	
+
 	@When("I fill out incorrect stock info")
 	public void i_fill_out_incorrect_stock_info() {
 		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
@@ -837,7 +844,7 @@ public class StepDefinitions {
 		WebElement shareBox;
 		WebElement dpBox;
 		WebElement dsBox;
-		
+
 		// put in separate try-catch blocks in case one element is found the first time but the other is not
 		try {
 			tickerBox = driver.findElement(By.id("view-ticker"));
@@ -862,18 +869,18 @@ public class StepDefinitions {
 		} catch (Exception e) {
 			dsBox = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div[2]/div/div/form/div[1]/div[2]/div[2]/div/input"));
 		}
-		
+
 		//invalid ticker
 		String ticker = "fgyh";
 		String shares = "1";
 		String datePurchased = "05-22-2020";
 		String dateSold = "12-22-2020";
-		
+
 		tickerBox.sendKeys(ticker);
 		shareBox.sendKeys(shares);
 		dpBox.sendKeys(datePurchased);
 		dsBox.sendKeys(dateSold);
-		
+
 		WebElement button;
 		try {
 			button = driver.findElement(By.id("btn-view-stock"));
@@ -883,13 +890,13 @@ public class StepDefinitions {
 		}
 	    button.click();
 	}
-	
+
 	@When("I fill out some stock info")
 	public void i_fill_out_some_stock_info() {
 		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
 		WebElement tickerBox;
 		WebElement dpBox;
-		
+
 		// put in separate try-catch blocks in case one element is found the first time but the other is not
 		try {
 			tickerBox = driver.findElement(By.id("view-ticker"));
@@ -903,14 +910,14 @@ public class StepDefinitions {
 			//dpBox = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div/div/div/div[2]/div[2]/div[1]/div/input"));
 			dpBox = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div[2]/div/div/form/div[1]/div[2]/div[1]/div/input"));
 		}
-		
+
 		//invalid ticker
 		String ticker = "fgyh";
 		String datePurchased = "05-22-2020";
-		
+
 		tickerBox.sendKeys(ticker);
 		dpBox.sendKeys(datePurchased);
-		
+
 		WebElement button;
 		try {
 			button = driver.findElement(By.id("btn-view-stock"));
@@ -920,7 +927,7 @@ public class StepDefinitions {
 		}
 	    button.click();
 	}
-	
+
 	@When("I click the remove stock button in view")
 	public void i_click_the_remove_stock_button_in_view() {
 		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
@@ -932,7 +939,7 @@ public class StepDefinitions {
 		}
 	    button.click();
 	}
-	
+
 	@When("I click the toggle stock button in view")
 	public void i_click_the_toggle_stock_button_in_view() {
 		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
@@ -948,7 +955,7 @@ public class StepDefinitions {
 		}
 		button.click();
 	}
-	
+
 	@When("I click the Add to Portfolio button in view")
 	public void i_click_the_add_to_portfolio_button_in_view() {
 		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
@@ -960,30 +967,31 @@ public class StepDefinitions {
 				button = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div[1]/div/form[3]/button"));
 			} catch (Exception e2) {
 				return;
-			}	
+			}
 		}
 	    button.click();
 	}
-	
+
 	@Then("I should see the S&P stock added to the graph")
 	public void i_should_see_the_S_P_stock_added_to_the_graph() {
 		WebDriverWait wait = new WebDriverWait(driver, 10);
 		WebElement stock = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[1]/div/div[1]/div/div/div[2]/div[1]/div/div[1]")));
 		assertTrue(stock != null);
 	}
-	
-	@Then("I should not be able to click the date")
-	public void i_should_not_be_able_to_click_the_date() {
-		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/production/index.jsp"));
+
+	@Then("I should see an error message under calendar")
+	public void i_should_see_an_error_message_under_calendar() {
+		WebElement errorMSG = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div[3]/div/div[2]/div[2]/form/p"));
+		assertNotNull(errorMSG.getText());
 	}
-	
+
 	@Then("I should see two different colored lines")
 	public void i_should_see_two_different_colored_lines() {
 		WebElement g = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div/div/div[2]/div[1]/div/canvas[2]"));
 		WebElement l = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div/div/div[2]/div[1]/div/a"));
 		assertTrue(!g.getCssValue("color").contentEquals(l.getCssValue("color")));
 	}
-	
+
 	@Then("The default time frame should be 3 months")
 	public void the_default_time_frame_should_be_3_months() {
 		JavascriptExecutor js = (JavascriptExecutor) driver;
@@ -991,21 +999,21 @@ public class StepDefinitions {
 		Long end = (Long) js.executeScript("return getEndDate();");
 		assertTrue(end-start == 3);
 	}
-	
+
 	@Then("I should see the stock on the graph")
 	public void i_should_see_the_stock_on_the_graph() {
 		WebDriverWait wait = new WebDriverWait(driver, 10);
 		WebElement stock = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div[1]/div")));
 		assertTrue(stock != null);
 	}
-	
+
 	@Then("I should see a view stock error")
 	public void i_should_see_a_view_stock_error() {
 		WebDriverWait wait = new WebDriverWait(driver, 10);
 		WebElement error = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[1]/div/div[2]/div[2]/strong")));
 		assertTrue(error != null);
 	}
-	
+
 	@Then("The stock should be removed")
 	public void the_stock_should_be_removed() {
 		try {
@@ -1014,14 +1022,14 @@ public class StepDefinitions {
 	    	assertTrue(true);
 	    }
 	}
-	
+
 	@Then("The stock should not be shown on the graph")
 	public void the_stock_should_not_be_shown_on_the_graph() {
 		JavascriptExecutor js = (JavascriptExecutor) driver;
 		String sp = (String) js.executeScript("return getSP();");
 		assertTrue(sp.contentEquals("Yes"));
 	}
-	
+
 	@Then("I should be told to fill out all info")
 	public void i_should_be_told_to_fill_out_all_info() {
 		WebElement stock = null;
@@ -1030,11 +1038,11 @@ public class StepDefinitions {
 		} catch (Exception e) {
 			assertNull(stock);
 		}
-		
+
 		//assertTrue(stock!=null);
 		assertNull(stock);
 	}
-	
+
 	@Then("I should see the stock in my portfolio")
 	public void i_should_see_the_stock_in_my_portfolio() {
 		WebElement stock = null;
@@ -1043,17 +1051,17 @@ public class StepDefinitions {
 		} catch (Exception e) {
 			assertNull(stock);
 		}
-		
+
 		assertTrue(stock!=null);
 	}
-	
+
 	@Then("I should see an error message in my portfolio")
 	public void i_should_see_an_error_message_in_my_portfolio() {
 		WebElement error = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/strong"));
 		assertTrue(error!=null);
 	}
-	
-	
+
+
 	/**************************
 	 * Select/Deselect All FEATURE
 	 **************************/
@@ -1062,12 +1070,12 @@ public class StepDefinitions {
 		WebElement button = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/form/button"));
 		button.click();
 	}
-	
+
 	@Then("I should see all stocks displayed on the graph")
 	public void i_should_see_all_stocks_displayed_on_the_graph() {
 		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/production/index.jsp"));
 	}
-	
+
 	@Then("I should see all stocks displayed in the view stocks list")
 	public void i_should_see_all_stocks_displayed_in_the_view_stocks_list() {
 		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/production/index.jsp"));
@@ -1085,7 +1093,7 @@ public class StepDefinitions {
 	public void i_should_see_no_stocks_displayed_in_the_view_stocks_list() {
 		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/production/index.jsp"));
 	}
-	
+
 	/**************************
 	 * APP COMPATIBILITY FEATURE
 	 **************************/
@@ -1096,14 +1104,14 @@ public class StepDefinitions {
 		int width = size.getWidth();
 		driver.manage().window().setPosition(new Point(0, 0));
 		driver.manage().window().setSize(new Dimension(width/2, height));
-		
+
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Then("I should be on the login page with full view of the top banner")
 	public void i_should_be_on_the_login_page_with_full_view_of_the_top_banner() {
 		try {
@@ -1111,15 +1119,15 @@ public class StepDefinitions {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
+
 		Dimension size = driver.manage().window().getSize();
 		WebElement element = driver.findElement(By.id("banner-content"));
-		
+
 		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/login.jsp"));
 		assertTrue(element.getSize().height <= size.height);
 		assertTrue(element.getSize().width <= size.width);
 	}
-	
+
 	@Then("I should be redirected to the signup page with full view of the top banner")
 	public void i_should_be_redirected_to_the_signup_page_with_full_view_of_the_top_banner() {
 		try {
@@ -1127,15 +1135,15 @@ public class StepDefinitions {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
+
 		Dimension size = driver.manage().window().getSize();
 		WebElement element = driver.findElement(By.id("banner-content"));
-		
+
 		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/signup.jsp"));
 		assertTrue(element.getSize().height <= size.height);
 		assertTrue(element.getSize().width <= size.width);
 	}
-	
+
 	@Then("I should have full view of the top banner and graph")
 	public void i_should_have_full_view_of_the_top_banner_and_graph() {
 		try {
@@ -1143,17 +1151,17 @@ public class StepDefinitions {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
+
 		Dimension size = driver.manage().window().getSize();
 		WebElement element = driver.findElement(By.id("banner-content"));
 		WebElement graph = driver.findElement(By.id("chartContainer"));
-		
+
 		assertTrue(element.getSize().height <= size.height);
 		assertTrue(element.getSize().width <= size.width);
 		assertTrue(graph.getSize().width <= size.width);
 		assertTrue(graph.getSize().width <= size.width);
 	}
-	
+
 	/**************************
 	 * LOCK OUT SECURITY FEATURE
 	 **************************/
@@ -1167,7 +1175,7 @@ public class StepDefinitions {
 	}
 	@When("I log in with my username and incorrect password three times")
 	public void i_log_in_with_my_username_and_incorrect_password_three_times() {
-		
+
 		String usr = "testAddLockOut";
 		String invalid_pwd = "fake";
 		//1
@@ -1203,14 +1211,14 @@ public class StepDefinitions {
 		} catch (NoSuchElementException e) {
 			element = driver.findElement(By.xpath("//*[@id=\"login_error\"]"));
 		}
-		
+
 		if(element.getText().equalsIgnoreCase(string)) {
 			assertTrue(element.getText().equalsIgnoreCase(string));
 		}else {
 			assertTrue(true);
 		}
 	}
-	
+
 	/**************************
 	 * DASHBOARD REDIRECT SECURITY FEATURE
 	 **************************/
@@ -1229,8 +1237,8 @@ public class StepDefinitions {
 		String url = driver.getCurrentUrl();
 		assertTrue(url.equalsIgnoreCase("http://localhost:8080/login.jsp"));
 	}
-	
-	
+
+
 	/**************************
 	 * HASH SECURITY FEATURE
 	 **************************/
@@ -1248,7 +1256,7 @@ public class StepDefinitions {
 	public void i_attempt_to_navigate_to_the_dashboard_page() {
 		driver.get(Dashboard_URL);
 	}
-	
+
     /**************************
 	 * HTTPS SECURITY FEATURE
 	 **************************/
@@ -1273,7 +1281,7 @@ public class StepDefinitions {
 	public void i_am_on_the_dashboard_page_for_two_minutes() {
 		try {
 			Thread.sleep(121000);
-			
+
 			if (driver.getCurrentUrl().contains("index")) {
 				driver.get(Login_URL);
 			}
@@ -1287,6 +1295,6 @@ public class StepDefinitions {
 	public void after() {
 		driver.quit();
 	}
-	
-	
+
+
 }

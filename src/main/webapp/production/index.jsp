@@ -33,6 +33,8 @@
 	String portfolioPercentage = (String) session.getAttribute("portfolioPercentage");
 	List<ArrayList> view = (List<ArrayList>) session.getAttribute("view");
 	List<ArrayList> myStocks = (List<ArrayList>) session.getAttribute("myStocks");
+	String graphRangeFrom = (String) session.getAttribute("graphRangeFrom");
+	String graphRangeTo = (String) session.getAttribute("graphRangeTo");
 
 %>
 <html lang="en">
@@ -262,16 +264,24 @@
 							<div class="input-datarange input-group date">
 								<input type="text" class="input-sm form-control" id="datepicker" />
 							</div>
-							<button type="submit" class="btn btn-primary btn-md" name="button">Confirm</button>
+							<p style="color: red;"><%if(null!=session.getAttribute("graphRangeError") && !(((String)session.getAttribute("graphRangeError")).isEmpty()) ) {
+								%>Invalid date<%
+							}%></p>
+							<button type="submit" id="graphRangeFormSubmitButton" class="btn btn-primary btn-md" name="button">Confirm</button>
 						</form>
 					</div>
 
 					<script type="text/javascript">
+						let from = new String("<%=graphRangeFrom%>");
+						let to = new String("<%=graphRangeTo%>");
+						console.log(from);
+
 						var startDate = moment().subtract(3, 'month').month();
 						$('#datepicker').daterangepicker({
-							startDate: moment().subtract(1, 'year'),
-							endDate: moment(),
+							startDate: moment(from, "YYYY-MM-DD"),
+							endDate: moment(to, "YYYY-MM-DD"),
 							maxDate: moment(),
+							drops: 'up',
 							ranges: {
 								'Last Week': [moment().subtract(6, 'days'), moment()],
 								'Last Month': [moment().subtract(29, 'days'), moment()],
@@ -283,6 +293,7 @@
 						$('#datepicker').on('apply.daterangepicker', function(ev, picker) {
 							$('input[name=from]').val(picker.startDate.format('YYYY-MM-DD'));
 							$('input[name=to]').val(picker.endDate.format('YYYY-MM-DD'));
+
 						})
 
 						function getStartDate() {
@@ -476,6 +487,7 @@
 
                     <!-- Button trigger modal --><br><br>
                     <div class="addstockbutton">
+
                     <strong id="login_error" style="color:red"><%if(failedAdd != null){ %> <%= failedAdd%> <% } %></strong>
 
                     <br><button id="manage-portfolio-add-stock-button" type="button" class="btn btn-primary" data-toggle="modal" data-target="#addStockModal">Add Stock</button>

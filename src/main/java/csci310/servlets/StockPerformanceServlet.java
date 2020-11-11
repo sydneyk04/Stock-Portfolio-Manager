@@ -74,7 +74,10 @@ public class StockPerformanceServlet extends HttpServlet {
         from = Calendar.getInstance();
         from.add(Calendar.MONTH, -3);
         now = Calendar.getInstance();
- 
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        
+        String graphRangeFrom = sdf.format(from.getTime());
+        String graphRangeTo = sdf.format(now.getTime());
 	        try {
 	        	getUserStock(username);
 	        } catch (IOException e) {
@@ -95,7 +98,11 @@ public class StockPerformanceServlet extends HttpServlet {
 	        session.setAttribute("view", view);
 	        session.setAttribute("invalid_error", null);
 	        session.setAttribute("uploadCSVError", null);
-	
+	        session.setAttribute("graphRangeFrom", graphRangeFrom);
+	        session.setAttribute("graphRangeTo", graphRangeTo);
+	        session.setAttribute("graphRangeError", null);
+	        
+
 	        try {
 	        	calculatePortfolio();
 	        } catch (ParseException e) {
@@ -489,7 +496,21 @@ public class StockPerformanceServlet extends HttpServlet {
 			String fromString = request.getParameter("from");
 			String toString = request.getParameter("to");
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			Calendar newFrom = Calendar.getInstance();
+			Calendar minFrom = Calendar.getInstance();
+			minFrom.add(Calendar.YEAR, -1);
+			minFrom.add(Calendar.DATE, -1);
 			try {
+				if(fromString.isEmpty()) {
+					session.setAttribute("graphRangeError", "Invalid date");
+					return;
+				}
+				newFrom.setTime(sdf.parse(fromString));
+				if(newFrom.compareTo(minFrom) < 0) {
+					session.setAttribute("graphRangeError", "Invalid date");
+					return;
+				}
+				session.setAttribute("graphRangeError", "");
 				from.setTime(sdf.parse(fromString));
 				now.setTime(sdf.parse(toString));
 			} catch (ParseException e1) {
@@ -525,42 +546,18 @@ public class StockPerformanceServlet extends HttpServlet {
 				e.printStackTrace();
 			}
 			buildGraph();
+			
+			//set session from and to
+			session.setAttribute("graphRangeFrom", fromString);
+			session.setAttribute("graphRangeTo", toString);
+
 		}
 		//selectall, add alls stocks to view
 		else if(action.equals("selectViewAll")){
-			view.clear();
-			for(int i = 0; i < myStocks.size(); i++) {
-				ArrayList<String> s = myStocks.get(i);
-				String ticker = s.get(0);
-				String numOfShares = s.get(2);
-				String purchase = s.get(3);
-				String sell = s.get(4);
-				String calculatedInPortfolio = s.get(5);
-				ArrayList<String> holder = new ArrayList<String>();
-				String json;
-				try {
-					json = viewStock(ticker, numOfShares, purchase, sell);
-					holder.add(ticker);
-					holder.add(json);
-					holder.add(numOfShares);
-					holder.add(purchase);
-					holder.add(sell);
-					holder.add(calculatedInPortfolio);
-					view.add(holder);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				
+			for(int i = 1; i < myStocks.size(); i++) {
+				myStocks.get(i).set(5, "Yes");
 			}
-			
-			buildGraph();
 			session.setAttribute("myStocks", myStocks);
-			session.setAttribute("view", view);
 			try {
 				calculatePortfolio();
 			} catch (IOException e) {
@@ -570,14 +567,14 @@ public class StockPerformanceServlet extends HttpServlet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+			buildGraph();
 		}
 		//deselect all stocks
 		else if(action.equals("deselectViewAll")) {
-			view.clear();
-			buildGraph();
+			for(int i = 1; i < myStocks.size(); i++) {
+				myStocks.get(i).set(5, "No");
+			}
 			session.setAttribute("myStocks", myStocks);
-			session.setAttribute("view", view);
 			try {
 				calculatePortfolio();
 			} catch (IOException e) {
@@ -587,6 +584,7 @@ public class StockPerformanceServlet extends HttpServlet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			buildGraph();
 		}
 	}
 	
