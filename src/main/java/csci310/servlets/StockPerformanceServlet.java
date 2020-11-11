@@ -662,6 +662,9 @@ public class StockPerformanceServlet extends HttpServlet {
 	void buildGraph() throws IOException {
 		//chart to display different stocks
 		String theChart =  "<script type=\"text/javascript\">\n" + 
+				"				function getSP() {\n" + 
+				"					return \""+ myStocks.get(0).get(5) + "\";\n" + 
+				"				}\n" +
 				"				var chart = new CanvasJS.Chart(\"chartContainer\", {\n" + 
 				"					zoomEnabled: true,\n" + 
 				"					theme: \"light2\",\n" + 
