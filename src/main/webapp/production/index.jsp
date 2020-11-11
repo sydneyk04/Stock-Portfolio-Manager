@@ -19,8 +19,8 @@
 		session.setAttribute("failedAdd", null);
 		session.setAttribute("portfolioVal", null);
 		session.setAttribute("portfolioPercentage", null);
-	
-		response.sendRedirect("../login.jsp");		
+
+		response.sendRedirect("../login.jsp");
 	}
 
 	Calendar from = (Calendar) session.getAttribute("from");
@@ -33,7 +33,8 @@
 	String portfolioPercentage = (String) session.getAttribute("portfolioPercentage");
 	List<ArrayList> view = (List<ArrayList>) session.getAttribute("view");
 	List<ArrayList> myStocks = (List<ArrayList>) session.getAttribute("myStocks");
-	
+	String graphRangeFrom = (String) session.getAttribute("graphRangeFrom");
+	String graphRangeTo = (String) session.getAttribute("graphRangeTo");
 %>
 <html lang="en">
   <head>
@@ -185,7 +186,7 @@
 					</a>
 		      	</div>
 		      	<div>
-		    
+
 					<form name="formname" action="/dashboard" method="POST">
 						<input type="hidden" name="action" value="logout">
 						<button id="logout-button" type="submit" class="btn btn-primary btn-md justify-content-start">
@@ -200,8 +201,8 @@
           <div class="row">
           	<div class="col-md-12 col-sm-12 bg-white">
                	<div class="portfolio_value" id="portfolio-value-today">
-               		<h3>Portfolio Value Today: 
-               			<%if(portfolioVal != null) {%> 
+               		<h3>Portfolio Value Today:
+               			<%if(portfolioVal != null) {%>
                				<%if (portfolioVal.startsWith(".")) {
                					portfolioVal = "0." + portfolioVal.substring(1);
                				}%>
@@ -215,7 +216,7 @@
             <div class="col-md-12 col-sm-12 bg-white">
                   <div class="x_title">
                     <div class="portfolio_percentage" id="portfolio-percentage-change">
-	                    <%if (portfolioPercentage == null || portfolioPercentage == "0.00" || portfolioPercentage == "0") {%> 
+	                    <%if (portfolioPercentage == null || portfolioPercentage == "0.00" || portfolioPercentage == "0") {%>
 	                    	<h4><i id="percentChangeArrow"></i>0.00%</h4>
 	                    <%} else if (portfolioPercentage.contains("-")) {
 	                    	if (portfolioPercentage.contains("-.")) { portfolioPercentage = "-0." + portfolioPercentage.substring(2); }%>
@@ -250,7 +251,7 @@
                   <%-- <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script> --%>
 				  <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
                   <%= chart%>
-              	
+
 					<div class="col-md-3 col-sm-6" id="performanceRangePicker">
 						<p>Choose a range for display</p>
 						<form id="performanceRangeForm" action="/dashboard" method="post">
@@ -261,14 +262,19 @@
 							<div class="input-datarange input-group date">
 								<input type="text" class="input-sm form-control" id="datepicker" />
 							</div>
-							<button type="submit" class="btn btn-primary btn-md" name="button">Confirm</button>
+
+							<button type="submit" id="graphRangeFormSubmitButton" class="btn btn-primary btn-md" name="button">Confirm</button>
 						</form>
 					</div>
 
 					<script type="text/javascript">
+						let from = new String("<%=graphRangeFrom%>");
+						let to = new String("<%=graphRangeTo%>");
+						console.log(from);
+
 						$('#datepicker').daterangepicker({
-							startDate: moment().subtract(1, 'year'),
-							endDate: moment(),
+							startDate: moment(from, "YYYY-MM-DD"),
+							endDate: moment(to, "YYYY-MM-DD"),
 							maxDate: moment(),
 							ranges: {
 								'Last Week': [moment().subtract(6, 'days'), moment()],
@@ -277,10 +283,13 @@
 								'Last Year': [moment().subtract(1, 'year'), moment()]
 							}
 						});
-		
+
 						$('#datepicker').on('apply.daterangepicker', function(ev, picker) {
 							$('input[name=from]').val(picker.startDate.format('YYYY-MM-DD'));
 							$('input[name=to]').val(picker.endDate.format('YYYY-MM-DD'));
+							if(picker.startDate >= picker.endDate) {
+								$("#graphRangeFormSubmitButton").disabled = true;
+							}
 						})
 				</script>
 
@@ -371,10 +380,10 @@
 											<input type="hidden" name="removeStockTicker" value="<%=myStocks.get(i).get(0) %>">
 											<button type="submit" class="btn btn-primary deletestock" data-dismiss="modal" id="stockremovebutton<%=myStocks.get(i).get(0)%>">Remove Stock</button>
 										</form>
-	
+
 										<%-- remove stock form --%>
 										<script type="text/javascript">
-	
+
 											var form = document.getElementById("removeStock-<%=myStocks.get(i).get(0)%>");
 											console.log(form);
 											document.getElementById("stockremovebutton<%=myStocks.get(i).get(0)%>").addEventListener("click", function() {
@@ -431,7 +440,7 @@
                     <!-- Button trigger modal -->
                     <div class="addstockbutton">
                     <button id="manage-portfolio-add-stock-button" type="button" class="btn btn-primary" data-toggle="modal" data-target="#addStockModal">Add Stock</button>
-                   
+
 
 
                     <!-- Modal For Add Stock-->
@@ -444,8 +453,8 @@
                               <span aria-hidden="true">&times;</span>
                             </button>
                           </div>
-                          
-                          
+
+
                            <form name="formname" action="/dashboard" method="POST">
                           	<div class="modal-body">
                               <div class="inputrow" style="width: 100%;">
@@ -489,7 +498,7 @@
 							  <button type="submit" class="btn btn-primary">Add Stock</button>
 							</div>
                           </form>
-                          
+
 							<%-- add stock form --%>
 							<script type="text/javascript">
 								var addForm = document.getElementById("addStockForm");
@@ -521,7 +530,7 @@
                         border: none;
                       }
                     </style>
-                 
+
 
 
                   <script>
@@ -664,7 +673,7 @@
 					<!-- Button trigger modal -->
                     <br><button type="button" data-toggle="modal" data-target="#viewStockModal">View Stock</button>
                     <br><br>
-                    
+
 					<%if(view!=null){for(int i=0; i<view.size(); i++) {%>
 						<div style="float: left; width: 85%;">
                            <div style="display:inline;">

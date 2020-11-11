@@ -74,7 +74,10 @@ public class StockPerformanceServlet extends HttpServlet {
         from = Calendar.getInstance();
         from.add(Calendar.MONTH, -3);
         now = Calendar.getInstance();
- 
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        
+        String graphRangeFrom = sdf.format(from.getTime());
+        String graphRangeTo = sdf.format(now.getTime());
 	        try {
 	        	getUserStock(username);
 	        } catch (IOException e) {
@@ -94,7 +97,9 @@ public class StockPerformanceServlet extends HttpServlet {
 	        session.setAttribute("myStocks", myStocks);
 	        session.setAttribute("view", view);
 	        session.setAttribute("invalid_error", null);
-	
+	        session.setAttribute("graphRangeFrom", graphRangeFrom);
+	        session.setAttribute("graphRangeTo", graphRangeTo);
+	        
 	        try {
 	        	calculatePortfolio();
 	        } catch (ParseException e) {
@@ -418,6 +423,10 @@ public class StockPerformanceServlet extends HttpServlet {
 				e.printStackTrace();
 			}
 			buildGraph();
+			
+			//set session from and to
+			session.setAttribute("graphRangeFrom", fromString);
+			session.setAttribute("graphRangeTo", toString);
 		} 
 	}
 	
