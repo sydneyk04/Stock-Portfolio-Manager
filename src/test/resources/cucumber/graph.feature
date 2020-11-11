@@ -15,8 +15,15 @@ Feature: Using the graph and other basic functionality on dashboard
   
   Scenario: Unsuccessfully input date range
     Given I am logged in on the dashboard page
-    When I try to enter an invalid date
-    Then I should not be able to click the date
+    When I enter a sell date after purchase date
+    And I click the date range confirm button
+    Then I should see an error message under calendar
+    
+  Scenario: Enter invalid date range with purchase date before 1y
+  	Given I am logged in on the dashboard page
+  	When I enter a date range with purchase date before 1y
+  	And I click the date range confirm button
+  	Then I should see an error message under calendar
 
   Scenario: Add and Remove S&P to graph
     Given I am logged in on the dashboard page

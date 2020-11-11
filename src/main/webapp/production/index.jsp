@@ -279,6 +279,7 @@
 							startDate: moment(from, "YYYY-MM-DD"),
 							endDate: moment(to, "YYYY-MM-DD"),
 							maxDate: moment(),
+							drops: 'up',
 							ranges: {
 								'Last Week': [moment().subtract(6, 'days'), moment()],
 								'Last Month': [moment().subtract(29, 'days'), moment()],
@@ -290,7 +291,7 @@
 						$('#datepicker').on('apply.daterangepicker', function(ev, picker) {
 							$('input[name=from]').val(picker.startDate.format('YYYY-MM-DD'));
 							$('input[name=to]').val(picker.endDate.format('YYYY-MM-DD'));
-							
+
 						})
 				</script>
 

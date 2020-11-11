@@ -655,16 +655,23 @@ public class StepDefinitions {
 		executor.executeScript("arguments[0].click();", submit);
 	}
 	
-	@When("I try to enter an invalid date")
+	@When("I enter a sell date after purchase date")
 	public void i_try_to_enter_an_invalid_date() {
 		WebElement button = driver.findElement(By.id("datepicker"));
-		button.sendKeys("09/09/2019 - 09/09/2020");
+		button.sendKeys("09/09/2020 - 01/01/2020");
 	}
 	
 	@When("I enter an appropriate date range")
 	public void i_enter_an_appropriate_date_range() {
 		WebElement button = driver.findElement(By.id("datepicker"));
 		button.sendKeys("01/01/2020 - 09/09/2020");
+		WebElement applyBtn = driver.findElement(By.xpath("/html/body/div[2]/div[4]/button[2]"));
+	}
+	@When("I enter a date range with purchase date before 1y")
+	public void i_enter_a_date_range_with_purchase_date_before_1y() {
+		WebElement button = driver.findElement(By.id("datepicker"));
+		button.sendKeys("01/01/2019 - 09/09/2020");
+		WebElement applyBtn = driver.findElement(By.xpath("/html/body/div[2]/div[4]/button[2]"));
 	}
 	@When("I click the confirm button")
 	public void i_click_the_confirm_button() {
@@ -716,9 +723,10 @@ public class StepDefinitions {
 		assertTrue(graph != null);
 	}
 	
-	@Then("I should not be able to click the date")
-	public void i_should_not_be_able_to_click_the_date() {
-		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/production/index.jsp"));
+	@Then("I should see an error message under calendar")
+	public void i_should_see_an_error_message_under_calendar() {
+		WebElement errorMSG = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div[3]/div/div[2]/div[2]/form/p"));
+		assertNotNull(errorMSG.getText());
 	}
 	
 	/**************************
