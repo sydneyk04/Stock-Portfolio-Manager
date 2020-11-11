@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -349,7 +350,7 @@ public class StockPerformanceServletTest extends Mockito {
 		System.out.println("hi: " + servlet.myStocks);
 		
 		servlet.doPost(request, response);
-		assertNull(session.getAttribute("view"));
+		assertNotNull(servlet.myStocks);
 	}
 	
 	@Test
@@ -384,7 +385,7 @@ public class StockPerformanceServletTest extends Mockito {
 		when(request.getParameter(request.getParameter("numOfShares"))).thenReturn("1");
 		
 		spyServlet.doPost(request, response);
-		assertNull(session.getAttribute("view"));
+		assertNotNull(servlet.myStocks);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -420,7 +421,7 @@ public class StockPerformanceServletTest extends Mockito {
 		when(request.getParameter(request.getParameter("numOfShares"))).thenReturn("1");
 		
 		spyServlet.doPost(request, response);
-		assertNull(session.getAttribute("view"));
+		assertNotNull(servlet.myStocks);
 		
 		doThrow(ParseException.class).when(spyServlet).calculatePortfolio();
 		spyServlet.doPost(request, response);
@@ -464,7 +465,7 @@ public class StockPerformanceServletTest extends Mockito {
 		when(request.getParameter(request.getParameter("numOfShares"))).thenReturn("1");
 		
 		spyServlet.doPost(request, response);
-		assertNull(session.getAttribute("view"));
+		assertNotNull(servlet.myStocks);
 		
 		doThrow(ParseException.class).when(spyServlet).calculatePortfolio();
 		spyServlet.doPost(request, response);
