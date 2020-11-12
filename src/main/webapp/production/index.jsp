@@ -218,14 +218,13 @@
             <div class="col-md-12 col-sm-12 bg-white">
                   <div class="x_title">
                     <div class="portfolio_percentage" id="portfolio-percentage-change">
-	                    <%if (portfolioPercentage == null || portfolioPercentage == "0.00" || portfolioPercentage == "0") {%>
-	                    	<h4><i id="percentChangeArrow"></i>0.00%</h4>
+	                    <%if (portfolioPercentage == null || portfolioPercentage.equals(".00") || portfolioPercentage == "0") {%>
+	                    	<h4 style="color: gray;"><i id="percentChangeArrow" class="glyphicon glyphicon-minus"></i> 0.00%</h4>
 	                    <%} else if (portfolioPercentage.contains("-")) {
 	                    	if (portfolioPercentage.contains("-.")) { portfolioPercentage = "-0." + portfolioPercentage.substring(2); }%>
 	                    	<h4 style="color: red;"><i id="percentChangeArrow" class="glyphicon glyphicon-arrow-down"></i> <%=portfolioPercentage%>%</h4>
-	                    <%} else {
-	                    	if (portfolioPercentage.charAt(0) == '.') { portfolioPercentage = "0." + portfolioPercentage.substring(1); }%>
-	                    	<h4 style="color: green;"><i id="percentChangeArrow" class="glyphicon glyphicon-arrow-up"></i> <%=portfolioVal%>%</h4>
+	                    <%} else {%>
+	                    	<h4 style="color: green;"><i id="percentChangeArrow" class="glyphicon glyphicon-arrow-up"></i> <%=portfolioPercentage%>%</h4>
 	                    <%}%>
                     </div>
                     <form name="formname" id="toggleSP" style="margin: 0px; padding: 0px; display:inline;" action="/dashboard" method="POST">
