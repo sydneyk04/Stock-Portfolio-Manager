@@ -435,6 +435,26 @@ public class StepDefinitions {
 	}
 	
 	//cancel entry
+	@When("I click the cancel remove button")
+	public void i_click_the_cancel_remove_button() {
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		WebElement cancel = driver.findElement(By.id("btn-manage-portfolio-removeStockCancel"));
+	    cancel.click();
+	}
+	@Then("the stock should not be removed from my portfolio")
+	public void the_stock_should_not_be_removed_from_my_portfolio() {
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		WebElement stock = driver.findElement(By.id("li-GME"));
+	    assertTrue(stock != null);
+	}
 	@When("I click the close button")
 	public void i_click_the_close_button() {
 		try {
