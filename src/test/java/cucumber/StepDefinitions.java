@@ -563,6 +563,86 @@ public class StepDefinitions {
 		//assertEquals(msg.getText(), "Sorry, this stock does not exist.");
 		assertTrue(msg, msg.contains("Unable to add this stock"));
 	}
+	
+	@When("I enter an invalid quantity of shares")
+	public void i_enter_an_invalid_quantity_of_shares() {
+		WebElement ticker = driver.findElement(By.id("add-stock-ticker"));
+		ticker.sendKeys("LUV");
+		WebElement date = driver.findElement(By.id("add-stock-datePurchased"));
+		date.sendKeys("01/01/2020");
+		WebElement shares = driver.findElement(By.id("add-stock-shares"));
+		shares.sendKeys("0");
+		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+	}
+
+	@Then("I should see an error message saying invalid number of shares")
+	public void i_should_see_an_error_message_saying_invalid_number_of_shares() {
+		WebElement element = null;
+		String msg = "";
+		try {
+			element = driver.findElement(By.id("login_error"));
+			msg = element.getText();
+
+			if (msg == null || msg.isEmpty()) {
+				msg = element.getAttribute("innerHTML");
+			}
+		} catch (Exception e) {
+			assertNull(element);
+			return;
+		}
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		//assertEquals(msg.getText(), "Sorry, this stock does not exist.");
+		assertTrue(msg, msg.contains("Invalid number of shares"));
+	}
+
+	@When("I do not enter a purchase date")
+	public void i_do_not_enter_a_purchase_date() {
+		WebElement ticker = driver.findElement(By.id("add-stock-ticker"));
+		ticker.sendKeys("ABC");
+		WebElement shares = driver.findElement(By.id("add-stock-shares"));
+		shares.sendKeys("1");
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+	}
+
+	@Then("I should see an error message saying I need to enter a purchase date")
+	public void i_should_see_an_error_message_saying_I_need_to_enter_a_purchase_date() {
+		assertTrue(driver.getCurrentUrl().contains("index"));
+	}
+
+	@When("I enter a sold date earlier than the purchase date")
+	public void i_enter_a_sold_date_earlier_than_the_purchase_date() {
+		WebElement ticker = driver.findElement(By.id("add-stock-ticker"));
+		ticker.sendKeys("AMZN");
+		WebElement date = driver.findElement(By.id("add-stock-datePurchased"));
+		date.sendKeys("01/10/2020");
+		WebElement dateSold = driver.findElement(By.id("add-stock-dateSold"));
+		dateSold.sendKeys("01/09/2020");
+		WebElement shares = driver.findElement(By.id("add-stock-shares"));
+		shares.sendKeys("0");
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+	}
+
+	@Then("I should see an error message saying my sold date is invalid")
+	public void i_should_see_an_error_message_saying_my_sold_date_is_invalid() {
+		WebElement element = null;
+		String msg = "";
+		try {
+			element = driver.findElement(By.id("login_error"));
+			msg = element.getText();
+
+			if (msg == null || msg.isEmpty()) {
+				msg = element.getAttribute("innerHTML");
+			}
+		} catch (Exception e) {
+			assertNull(element);
+			return;
+		}
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		//assertEquals(msg.getText(), "Sorry, this stock does not exist.");
+		assertTrue(msg, msg.contains("Date sold cannot be before date purchased"));
+	}
+
+
 
 	@Then("I should see the value of my portfolio decrease and the stocks in my portfolio be updated")
 	public void i_should_see_the_value_of_my_portfolio_decrease_and_the_stocks_in_my_portfolio_be_updated() {
