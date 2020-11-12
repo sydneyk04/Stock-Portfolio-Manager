@@ -51,19 +51,5 @@ Feature: Adding and removing stocks from portfolio
     Given I am logged in on the dashboard page
     When I remove a stock in the user portfolio
     And I confirm removal of the stock in the portfolio
-    Then I should see the portfolio value decrease and the percentage change
-
-  Scenario: Successfully add stocks using a CSV file 
-  	Given I am logged in on the dashboard page
-  	When I click the button to add stocks to my portfolio using a CSV
-  	And I choose a CSV file
-  	And I click the button to upload the file
-  	Then I should see the new stocks added
-  	
-  Scenario: Download the example CSV file 
-  	Given I am logged in on the dashboard page
-  	When I click the button to add stocks to my portfolio using a CSV
-  	And I click the button to download an example CSV file
-  	Then I should see a file downloaded 
-  	
+    Then I should see the portfolio value decrease and the percentage change  	
   	

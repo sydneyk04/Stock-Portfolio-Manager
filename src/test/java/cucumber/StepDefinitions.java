@@ -477,7 +477,7 @@ public class StepDefinitions {
 		// "Add Stock" button for Manage Portfolio section
 		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 		
-		// remove SNAP stock if it already exists in portfolio
+		// remove AAPL stock if it already exists in portfolio
 		if (stockExistsInPortfolio("AAPL"))	{
 			i_remove_a_stock_in_the_user_portfolio();
 			i_confirm_removal_of_the_stock_in_the_portfolio();
@@ -767,6 +767,15 @@ public class StepDefinitions {
 	 **************************/
 	@When("I click the button to add stocks to my portfolio using a CSV")
 	public void i_click_the_button_to_add_stocks_to_my_portfolio_using_a_CSV() {
+		// remove AMZN stock if it already exists in portfolio
+		if (stockExistsInPortfolio("AMZN"))	{
+			WebElement removeButton = driver.findElement(By.id("manage-portfolio-removeStockButton-AMZN"));
+			removeButton.click();
+			driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+			i_confirm_removal_of_the_stock_in_the_portfolio();
+			driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		}
+		
 		WebElement csvButton = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/button"));
 		Actions action = new Actions(driver);
 		action.moveToElement(csvButton);
@@ -777,16 +786,23 @@ public class StepDefinitions {
 
 	@When("I choose a CSV file")
 	public void i_choose_a_CSV_file() {
-		WebElement modal = wait.until(presenceOfElementLocated(By.id("exampleModal")));
-		//WebElement upload = driver.findElement(By.id("txtFileUpload"));
-		WebElement upload = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[1]/div/div/form/div[1]/div/fieldset/input"));
+		//WebElement modal = wait.until(presenceOfElementLocated(By.id("exampleModal")));
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+		WebElement upload;
+		try {
+			upload = driver.findElement(By.id("txtFileUpload"));
+		} catch (Exception e) {
+			upload = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[1]/div/div/form/div[1]/div/fieldset/input"));
+		}
 		File file = new File("exampleStockCSV.csv");
 		upload.sendKeys(file.getAbsolutePath());
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 	}
 
 	@When("I click the button to upload the file")
 	public void i_click_the_button_to_upload_the_file() {
 		//WebElement csvButton = driver.findElement(By.id("csvAddButton"));
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 		WebElement uploadButton;
 		try {
 			uploadButton = driver.findElement(By.id("upload-file-button"));
@@ -800,12 +816,243 @@ public class StepDefinitions {
 	@When("I click the button to download an example CSV file")
 	public void i_click_the_button_to_download_an_example_CSV_file() {
 		//WebElement modal = wait.until(presenceOfElementLocated(By.id("exampleModal")));
-		//WebElement csvButton = driver.findElement(By.id("exampleButton"));
-		WebElement csvButton = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[1]/div/div/form/div[1]/a/button"));
+		//WebElement csvButton = driver.findElement(By.id("exampleButton")); 
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+		WebElement csvButton;
+		try {
+			csvButton = driver.findElement(By.id("example-csv-button"));
+		} catch (NoSuchElementException e) {
+			csvButton = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[1]/div/div/form/div[1]/a/button"));
+		}
 		csvButton.click();
 		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 	}
+	
+	@When("I choose a CSV file with invalid ticker")
+	public void i_choose_a_CSV_file_with_invalid_ticker() {
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+		WebElement upload;
+		try {
+			upload = driver.findElement(By.id("txtFileUpload"));
+		} catch (Exception e) {
+			upload = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[1]/div/div/form/div[1]/div/fieldset/input"));
+		}
+		File file = new File("invalidTickerCSV.csv");
+		upload.sendKeys(file.getAbsolutePath());
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+	}
 
+	@Then("I should see an error message about the invalid ticker in the CSV")
+	public void i_should_see_an_error_message_about_the_invalid_ticker_in_the_CSV() {
+		WebElement element = null;
+		String msg = "";
+		try {
+			element = driver.findElement(By.id("csv-add-stock-error-mssg"));
+		} catch (NoSuchElementException e) {
+			element = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/p"));
+		}
+		
+		msg = element.getText();
+		if (msg == null || msg.isEmpty()) {
+			msg = element.getAttribute("innerHTML");
+		}
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		assertTrue(msg, msg.contains("Invalid ticker"));
+	}
+
+	@When("I choose a CSV file with invalid number of shares")
+	public void i_choose_a_CSV_file_with_invalid_number_of_shares() {
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+		WebElement upload;
+		try {
+			upload = driver.findElement(By.id("txtFileUpload"));
+		} catch (Exception e) {
+			upload = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[1]/div/div/form/div[1]/div/fieldset/input"));
+		}
+		File file = new File("invalidNumberOfSharesCSV.csv");
+		upload.sendKeys(file.getAbsolutePath());
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+	}
+
+	@Then("I should see an error message about the invalid number of shares in the CSV")
+	public void i_should_see_an_error_message_about_the_invalid_number_of_shares_in_the_CSV() {
+		WebElement element = null;
+		String msg = "";
+		try {
+			element = driver.findElement(By.id("csv-add-stock-error-mssg"));
+		} catch (NoSuchElementException e) {
+			element = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/p"));
+		}
+		
+		msg = element.getText();
+		if (msg == null || msg.isEmpty()) {
+			msg = element.getAttribute("innerHTML");
+		}
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		assertTrue(msg, msg.contains("Invalid number of shares"));
+	}
+
+	@When("I choose a CSV file with missing purchase date")
+	public void i_choose_a_CSV_file_with_missing_purchase_date() {
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+		WebElement upload;
+		try {
+			upload = driver.findElement(By.id("txtFileUpload"));
+		} catch (Exception e) {
+			upload = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[1]/div/div/form/div[1]/div/fieldset/input"));
+		}
+		File file = new File("missingPurchaseDateCSV.csv");
+		upload.sendKeys(file.getAbsolutePath());
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+	}
+
+	@Then("I should see an error message about the missing purchase date in the CSV")
+	public void i_should_see_an_error_message_about_the_missing_purchase_date_in_the_CSV() {
+		WebElement element = null;
+		String msg = "";
+		try {
+			element = driver.findElement(By.id("csv-add-stock-error-mssg"));
+		} catch (NoSuchElementException e) {
+			element = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/p"));
+		}
+		
+		msg = element.getText();
+		if (msg == null || msg.isEmpty()) {
+			msg = element.getAttribute("innerHTML");
+		}
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		assertTrue(msg, msg.contains("Malformed dates"));
+	}
+
+	@When("I choose a CSV file with sell date before purchase date")
+	public void i_choose_a_CSV_file_with_sell_date_before_purchase_date() {
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+		WebElement upload;
+		try {
+			upload = driver.findElement(By.id("txtFileUpload"));
+		} catch (Exception e) {
+			upload = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[1]/div/div/form/div[1]/div/fieldset/input"));
+		}
+		File file = new File("invalidDatesSoldPurchasedCSV.csv");
+		upload.sendKeys(file.getAbsolutePath());
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+	}
+
+	@Then("I should see an error message about the sell date before purchase date in the CSV")
+	public void i_should_see_an_error_message_about_the_sell_date_before_purchase_date_in_the_CSV() {
+		WebElement element = null;
+		String msg = "";
+		try {
+			element = driver.findElement(By.id("csv-add-stock-error-mssg"));
+		} catch (NoSuchElementException e) {
+			element = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/p"));
+		}
+		
+		msg = element.getText();
+		if (msg == null || msg.isEmpty()) {
+			msg = element.getAttribute("innerHTML");
+		}
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		//assertTrue(msg, msg.contains("Please enter a valid date."));
+		assertTrue(msg, msg.contains("Date sold cannot be before date purchased."));
+	}
+
+	@When("I choose a CSV file with malformed date")
+	public void i_choose_a_CSV_file_with_malformed_date() {
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+		WebElement upload;
+		try {
+			upload = driver.findElement(By.id("txtFileUpload"));
+		} catch (Exception e) {
+			upload = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[1]/div/div/form/div[1]/div/fieldset/input"));
+		}
+		File file = new File("malformedStockCSV.csv");
+		upload.sendKeys(file.getAbsolutePath());
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+	}
+
+	@Then("I should see an error message about the malformed date in the CSV")
+	public void i_should_see_an_error_message_about_the_malformed_date_in_the_CSV() {
+		WebElement element = null;
+		String msg = "";
+		try {
+			element = driver.findElement(By.id("csv-add-stock-error-mssg"));
+		} catch (NoSuchElementException e) {
+			element = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/p"));
+		}
+		
+		msg = element.getText();
+		if (msg == null || msg.isEmpty()) {
+			msg = element.getAttribute("innerHTML");
+		}
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		assertTrue(msg, msg.contains("Malformed dates")); //Malformed CSV file!
+	}
+	
+	@When("I choose a CSV file with extra entries")
+	public void i_choose_a_CSV_file_with_extra_entries() {
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+		WebElement upload;
+		try {
+			upload = driver.findElement(By.id("txtFileUpload"));
+		} catch (Exception e) {
+			upload = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[1]/div/div/form/div[1]/div/fieldset/input"));
+		}
+		File file = new File("extraEntriesCSV.csv");
+		upload.sendKeys(file.getAbsolutePath());
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+	}
+	
+	@Then("I should see an error message about the malformed CSV file")
+	public void i_should_see_an_error_message_about_the_malformed_CSV_file() {
+		WebElement element = null;
+		String msg = "";
+		try {
+			element = driver.findElement(By.id("csv-add-stock-error-mssg"));
+		} catch (NoSuchElementException e) {
+			element = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/p"));
+		}
+		
+		msg = element.getText();
+		if (msg == null || msg.isEmpty()) {
+			msg = element.getAttribute("innerHTML");
+		}
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		assertTrue(msg, msg.contains("Malformed CSV file!"));
+	}
+
+	@When("I choose an empty CSV file")
+	public void i_choose_an_empty_CSV_file() {
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+		WebElement upload;
+		try {
+			upload = driver.findElement(By.id("txtFileUpload"));
+		} catch (Exception e) {
+			upload = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[1]/div/div/form/div[1]/div/fieldset/input"));
+		}
+		File file = new File("emptyCSV.csv");
+		upload.sendKeys(file.getAbsolutePath());
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+	}
+	
+	@Then("I should see an error message about the empty CSV file")
+	public void i_should_see_an_error_message_about_the_empty_CSV_file() {
+		WebElement element = null;
+		String msg = "";
+		try {
+			element = driver.findElement(By.id("csv-add-stock-error-mssg"));
+		} catch (NoSuchElementException e) {
+			element = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/p"));
+		}
+		
+		msg = element.getText();
+		if (msg == null || msg.isEmpty()) {
+			msg = element.getAttribute("innerHTML");
+		}
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		assertTrue(msg, msg.contains("Empty CSV file!"));
+	}
+	
 	@Then("I should see the new stocks added")
 	public void i_should_see_the_new_stocks_added() {
 		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
@@ -1260,35 +1507,64 @@ public class StepDefinitions {
 
 
 	/**************************
-	 * Select/Deselect All FEATURE
+	 * SELECT/DESELECT ALL FEATURE
 	 **************************/
 	@When("I click the selectall button")
 	public void i_click_the_selectall_button() {
-		WebElement button = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/form/button"));
-		button.click();
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		WebElement button;
+		try {
+			button = driver.findElement(By.id("btn-manage-portfolio-select-all"));
+		} catch (Exception e) {
+			try {
+				button = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/form/button"));
+			} catch (Exception e2) {
+				assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/production/index.jsp"));
+				return;
+			}
+		}
+		button.click();	
 	}
 
-	@Then("I should see all stocks displayed on the graph")
-	public void i_should_see_all_stocks_displayed_on_the_graph() {
-		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/production/index.jsp"));
-	}
-
-	@Then("I should see all stocks displayed in the view stocks list")
-	public void i_should_see_all_stocks_displayed_in_the_view_stocks_list() {
-		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/production/index.jsp"));
-	}
 	@When("I click the deselectall button")
 	public void i_click_the_deselectall_button() {
-		WebElement button = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[2]/form/button"));
-		button.click();
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		WebElement button;
+		try {
+			button = driver.findElement(By.id("btn-manage-portfolio-deselect-all"));
+		} catch (Exception e) {
+			try {
+				button = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[2]/form/button"));
+			} catch (Exception e2) {
+				assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/production/index.jsp"));
+				return;
+			}
+		}
+		button.click();	
 	}
-	@Then("I should see no stocks displayed on the graph")
-	public void i_should_see_no_stocks_displayed_on_the_graph() {
-		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/production/index.jsp"));
+	
+	@Then("I should see the portfolio performance on the graph and the total portfolio value")
+	public void i_should_see_the_portfolio_performance_on_the_graph_and_the_total_portfolio_value() {			
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+		WebElement element = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div[1]/div/h3"));
+		String portfolioVal = element.getAttribute("innerHTML");
+		int start = portfolioVal.indexOf('$') + 1;
+		int end = portfolioVal.indexOf('.') + 3;
+		String info = portfolioVal.substring(start, end);
+		assertNotNull(driver.findElement(By.id("chartContainer")));
+		assertTrue(Double.valueOf(info) > 0);
 	}
-	@Then("I should see no stocks displayed in the view stocks list")
-	public void i_should_see_no_stocks_displayed_in_the_view_stocks_list() {
-		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/production/index.jsp"));
+	
+	@Then("I should see zero for the portfolio performance on the graph and the portfolio value")
+	public void i_should_see_zero_for_the_portfolio_performance_on_the_graph_and_the_portfolio_value() {
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+		WebElement element = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div[1]/div/h3"));
+		String portfolioVal = element.getAttribute("innerHTML");
+		int start = portfolioVal.indexOf('$') + 1;
+		int end = portfolioVal.indexOf('.') + 3;
+		String info = portfolioVal.substring(start, end);
+		assertNotNull(driver.findElement(By.id("chartContainer")));
+		assertEquals("0.00", info);
 	}
 
 	/**************************
