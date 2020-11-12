@@ -953,7 +953,8 @@ public class StepDefinitions {
 			msg = element.getAttribute("innerHTML");
 		}
 		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
-		assertTrue(msg, msg.contains("Please enter a valid date."));
+		//assertTrue(msg, msg.contains("Please enter a valid date."));
+		assertTrue(msg, msg.contains("Date sold cannot be before date purchased."));
 	}
 
 	@When("I choose a CSV file with malformed date")
@@ -985,9 +986,73 @@ public class StepDefinitions {
 			msg = element.getAttribute("innerHTML");
 		}
 		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
-		assertTrue(msg, msg.contains("Malformed dates"));
+		assertTrue(msg, msg.contains("Malformed dates")); //Malformed CSV file!
+	}
+	
+	@When("I choose a CSV file with extra entries")
+	public void i_choose_a_CSV_file_with_extra_entries() {
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+		WebElement upload;
+		try {
+			upload = driver.findElement(By.id("txtFileUpload"));
+		} catch (Exception e) {
+			upload = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[1]/div/div/form/div[1]/div/fieldset/input"));
+		}
+		File file = new File("extraEntriesCSV.csv");
+		upload.sendKeys(file.getAbsolutePath());
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+	}
+	
+	@Then("I should see an error message about the malformed CSV file")
+	public void i_should_see_an_error_message_about_the_malformed_CSV_file() {
+		WebElement element = null;
+		String msg = "";
+		try {
+			element = driver.findElement(By.id("csv-add-stock-error-mssg"));
+		} catch (NoSuchElementException e) {
+			element = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/p"));
+		}
+		
+		msg = element.getText();
+		if (msg == null || msg.isEmpty()) {
+			msg = element.getAttribute("innerHTML");
+		}
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		assertTrue(msg, msg.contains("Malformed CSV file!"));
 	}
 
+	@When("I choose an empty CSV file")
+	public void i_choose_an_empty_CSV_file() {
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+		WebElement upload;
+		try {
+			upload = driver.findElement(By.id("txtFileUpload"));
+		} catch (Exception e) {
+			upload = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[1]/div/div/form/div[1]/div/fieldset/input"));
+		}
+		File file = new File("emptyCSV.csv");
+		upload.sendKeys(file.getAbsolutePath());
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+	}
+	
+	@Then("I should see an error message about the empty CSV file")
+	public void i_should_see_an_error_message_about_the_empty_CSV_file() {
+		WebElement element = null;
+		String msg = "";
+		try {
+			element = driver.findElement(By.id("csv-add-stock-error-mssg"));
+		} catch (NoSuchElementException e) {
+			element = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/p"));
+		}
+		
+		msg = element.getText();
+		if (msg == null || msg.isEmpty()) {
+			msg = element.getAttribute("innerHTML");
+		}
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		assertTrue(msg, msg.contains("Empty CSV file!"));
+	}
+	
 	@Then("I should see the new stocks added")
 	public void i_should_see_the_new_stocks_added() {
 		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);

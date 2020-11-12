@@ -46,3 +46,17 @@ Feature: Adding stocks to portfolio via CSV
   	And I choose a CSV file with malformed date
   	And I click the button to upload the file
   	Then I should see an error message about the malformed date in the CSV
+  	
+  Scenario: Unsuccessfully add stocks with malformed CSV file 
+  	Given I am logged in on the dashboard page
+  	When I click the button to add stocks to my portfolio using a CSV
+  	And I choose a CSV file with extra entries
+  	And I click the button to upload the file
+  	Then I should see an error message about the malformed CSV file	
+  	
+  Scenario: Unsuccessfully add stocks with empty CSV file
+  	Given I am logged in on the dashboard page
+  	When I click the button to add stocks to my portfolio using a CSV
+  	And I choose an empty CSV file
+  	And I click the button to upload the file
+  	Then I should see an error message about the empty CSV file
