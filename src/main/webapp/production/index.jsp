@@ -121,7 +121,7 @@
 			/*
 			 * App security: Auto-logout after 2 min of inactivity
 			 */
-			$('body').bind('click mousemove keypress scroll resize', function() {
+			$('body').bind('click mousemove scroll resize', function() {
            		lastActiveTime = new Date().getTime();
            	});
 
