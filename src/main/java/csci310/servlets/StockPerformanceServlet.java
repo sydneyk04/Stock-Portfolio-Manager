@@ -394,6 +394,16 @@ public class StockPerformanceServlet extends HttpServlet {
 				String sell = contents[3];
 				String numOfShares = contents[1];
 				
+				String[] purchaseDates = purchase.split("/");
+				String[] sellDates = sell.split("/");
+				
+				//malformed dates
+				if(purchaseDates.length != 3 || sellDates.length != 3) {
+					session.setAttribute("uploadCSVError", "Malformed dates");
+					return;
+				}
+				purchase = "20" + purchaseDates[2] + "-" + purchaseDates[0] + "-" + purchaseDates[1];
+				sell = "20" + sellDates[2] + "-" + sellDates[0] + "-" + sellDates[1];
 				Calendar datePurchased = Calendar.getInstance();
 				Calendar sellDate = Calendar.getInstance();
 				try {
@@ -403,8 +413,17 @@ public class StockPerformanceServlet extends HttpServlet {
 					e1.printStackTrace();
 				}
 				
+				formatter = new SimpleDateFormat("yyyy-MM-dd");
+				purchase = formatter.format(datePurchased.getTime());
+				sell = formatter.format(sellDate.getTime());
+				//invalid ticker
+				if(YahooFinance.get(ticker) == null) {
+					session.setAttribute("uploadCSVError", "Invalid ticker");
+					return;
+				}
+				
 				// if invalid number of shares 
-				if(Double.parseDouble(numOfShares) <= 0) {
+				if(numOfShares.isEmpty() || Double.parseDouble(numOfShares) <= 0) {
 					session.setAttribute("uploadCSVError", "Invalid number of shares");
 					return;
 				}
