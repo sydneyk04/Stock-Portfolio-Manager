@@ -1,31 +1,33 @@
 Feature: Using the graph and other basic functionality on dashboard
 
-  Scenario: Successfully selecting date range
+ Scenario: Successfully selecting date range (1y)
     Given I am logged in on the dashboard page
     When I click the button to change the graph date range
     And I select an appropriate date range
     And I click the date range confirm button
     Then I should see the graph date range change
-
+    
   Scenario: Successfully input date range
     Given I am logged in on the dashboard page
+    When I click the button to change the graph date range
     When I enter an appropriate date range
     And I click the date range confirm button
     Then I should see the graph date range change
 
   Scenario: Unsuccessfully input date range
     Given I am logged in on the dashboard page
+    When I click the button to change the graph date range
     When I enter a sell date after purchase date
     And I click the date range confirm button
     Then I should see an error message under calendar
-
+    
   Scenario: Enter invalid date range with purchase date before 1y
   	Given I am logged in on the dashboard page
+  	When I click the button to change the graph date range
   	When I enter a date range with purchase date before 1y
   	And I click the date range confirm button
   	Then I should see an error message under calendar
-
-
+  
   Scenario: Different values show in different colors
     Given I am logged in on the dashboard page
     When I have more than two lines on the graph
@@ -44,7 +46,8 @@ Feature: Using the graph and other basic functionality on dashboard
 
   Scenario: Portfolio value changes on date change
     Given I am logged in on the dashboard page
-   	When I enter an appropriate date range
+   	When I click the button to change the graph date range
+    And I select an appropriate date range
     And I click the date range confirm button
     Then I should see the graph value update
 
