@@ -685,11 +685,6 @@ public class StepDefinitions {
 		assertTrue(checkMssg);
 	}
 
-	@Then("I should see an error message saying I need to enter a purchase date")
-	public void i_should_see_an_error_message_saying_I_need_to_enter_a_purchase_date() {
-		assertTrue(driver.getCurrentUrl().contains("index"));
-	}
-
 	@Then("I should see an error message saying my sold date is invalid")
 	public void i_should_see_an_error_message_saying_my_sold_date_is_invalid() {
 		//WebElement msg = driver.findElement(By.id("errormsg"));
