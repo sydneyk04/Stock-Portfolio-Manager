@@ -477,7 +477,7 @@ public class StepDefinitions {
 		// "Add Stock" button for Manage Portfolio section
 		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 		
-		// remove SNAP stock if it already exists in portfolio
+		// remove AAPL stock if it already exists in portfolio
 		if (stockExistsInPortfolio("AAPL"))	{
 			i_remove_a_stock_in_the_user_portfolio();
 			i_confirm_removal_of_the_stock_in_the_portfolio();
@@ -767,6 +767,15 @@ public class StepDefinitions {
 	 **************************/
 	@When("I click the button to add stocks to my portfolio using a CSV")
 	public void i_click_the_button_to_add_stocks_to_my_portfolio_using_a_CSV() {
+		// remove AMZN stock if it already exists in portfolio
+		if (stockExistsInPortfolio("AMZN"))	{
+			WebElement removeButton = driver.findElement(By.id("manage-portfolio-removeStockButton-AMZN"));
+			removeButton.click();
+			driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+			i_confirm_removal_of_the_stock_in_the_portfolio();
+			driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		}
+		
 		WebElement csvButton = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/button"));
 		Actions action = new Actions(driver);
 		action.moveToElement(csvButton);
@@ -777,16 +786,23 @@ public class StepDefinitions {
 
 	@When("I choose a CSV file")
 	public void i_choose_a_CSV_file() {
-		WebElement modal = wait.until(presenceOfElementLocated(By.id("exampleModal")));
-		//WebElement upload = driver.findElement(By.id("txtFileUpload"));
-		WebElement upload = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[1]/div/div/form/div[1]/div/fieldset/input"));
+		//WebElement modal = wait.until(presenceOfElementLocated(By.id("exampleModal")));
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+		WebElement upload;
+		try {
+			upload = driver.findElement(By.id("txtFileUpload"));
+		} catch (Exception e) {
+			upload = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[1]/div/div/form/div[1]/div/fieldset/input"));
+		}
 		File file = new File("exampleStockCSV.csv");
 		upload.sendKeys(file.getAbsolutePath());
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 	}
 
 	@When("I click the button to upload the file")
 	public void i_click_the_button_to_upload_the_file() {
 		//WebElement csvButton = driver.findElement(By.id("csvAddButton"));
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 		WebElement uploadButton;
 		try {
 			uploadButton = driver.findElement(By.id("upload-file-button"));
@@ -801,6 +817,7 @@ public class StepDefinitions {
 	public void i_click_the_button_to_download_an_example_CSV_file() {
 		//WebElement modal = wait.until(presenceOfElementLocated(By.id("exampleModal")));
 		//WebElement csvButton = driver.findElement(By.id("exampleButton")); 
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 		WebElement csvButton;
 		try {
 			csvButton = driver.findElement(By.id("example-csv-button"));
@@ -813,62 +830,162 @@ public class StepDefinitions {
 	
 	@When("I choose a CSV file with invalid ticker")
 	public void i_choose_a_CSV_file_with_invalid_ticker() {
-	    // Write code here that turns the phrase above into concrete actions
-	    throw new io.cucumber.java.PendingException();
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+		WebElement upload;
+		try {
+			upload = driver.findElement(By.id("txtFileUpload"));
+		} catch (Exception e) {
+			upload = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[1]/div/div/form/div[1]/div/fieldset/input"));
+		}
+		File file = new File("invalidTickerCSV.csv");
+		upload.sendKeys(file.getAbsolutePath());
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 	}
 
 	@Then("I should see an error message about the invalid ticker in the CSV")
 	public void i_should_see_an_error_message_about_the_invalid_ticker_in_the_CSV() {
-	    // Write code here that turns the phrase above into concrete actions
-	    throw new io.cucumber.java.PendingException();
+		WebElement element = null;
+		String msg = "";
+		try {
+			element = driver.findElement(By.id("csv-add-stock-error-mssg"));
+		} catch (NoSuchElementException e) {
+			element = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/p"));
+		}
+		
+		msg = element.getText();
+		if (msg == null || msg.isEmpty()) {
+			msg = element.getAttribute("innerHTML");
+		}
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		assertTrue(msg, msg.contains("Invalid ticker"));
 	}
 
 	@When("I choose a CSV file with invalid number of shares")
 	public void i_choose_a_CSV_file_with_invalid_number_of_shares() {
-	    // Write code here that turns the phrase above into concrete actions
-	    throw new io.cucumber.java.PendingException();
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+		WebElement upload;
+		try {
+			upload = driver.findElement(By.id("txtFileUpload"));
+		} catch (Exception e) {
+			upload = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[1]/div/div/form/div[1]/div/fieldset/input"));
+		}
+		File file = new File("invalidNumberOfSharesCSV.csv");
+		upload.sendKeys(file.getAbsolutePath());
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 	}
 
 	@Then("I should see an error message about the invalid number of shares in the CSV")
 	public void i_should_see_an_error_message_about_the_invalid_number_of_shares_in_the_CSV() {
-	    // Write code here that turns the phrase above into concrete actions
-	    throw new io.cucumber.java.PendingException();
+		WebElement element = null;
+		String msg = "";
+		try {
+			element = driver.findElement(By.id("csv-add-stock-error-mssg"));
+		} catch (NoSuchElementException e) {
+			element = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/p"));
+		}
+		
+		msg = element.getText();
+		if (msg == null || msg.isEmpty()) {
+			msg = element.getAttribute("innerHTML");
+		}
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		assertTrue(msg, msg.contains("Invalid number of shares"));
 	}
 
 	@When("I choose a CSV file with missing purchase date")
 	public void i_choose_a_CSV_file_with_missing_purchase_date() {
-	    // Write code here that turns the phrase above into concrete actions
-	    throw new io.cucumber.java.PendingException();
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+		WebElement upload;
+		try {
+			upload = driver.findElement(By.id("txtFileUpload"));
+		} catch (Exception e) {
+			upload = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[1]/div/div/form/div[1]/div/fieldset/input"));
+		}
+		File file = new File("missingPurchaseDateCSV.csv");
+		upload.sendKeys(file.getAbsolutePath());
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 	}
 
 	@Then("I should see an error message about the missing purchase date in the CSV")
 	public void i_should_see_an_error_message_about_the_missing_purchase_date_in_the_CSV() {
-	    // Write code here that turns the phrase above into concrete actions
-	    throw new io.cucumber.java.PendingException();
+		WebElement element = null;
+		String msg = "";
+		try {
+			element = driver.findElement(By.id("csv-add-stock-error-mssg"));
+		} catch (NoSuchElementException e) {
+			element = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/p"));
+		}
+		
+		msg = element.getText();
+		if (msg == null || msg.isEmpty()) {
+			msg = element.getAttribute("innerHTML");
+		}
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		assertTrue(msg, msg.contains("Malformed dates"));
 	}
 
 	@When("I choose a CSV file with sell date before purchase date")
 	public void i_choose_a_CSV_file_with_sell_date_before_purchase_date() {
-	    // Write code here that turns the phrase above into concrete actions
-	    throw new io.cucumber.java.PendingException();
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+		WebElement upload;
+		try {
+			upload = driver.findElement(By.id("txtFileUpload"));
+		} catch (Exception e) {
+			upload = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[1]/div/div/form/div[1]/div/fieldset/input"));
+		}
+		File file = new File("invalidDatesSoldPurchasedCSV.csv");
+		upload.sendKeys(file.getAbsolutePath());
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 	}
 
 	@Then("I should see an error message about the sell date before purchase date in the CSV")
 	public void i_should_see_an_error_message_about_the_sell_date_before_purchase_date_in_the_CSV() {
-	    // Write code here that turns the phrase above into concrete actions
-	    throw new io.cucumber.java.PendingException();
+		WebElement element = null;
+		String msg = "";
+		try {
+			element = driver.findElement(By.id("csv-add-stock-error-mssg"));
+		} catch (NoSuchElementException e) {
+			element = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/p"));
+		}
+		
+		msg = element.getText();
+		if (msg == null || msg.isEmpty()) {
+			msg = element.getAttribute("innerHTML");
+		}
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		assertTrue(msg, msg.contains("Date sold cannot be before date purchased."));
 	}
 
 	@When("I choose a CSV file with malformed date")
 	public void i_choose_a_CSV_file_with_malformed_date() {
-	    // Write code here that turns the phrase above into concrete actions
-	    throw new io.cucumber.java.PendingException();
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+		WebElement upload;
+		try {
+			upload = driver.findElement(By.id("txtFileUpload"));
+		} catch (Exception e) {
+			upload = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[1]/div/div/form/div[1]/div/fieldset/input"));
+		}
+		File file = new File("malformedStockCSV.csv");
+		upload.sendKeys(file.getAbsolutePath());
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 	}
 
 	@Then("I should see an error message about the malformed date in the CSV")
 	public void i_should_see_an_error_message_about_the_malformed_date_in_the_CSV() {
-	    // Write code here that turns the phrase above into concrete actions
-	    throw new io.cucumber.java.PendingException();
+		WebElement element = null;
+		String msg = "";
+		try {
+			element = driver.findElement(By.id("csv-add-stock-error-mssg"));
+		} catch (NoSuchElementException e) {
+			element = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/p"));
+		}
+		
+		msg = element.getText();
+		if (msg == null || msg.isEmpty()) {
+			msg = element.getAttribute("innerHTML");
+		}
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		assertTrue(msg, msg.contains("Malformed dates"));
 	}
 
 	@Then("I should see the new stocks added")
@@ -1382,7 +1499,7 @@ public class StepDefinitions {
 		int end = portfolioVal.indexOf('.') + 3;
 		String info = portfolioVal.substring(start, end);
 		assertNotNull(driver.findElement(By.id("chartContainer")));
-		assertEquals(0, Integer.valueOf(info).intValue());
+		assertEquals("0.00", info);
 	}
 
 	/**************************
