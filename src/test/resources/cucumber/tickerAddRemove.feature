@@ -13,7 +13,7 @@ Feature: Adding and removing stocks from portfolio
     And I add a new stock to the user portfolio
     Then I should see the portfolio value increase and the percentage change 
     
-  Scenario: Unsuccessfully adding a stock to portfolio with bad ticker
+  Scenario: Unsuccessfully adding a stock to portfolio with invalid ticker
     Given I am logged in on the dashboard page
     When I click the Add Stock button for the portfolio
     And I enter an invalid stock ticker
