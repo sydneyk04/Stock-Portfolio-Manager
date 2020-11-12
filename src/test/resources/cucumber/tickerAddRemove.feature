@@ -16,10 +16,10 @@ Feature: Adding and removing stocks from portfolio
   Scenario: Unsuccessfully adding a stock to portfolio with invalid ticker
     Given I am logged in on the dashboard page
     When I click the Add Stock button for the portfolio
-    And I enter an invalid stock ticker and number of shares
+    And I enter an invalid stock ticker
     And I click the Add Stock button in the popup window for the portfolio
     Then I should see an error message saying stock ticker was not found
-    
+  
   Scenario: Unsuccessfully adding a stock to portfolio with bad quantity
    	Given I am logged in on the dashboard page
    	When I click the Add Stock button for the portfolio
@@ -44,11 +44,13 @@ Feature: Adding and removing stocks from portfolio
   Scenario: Remove a stock successfully
     Given I am logged in on the dashboard page
     When I remove a stock in the user portfolio
+    And I confirm removal of the stock in the portfolio
     Then I should see the value of my portfolio decrease and the stocks in my portfolio be updated
 
   Scenario: Portfolio value decreases and percentage changes after removing a stock
     Given I am logged in on the dashboard page
     When I remove a stock in the user portfolio
+    And I confirm removal of the stock in the portfolio
     Then I should see the portfolio value decrease and the percentage change
 
   Scenario: Successfully add stocks using a CSV file 
