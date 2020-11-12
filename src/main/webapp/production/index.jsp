@@ -474,14 +474,14 @@
 										<div class="d-flex">
 											<form class="" action="/dashboard" method="post">
 												<input type="hidden" name="action" value="selectViewAll">
-												<button class="btn btn-secondary" type="submit" name="">Select All</button>
+												<button id="btn-manage-portfolio-select-all" class="btn btn-secondary" type="submit" name="">Select All</button>
 											</form>
 										</div>
 
 										<div class="d-flex">
 											<form class="d-flex" action="/dashboard" method="post">
 												<input type="hidden" name="action" value="deselectViewAll">
-												<button class="btn btn-secondary" type="submit" name="">Deselect All</button>
+												<button id="btn-manage-portfolio-deselect-all" class="btn btn-secondary" type="submit" name="">Deselect All</button>
 											</form>
 										</div>
 

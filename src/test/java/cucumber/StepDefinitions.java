@@ -800,10 +800,75 @@ public class StepDefinitions {
 	@When("I click the button to download an example CSV file")
 	public void i_click_the_button_to_download_an_example_CSV_file() {
 		//WebElement modal = wait.until(presenceOfElementLocated(By.id("exampleModal")));
-		//WebElement csvButton = driver.findElement(By.id("exampleButton"));
-		WebElement csvButton = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[1]/div/div/form/div[1]/a/button"));
+		//WebElement csvButton = driver.findElement(By.id("exampleButton")); 
+		WebElement csvButton;
+		try {
+			csvButton = driver.findElement(By.id("example-csv-button"));
+		} catch (NoSuchElementException e) {
+			csvButton = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[1]/div/div/form/div[1]/a/button"));
+		}
 		csvButton.click();
 		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+	}
+	
+	@When("I choose a CSV file with invalid ticker")
+	public void i_choose_a_CSV_file_with_invalid_ticker() {
+	    // Write code here that turns the phrase above into concrete actions
+	    throw new io.cucumber.java.PendingException();
+	}
+
+	@Then("I should see an error message about the invalid ticker in the CSV")
+	public void i_should_see_an_error_message_about_the_invalid_ticker_in_the_CSV() {
+	    // Write code here that turns the phrase above into concrete actions
+	    throw new io.cucumber.java.PendingException();
+	}
+
+	@When("I choose a CSV file with invalid number of shares")
+	public void i_choose_a_CSV_file_with_invalid_number_of_shares() {
+	    // Write code here that turns the phrase above into concrete actions
+	    throw new io.cucumber.java.PendingException();
+	}
+
+	@Then("I should see an error message about the invalid number of shares in the CSV")
+	public void i_should_see_an_error_message_about_the_invalid_number_of_shares_in_the_CSV() {
+	    // Write code here that turns the phrase above into concrete actions
+	    throw new io.cucumber.java.PendingException();
+	}
+
+	@When("I choose a CSV file with missing purchase date")
+	public void i_choose_a_CSV_file_with_missing_purchase_date() {
+	    // Write code here that turns the phrase above into concrete actions
+	    throw new io.cucumber.java.PendingException();
+	}
+
+	@Then("I should see an error message about the missing purchase date in the CSV")
+	public void i_should_see_an_error_message_about_the_missing_purchase_date_in_the_CSV() {
+	    // Write code here that turns the phrase above into concrete actions
+	    throw new io.cucumber.java.PendingException();
+	}
+
+	@When("I choose a CSV file with sell date before purchase date")
+	public void i_choose_a_CSV_file_with_sell_date_before_purchase_date() {
+	    // Write code here that turns the phrase above into concrete actions
+	    throw new io.cucumber.java.PendingException();
+	}
+
+	@Then("I should see an error message about the sell date before purchase date in the CSV")
+	public void i_should_see_an_error_message_about_the_sell_date_before_purchase_date_in_the_CSV() {
+	    // Write code here that turns the phrase above into concrete actions
+	    throw new io.cucumber.java.PendingException();
+	}
+
+	@When("I choose a CSV file with malformed date")
+	public void i_choose_a_CSV_file_with_malformed_date() {
+	    // Write code here that turns the phrase above into concrete actions
+	    throw new io.cucumber.java.PendingException();
+	}
+
+	@Then("I should see an error message about the malformed date in the CSV")
+	public void i_should_see_an_error_message_about_the_malformed_date_in_the_CSV() {
+	    // Write code here that turns the phrase above into concrete actions
+	    throw new io.cucumber.java.PendingException();
 	}
 
 	@Then("I should see the new stocks added")
@@ -1264,24 +1329,60 @@ public class StepDefinitions {
 	 **************************/
 	@When("I click the selectall button")
 	public void i_click_the_selectall_button() {
-		WebElement button = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/form/button"));
-		button.click();
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		WebElement button;
+		try {
+			button = driver.findElement(By.id("btn-manage-portfolio-select-all"));
+		} catch (Exception e) {
+			try {
+				button = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/form/button"));
+			} catch (Exception e2) {
+				assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/production/index.jsp"));
+				return;
+			}
+		}
+		button.click();	
 	}
 
 	@When("I click the deselectall button")
 	public void i_click_the_deselectall_button() {
-		WebElement button = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[2]/form/button"));
-		button.click();
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		WebElement button;
+		try {
+			button = driver.findElement(By.id("btn-manage-portfolio-deselect-all"));
+		} catch (Exception e) {
+			try {
+				button = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[2]/form/button"));
+			} catch (Exception e2) {
+				assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/production/index.jsp"));
+				return;
+			}
+		}
+		button.click();	
 	}
 	
 	@Then("I should see the portfolio performance on the graph and the total portfolio value")
-	public void i_should_see_all_stocks_displayed_on_the_graph() {
-		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/production/index.jsp"));
+	public void i_should_see_the_portfolio_performance_on_the_graph_and_the_total_portfolio_value() {			
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+		WebElement element = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div[1]/div/h3"));
+		String portfolioVal = element.getAttribute("innerHTML");
+		int start = portfolioVal.indexOf('$') + 1;
+		int end = portfolioVal.indexOf('.') + 3;
+		String info = portfolioVal.substring(start, end);
+		assertNotNull(driver.findElement(By.id("chartContainer")));
+		assertTrue(Double.valueOf(info) > 0);
 	}
 	
 	@Then("I should see zero for the portfolio performance on the graph and the portfolio value")
-	public void i_should_see_no_stocks_displayed_in_the_view_stocks_list() {
-		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/production/index.jsp"));
+	public void i_should_see_zero_for_the_portfolio_performance_on_the_graph_and_the_portfolio_value() {
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+		WebElement element = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div[1]/div/h3"));
+		String portfolioVal = element.getAttribute("innerHTML");
+		int start = portfolioVal.indexOf('$') + 1;
+		int end = portfolioVal.indexOf('.') + 3;
+		String info = portfolioVal.substring(start, end);
+		assertNotNull(driver.findElement(By.id("chartContainer")));
+		assertEquals(0, Integer.valueOf(info).intValue());
 	}
 
 	/**************************
