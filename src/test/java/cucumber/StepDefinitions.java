@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Point;
@@ -56,6 +57,30 @@ public class StepDefinitions {
         return saltStr;
 
     }
+	
+	protected boolean stockExistsInPortfolio(String ticker) {
+		try {
+			driver.findElement(By.id("manage-portfolio-removeStockButton-" + ticker));
+		} catch (Exception e) {
+			// stock doesn't exist in portfolio
+			return false;
+		}
+		
+		// stock exists in portfolio
+		return true;
+	}
+	
+	protected boolean stockExistsInViewStock(String ticker) {
+		try {
+			driver.findElement(By.id("btn-view-remove" + ticker));
+		} catch (Exception e) {
+			// stock doesn't exist in portfolio
+			return false;
+		}
+		
+		// stock exists in portfolio
+		return true;
+	}
 
 	@Before()
 	public void before() {
@@ -412,6 +437,15 @@ public class StepDefinitions {
 	@When("I click the Add Stock button for the portfolio")
 	public void i_click_the_Add_Stock_button_for_the_portfolio() {
 		// "Add Stock" button for Manage Portfolio section
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+		
+		// remove SNAP stock if it already exists in portfolio
+		if (stockExistsInPortfolio("AAPL"))	{
+			i_remove_a_stock_in_the_user_portfolio();
+			i_confirm_removal_of_the_stock_in_the_portfolio();
+		}
+		
+		driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
 		WebElement addButton;
 		try {
 			addButton = driver.findElement(By.id("manage-portfolio-add-stock-button"));
@@ -424,6 +458,7 @@ public class StepDefinitions {
 
 	@When("I add a new stock to the user portfolio")
 	public void i_add_a_new_stock_to_the_user_portfolio() {
+		driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
 		WebElement ticker = driver.findElement(By.id("add-stock-ticker"));
 	    ticker.sendKeys("AAPL");
 	    WebElement shares = driver.findElement(By.id("add-stock-shares"));
@@ -442,11 +477,33 @@ public class StepDefinitions {
 		try {
 			WebElement removeButton = driver.findElement(By.id("manage-portfolio-removeStockButton-AAPL"));
 			removeButton.click();
+			driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
 		} catch (NoSuchElementException e) {
+			i_click_the_Add_Stock_button_for_the_portfolio();
+			driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 			i_add_a_new_stock_to_the_user_portfolio();
+			driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
 			WebElement removeButton = driver.findElement(By.id("manage-portfolio-removeStockButton-AAPL"));
 			removeButton.click();
+			driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
 		}
+	}
+	
+	@When("I confirm removal of the stock in the portfolio")
+	public void i_confirm_removal_of_the_stock_in_the_portfolio() {
+		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		WebElement removeButton = null;
+		try {
+			removeButton = driver.findElement(By.id("btn-manage-portfolio-removeStockConfirm"));
+			removeButton.click();
+			driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+		} catch (ElementNotInteractableException e1) {
+			JavascriptExecutor executor = (JavascriptExecutor) driver;
+			executor.executeScript("arguments[0].click();", removeButton);
+		} catch (NoSuchElementException e2) {
+			removeButton = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/ul/li[2]/div[1]/div/div/div/div[2]/form/button"));
+			removeButton.click();
+		} 
 	}
 
 	@When("I enter a stock ticker not in my portfolio and a certain number of shares")
@@ -494,14 +551,49 @@ public class StepDefinitions {
 		}
 	}
 
-	@When("I enter an invalid stock ticker and number of shares")
-	public void i_enter_an_invalid_stock_ticker_and_number_of_shares() {
+	@When("I enter an invalid stock ticker")
+	public void i_enter_an_invalid_stock_ticker() {
 	    WebElement ticker = driver.findElement(By.id("add-stock-ticker"));
 	    ticker.sendKeys("NKLAIFJKHSL");
 	    WebElement shares = driver.findElement(By.id("add-stock-shares"));
 	    shares.sendKeys("20");
 	    WebElement datePurchased = driver.findElement(By.id("add-stock-datePurchased"));
 	    datePurchased.sendKeys("01/01/2020");
+	    driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+	}
+	
+	@When("I enter an invalid quantity of shares")
+	public void i_enter_an_invalid_quantity_of_shares() {
+	    WebElement ticker = driver.findElement(By.id("add-stock-ticker"));
+	    ticker.sendKeys("AAPL");
+	    WebElement shares = driver.findElement(By.id("add-stock-shares"));
+	    shares.sendKeys("-1");
+	    WebElement datePurchased = driver.findElement(By.id("add-stock-datePurchased"));
+	    datePurchased.sendKeys("01/01/2020");
+	    driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+	}
+	
+	@When("I do not enter a purchase date")
+	public void i_do_not_enter_a_purchase_date() {
+	    WebElement ticker = driver.findElement(By.id("add-stock-ticker"));
+	    ticker.sendKeys("AAPL");
+	    WebElement shares = driver.findElement(By.id("add-stock-shares"));
+	    shares.sendKeys("20");
+	    WebElement dateSold = driver.findElement(By.id("add-stock-dateSold"));
+	    dateSold.sendKeys("01/01/2020");
+	    driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+	}
+	
+	@When("I enter a sold date earlier than the purchase date")
+	public void i_enter_a_sold_date_earlier_than_the_purchase_date() {
+	    WebElement ticker = driver.findElement(By.id("add-stock-ticker"));
+	    ticker.sendKeys("AAPL");
+	    WebElement shares = driver.findElement(By.id("add-stock-shares"));
+	    shares.sendKeys("20");
+	    WebElement datePurchased = driver.findElement(By.id("add-stock-datePurchased"));
+	    datePurchased.sendKeys("12/12/2020");
+	    WebElement dateSold = driver.findElement(By.id("add-stock-dateSold"));
+	    dateSold.sendKeys("01/01/2020");
 	    driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 	}
 
@@ -518,12 +610,61 @@ public class StepDefinitions {
 				msg = element.getAttribute("innerHTML");
 			}
 		} catch (Exception e) {
-			assertNull(element);
+			assertNull("null - add stock ticker error mssg was not found", element);
 			return;
 		}
 		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
-		//assertEquals(msg.getText(), "Sorry, this stock does not exist.");
 		assertTrue(msg, msg.contains("Unable to add this stock"));
+	}
+	
+	@Then("I should see an error message saying invalid number of shares")
+	public void i_should_see_an_error_message_saying_invalid_number_of_shares() {
+		//WebElement msg = driver.findElement(By.id("errormsg"));
+		WebElement element = null;
+		String msg = "";
+		try {
+			element = driver.findElement(By.id("login_error"));
+			msg = element.getText();
+
+			if (msg == null || msg.isEmpty()) {
+				msg = element.getAttribute("innerHTML");
+			}
+		} catch (Exception e) {
+			assertNull("null - add stock shares error mssg was not found", element);
+			return;
+		}
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		assertTrue(msg, msg.contains("Invalid number of shares"));
+	}
+	
+	@Then("I should see an error message saying I need to enter a purchase date")
+	public void i_should_see_an_error_message_saying_i_need_to_enter_a_purchase_date() {
+		//WebElement msg = driver.findElement(By.id("errormsg"));
+		WebElement element = driver.findElement(By.id("addStockModal"));
+		WebElement mssg = driver.findElement(By.id("login_error"));
+		boolean checkMssg = ((mssg.getAttribute("innerHTML") == null) || (mssg.getAttribute("innerHTML").isEmpty()));
+		assertNotNull(element);
+		assertTrue(checkMssg);
+	}
+	
+	@Then("I should see an error message saying my sold date is invalid")
+	public void i_should_see_an_error_message_saying_my_sold_date_is_invalid() {
+		//WebElement msg = driver.findElement(By.id("errormsg"));
+		WebElement element = null;
+		String msg = "";
+		try {
+			element = driver.findElement(By.id("login_error"));
+			msg = element.getText();
+
+			if (msg == null || msg.isEmpty()) {
+				msg = element.getAttribute("innerHTML");
+			}
+		} catch (Exception e) {
+			assertNull("null - add stock sell date error mssg was not found", element);
+			return;
+		}
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		assertTrue(msg, msg.contains("Date sold cannot be before date purchased."));
 	}
 
 	@Then("I should see the value of my portfolio decrease and the stocks in my portfolio be updated")
@@ -816,7 +957,7 @@ public class StepDefinitions {
 			dsBox = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div[2]/div/div/form/div[1]/div[2]/div[2]/div/input"));
 		}
 
-		String ticker = "SNAP";
+		String ticker = "AAPL";
 		String shares = "1";
 		String datePurchased = "05-22-2020";
 		String dateSold = "12-22-2020";
