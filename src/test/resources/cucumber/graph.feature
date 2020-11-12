@@ -1,5 +1,21 @@
 Feature: Using the graph and other basic functionality on dashboard
 
+  Scenario: Click remove view stock but then cancel
+    Given I am logged in on the dashboard page
+   	When I click the view stock button
+    And I fill out correct stock info
+    And I click the remove stock button in view
+    And I click the cancel delete stock button in view
+    Then I should see the stock on the graph
+    
+  Scenario: Remove View Stock
+    Given I am logged in on the dashboard page
+   	When I click the view stock button
+    And I fill out correct stock info
+    And I click the remove stock button in view
+     And I click the delete stock button in view
+    Then The stock should be removed
+
  Scenario: Successfully selecting date range (1y)
     Given I am logged in on the dashboard page
     When I click the button to change the graph date range
@@ -63,12 +79,7 @@ Feature: Using the graph and other basic functionality on dashboard
     And I fill out incorrect stock info
     Then I should see a view stock error
 
-  Scenario: Remove View Stock
-    Given I am logged in on the dashboard page
-   	When I click the view stock button
-    And I fill out correct stock info
-    And I click the remove stock button in view
-    Then The stock should be removed
+
 
   Scenario: Toggle View Stock
     Given I am logged in on the dashboard page

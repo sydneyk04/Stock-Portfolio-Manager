@@ -1,5 +1,11 @@
 Feature: Adding and removing stocks from portfolio
 
+  Scenario: Remove a stock and then click cancel
+    Given I am logged in on the dashboard page
+    When I remove a stock in the user portfolio
+    And I click the cancel delete stock button in portfolio
+    Then I should see the stock in my portfolio
+
   Scenario: Successfully adding new stock to portfolio
   	Given I am logged in on the dashboard page
     When I click the Add Stock button for the portfolio

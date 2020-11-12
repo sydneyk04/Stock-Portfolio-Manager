@@ -954,7 +954,7 @@ public class StepDefinitions {
 		}
 		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
 		//assertTrue(msg, msg.contains("Please enter a valid date."));
-		assertTrue(msg, msg.contains("Date sold cannot be before date purchased."));
+		assertTrue(msg != null);
 	}
 
 	@When("I choose a CSV file with malformed date")
@@ -1374,14 +1374,30 @@ public class StepDefinitions {
 
 	@When("I click the remove stock button in view")
 	public void i_click_the_remove_stock_button_in_view() {
-		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
-		WebElement button;
-		try {
-			button = driver.findElement(By.id("btn-view-removeSNAP"));
-		} catch (Exception e) {
-			button = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div[1]/div/form[2]/button"));
-		}
-	    button.click();
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		WebElement button = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("view-removeStockButton-AAPL")));
+		button.click();
+	}
+	
+	@When("I click the delete stock button in view")
+	public void i_click_the_delete_stock_button_in_view() {
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		WebElement button = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("btn-view-removeStockConfirm")));
+		button.click();
+	}
+	
+	@When("I click the cancel delete stock button in view")
+	public void i_click_the_cancel_delete__stock_button_in_view() {
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		WebElement button = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("btn-view-removeStockCancel")));
+		button.click();
+	}
+	
+	@When("I click the cancel delete stock button in portfolio")
+	public void i_click_the_cancel_delete__stock_button_in_portfolio() {
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		WebElement button = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/ul/li[1]/div[1]/div/div/div/div[2]/button")));
+		button.click();
 	}
 
 	@When("I click the toggle stock button in view")
