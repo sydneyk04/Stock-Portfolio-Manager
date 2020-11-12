@@ -391,6 +391,44 @@ public class StepDefinitions {
 	/**************************
 	 * ADD/STOCK FEATURE
 	 **************************/
+	
+	//cancel entry
+	@When("I click the close button")
+	public void i_click_the_close_button() {
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		driver.findElement(By.id("btn-view-close")).click();
+	}
+
+	@Then("I should not see a stock added to the graph")
+	public void i_should_not_see_a_stock_added_to_the_graph() {
+		assertNotNull(driver.findElement(By.id("chartContainer")));
+	}
+
+	@Then("I should not see a stock added to my portfolio")
+	public void i_should_not_see_a_stock_added_to_my_portfolio() {
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+		WebElement element = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div[1]/div/h3"));
+		String portfolioVal = element.getAttribute("innerHTML");
+		int start = portfolioVal.indexOf('$') + 1;
+		int end = portfolioVal.indexOf('.') + 3;
+		String info = portfolioVal.substring(start, end);
+		assertNotNull(driver.findElement(By.id("chartContainer")));
+		assertTrue(Double.valueOf(info) >= 0);
+	}
+	@When("I click the cancel add stock button")
+	public void i_click_the_cancel_add_stock_button() {
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		driver.findElement(By.id("modal-manage-portfolio-cancel-button")).click();
+	}
+	//add stock
 	@Given("I am on dashboard")
 	public void i_am_on_dashboard() {
 		driver.get("http://localhost:8080/production/index.jsp");
@@ -1092,6 +1130,33 @@ public class StepDefinitions {
 	@Then("I should see no stocks displayed in the view stocks list")
 	public void i_should_see_no_stocks_displayed_in_the_view_stocks_list() {
 		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/production/index.jsp"));
+	}
+
+	/**************************
+	 * ZOOM GRAPH FEATURE 
+	 **************************/
+	
+	@When("I drag my cursor across the graph")
+	public void i_drag_my_cursor_across_the_graph() {
+		WebElement chartContainer = driver.findElement(By.id("chartContainer"));
+		Actions act = new Actions(driver);
+		//act.dragAndDrop(start, end).build().perform();
+		act.dragAndDropBy(chartContainer, 100, 0).build().perform();
+	}
+
+	@When("I click the reset button")
+	public void i_click_the_reset_button() {
+	    WebElement reset = driver.findElement(By.xpath("//*[@id=\"chartContainer\"]/div/div[1]/button[2]"));
+	    reset.click();
+	}
+
+	@Then("I should see the graph date reset to three months")
+	public void i_should_see_the_graph_date_reset_to_three_months() {
+		JavascriptExecutor js = (JavascriptExecutor) driver;
+		Long start = (Long) js.executeScript("return getStartDate();");
+		System.out.println("start time: " + start);
+		Long end = (Long) js.executeScript("return getEndDate();");
+		assertTrue(end-start == 3);
 	}
 
 	/**************************
