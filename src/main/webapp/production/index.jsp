@@ -326,7 +326,7 @@
                 <div class="x_content">
                 <!-- Button trigger modal -->
 					<button type="button"  style="background:lightgrey; border:none; border-radius:5px; color:#73879C;" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Add by CSV</button>
-					<p style="color: red;"><%if(null!=session.getAttribute("uploadCSVError")){%>
+					<p id="csv-add-stock-error-mssg" style="color: red;"><%if(null!=session.getAttribute("uploadCSVError")){%>
 					<%=(String) session.getAttribute("uploadCSVError")%>
 					<%}%></p>
 					<!-- Modal -->

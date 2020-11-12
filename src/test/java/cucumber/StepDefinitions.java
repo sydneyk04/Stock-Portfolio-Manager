@@ -1260,7 +1260,7 @@ public class StepDefinitions {
 
 
 	/**************************
-	 * Select/Deselect All FEATURE
+	 * SELECT/DESELECT ALL FEATURE
 	 **************************/
 	@When("I click the selectall button")
 	public void i_click_the_selectall_button() {
@@ -1268,25 +1268,18 @@ public class StepDefinitions {
 		button.click();
 	}
 
-	@Then("I should see all stocks displayed on the graph")
-	public void i_should_see_all_stocks_displayed_on_the_graph() {
-		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/production/index.jsp"));
-	}
-
-	@Then("I should see all stocks displayed in the view stocks list")
-	public void i_should_see_all_stocks_displayed_in_the_view_stocks_list() {
-		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/production/index.jsp"));
-	}
 	@When("I click the deselectall button")
 	public void i_click_the_deselectall_button() {
 		WebElement button = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[2]/form/button"));
 		button.click();
 	}
-	@Then("I should see no stocks displayed on the graph")
-	public void i_should_see_no_stocks_displayed_on_the_graph() {
+	
+	@Then("I should see the portfolio performance on the graph and the total portfolio value")
+	public void i_should_see_all_stocks_displayed_on_the_graph() {
 		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/production/index.jsp"));
 	}
-	@Then("I should see no stocks displayed in the view stocks list")
+	
+	@Then("I should see zero for the portfolio performance on the graph and the portfolio value")
 	public void i_should_see_no_stocks_displayed_in_the_view_stocks_list() {
 		assertTrue(driver.getCurrentUrl().equalsIgnoreCase("http://localhost:8080/production/index.jsp"));
 	}
