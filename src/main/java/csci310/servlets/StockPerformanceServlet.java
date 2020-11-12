@@ -97,10 +97,12 @@ public class StockPerformanceServlet extends HttpServlet {
 	        session.setAttribute("myStocks", myStocks);
 	        session.setAttribute("view", view);
 	        session.setAttribute("invalid_error", null);
+	        session.setAttribute("uploadCSVError", null);
 	        session.setAttribute("graphRangeFrom", graphRangeFrom);
 	        session.setAttribute("graphRangeTo", graphRangeTo);
 	        session.setAttribute("graphRangeError", null);
 	        
+
 	        try {
 	        	calculatePortfolio();
 	        } catch (ParseException e) {
@@ -384,14 +386,109 @@ public class StockPerformanceServlet extends HttpServlet {
 		} 
 		
 		else if(action.equals("addCSV")) {
-			System.out.println("!!!!!!!!!!");
-			String line = "", splitBy = ",";
-			BufferedReader br = new BufferedReader(new FileReader(request.getParameter("FileUpload")));
-			line = br.readLine();
-			while((line = br.readLine()) != null) {
-				String [] info = line.split(splitBy);
-				System.out.println(info[0] + info[1] + info[2] + info[3]);
+			System.out.println("In addCSV");
+			String username = session.getAttribute("username").toString();
+			String splitBy = ",", csv = request.getParameter("csvContent");
+			String[] lines = csv.split("\n");
+			ArrayList<ArrayList> newStocks = new ArrayList<ArrayList>();
+			DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+			
+			if(lines.length < 2) {
+				session.setAttribute("uploadCSVError", "Empty CSV file!");
+				return;
 			}
+			for(int i = 1; i < lines.length; i++) {
+				System.out.println(lines[i]);
+				String[] contents = lines[i].split(splitBy);
+				if(lines[i].compareTo(",,,") == 0) {
+					continue;
+				}
+				if(contents.length != 4) {
+					session.setAttribute("uploadCSVError", "Malformed CSV file!");
+					return;
+				}
+				String ticker = contents[0];
+				ticker = ticker.toUpperCase();
+				String purchase = contents[2];
+				String sell = contents[3];
+				String numOfShares = contents[1];
+				
+				Calendar datePurchased = Calendar.getInstance();
+				Calendar sellDate = Calendar.getInstance();
+				try {
+					datePurchased.setTime(formatter.parse(purchase));	
+					sellDate.setTime(formatter.parse(sell));
+				} catch (ParseException e1) {
+					e1.printStackTrace();
+				}
+				
+				// if invalid number of shares 
+				if(Double.parseDouble(numOfShares) <= 0) {
+					session.setAttribute("uploadCSVError", "Invalid number of shares");
+					return;
+				}
+				
+				//if invalid date
+				if(datePurchased.after(Calendar.getInstance())) {
+					session.setAttribute("uploadCSVError", "Please enter a valid date.");	
+					return;
+				}
+				
+				// if date sold before date purchased
+				if(datePurchased.after(sellDate)) {
+					session.setAttribute("uploadCSVError", "Date sold cannot be before date purchased.");
+					return;
+				}
+				
+				//if you already own the stock dont let user add it
+				for(int j=0; j<myStocks.size(); j++) {
+					if(myStocks.get(j).get(0).equals(ticker)){
+						session.setAttribute("uploadCSVError", "You already own one or more of them in the file");
+						return;
+					}
+				}
+				session.setAttribute("uploadCSVError", null);
+				
+				ArrayList<String> stock = new ArrayList<String>();
+				stock.add(ticker);
+				stock.add(YahooFinance.get(ticker).getName());
+				stock.add(numOfShares);
+				stock.add(purchase);
+				stock.add(sell);
+				stock.add("Yes");
+				newStocks.add(stock);
+				
+			}
+			
+			for(int i = 0; i < newStocks.size(); i++) {
+				ArrayList<String> cur = newStocks.get(i);
+				String ticker = cur.get(0);
+				ticker = ticker.toUpperCase();
+				String numOfShares = cur.get(2);	
+				String purchase = cur.get(3);
+				String sell = cur.get(4);
+				
+				Calendar datePurchased = Calendar.getInstance();
+				Calendar sellDate = Calendar.getInstance();
+				try {
+					datePurchased.setTime(formatter.parse(purchase));	
+					sellDate.setTime(formatter.parse(sell));
+				} catch (ParseException e1) {
+					e1.printStackTrace();
+				}
+				addStock(username, ticker, datePurchased, sellDate, Double.parseDouble(numOfShares));
+				myStocks.add(cur);
+			}
+			try {
+				calculatePortfolio();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			buildGraph();
 		}
 		//change calendar time period
 		else if(action.equals("changeTimePeriod")){
