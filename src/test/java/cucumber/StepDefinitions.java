@@ -652,25 +652,30 @@ public class StepDefinitions {
 	 **************************/
 	@When("I click the button to change the graph date range")
 	public void i_click_the_button_to_change_the_graph_date_range() {
-		WebElement button = driver.findElement(By.id("datepicker"));
+		WebElement button = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div[3]/div/div[2]/div[2]/form/div/input"));
 		button.click();
 	}
 
 	@When("I select an appropriate date range")
 	public void i_select_an_appropriate_date_range() {
 		WebDriverWait wait = new WebDriverWait(driver, 10);
-		WebElement button = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[2]/div[1]/ul/li[2]")));
+		WebElement button = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[2]/div[1]/ul/li[4]")));
 		button.click();
 	}
-
-	@When("I click the date range confirm button")
-	public void i_click_the_date_range_confirm_button() {
-		driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-		//WebElement submit = driver.findElement(By.xpath("//*[@id=\"performanceRangeForm\"]/button"));
-		WebElement submit = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div/div/div[2]/div[2]/form/button"));
-
-		JavascriptExecutor executor = (JavascriptExecutor)driver;
-		executor.executeScript("arguments[0].click();", submit);
+	
+	@When("I enter an appropriate date range")
+	public void i_enter_an_appropriate_date_range() {
+		WebElement customRange = driver.findElement(By.xpath("/html/body/div[2]/div[1]/ul/li[5]"));
+		customRange.click();
+		
+		WebElement start = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[1]/table/tbody/tr[3]/td[4]"));
+		start.click();
+		
+		WebElement end = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[1]/table/tbody/tr[2]/td[7]"));
+		end.click();
+		
+		WebElement apply = driver.findElement(By.xpath("/html/body/div[2]/div[4]/button[2]"));
+		apply.click();
 	}
 
 	@When("I enter a sell date after purchase date")
@@ -679,20 +684,33 @@ public class StepDefinitions {
 		button.sendKeys("09/09/2020 - 01/01/2020");
 	}
 
-	@When("I enter an appropriate date range")
-	public void i_enter_an_appropriate_date_range() {
-		WebElement button = driver.findElement(By.id("datepicker"));
-		button.sendKeys("01/01/2020 - 09/09/2020");
-		WebElement applyBtn = driver.findElement(By.xpath("/html/body/div[2]/div[4]/button[2]"));
-		applyBtn.click();
-	}
+	
 	@When("I enter a date range with purchase date before 1y")
 	public void i_enter_a_date_range_with_purchase_date_before_1y() {
-		WebElement button = driver.findElement(By.id("datepicker"));
-		button.sendKeys("01/01/2019 - 09/09/2020");
-		WebElement applyBtn = driver.findElement(By.xpath("/html/body/div[2]/div[4]/button[2]"));
-		applyBtn.click();
+		WebElement customRange = driver.findElement(By.xpath("/html/body/div[2]/div[1]/ul/li[5]"));
+		customRange.click();
+		
+		for(int i=0; i<10; i++) {
+			WebElement back = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[1]/table/thead/tr[1]/th[1]"));
+			back.click();
+		}
+		
+		WebElement start = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[1]/table/tbody/tr[3]/td[4]"));
+		start.click();
+		
+		WebElement end = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[1]/table/tbody/tr[2]/td[7]"));
+		end.click();
+		
+		WebElement apply = driver.findElement(By.xpath("/html/body/div[2]/div[4]/button[2]"));
+		apply.click();
+	}
+	
+	@When("I click the date range confirm button")
+	public void i_click_the_date_range_confirm_button() {
+		driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+		WebElement submit = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div[3]/div/div[2]/div[2]/form/button"));
 
+		submit.click();
 	}
 
 	@When("I click the confirm button")
@@ -982,7 +1000,7 @@ public class StepDefinitions {
 	@Then("I should see an error message under calendar")
 	public void i_should_see_an_error_message_under_calendar() {
 		WebElement errorMSG = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div[3]/div/div[2]/div[2]/form/p"));
-		assertNotNull(errorMSG.getText());
+		assertNotNull(errorMSG);
 	}
 
 	@Then("I should see two different colored lines")
