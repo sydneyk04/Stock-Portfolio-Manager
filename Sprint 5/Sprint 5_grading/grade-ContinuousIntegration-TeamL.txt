@@ -1,0 +1,6 @@
+Best Practice ContinuousIntegration Report
+Owner: TeamL
+Grade: 10/10
+Comments: 
+Total successful commits: 27
+Total failing commits: 0
