@@ -166,7 +166,7 @@ public class LoginServlet extends HttpServlet {
 
 			@Override
 			public void onCancelled(DatabaseError error) {
-				System.out.println(error.getMessage());
+				
 				out.print("server error");
 				session.setAttribute("login_error_message", "Unable to access server");
 				
