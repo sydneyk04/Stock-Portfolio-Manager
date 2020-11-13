@@ -1,0 +1,8 @@
+Best Practice Coverage Report
+Owner: TeamL
+Grade: 8.2/10
+Comments: 
+Using commit: https://github.com/CSCI310/project-20203b-groupl-20203/commit/8987ab0660848abc073fdb63a816258bba170264
+Reported statement coverage: 85.0
+Reported branch coverage: 80.0
+Average coverage: 82.5
