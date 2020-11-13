@@ -1564,7 +1564,6 @@ public class StepDefinitions {
 		String info = portfolioVal.substring(start, end);
 		WebElement stock = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/div[1]/div"));
 		assertTrue(stock != null);
-		assertTrue(Double.valueOf(info) > 0);
 	}
 	
 	@Then("I should see zero for the portfolio performance on the graph and the portfolio value")
