@@ -120,7 +120,7 @@ public class StockPerformanceServlet extends HttpServlet {
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws IOException, ServletException {
-		System.out.println("dopost");
+		
 		response.setContentType("text/html;charset=UTF-8");
 		out = response.getWriter();
 		response.setStatus(HttpServletResponse.SC_OK);
@@ -149,7 +149,7 @@ public class StockPerformanceServlet extends HttpServlet {
 		} 
 		
 		else if(action.equals("showViewStock")) {
-			System.out.println("Action is 'showViewStock'");
+			
 			String ticker = request.getParameter("ticker");
 			for(int i=0; i<view.size(); i++) {
 				if(view.get(i).get(0).equals(ticker)){
@@ -165,7 +165,7 @@ public class StockPerformanceServlet extends HttpServlet {
 		}
 		
 		else if(action.equals("toggleSP")) {
-			System.out.println("Action is 'toggleSP'");
+			
 			if(myStocks.get(0).get(5).equals("Yes")) {
 				myStocks.get(0).set(5, "No");
 			}else {
@@ -226,7 +226,7 @@ public class StockPerformanceServlet extends HttpServlet {
 		
 		//this is for adding stock to database
 		else if(action.equals("addStock")) {
-			System.out.println("add stock hi");
+			
 			session.setAttribute("failedAdd", null);
 			String username = session.getAttribute("username").toString();
 			String ticker = request.getParameter("ticker");
@@ -315,14 +315,14 @@ public class StockPerformanceServlet extends HttpServlet {
 		        	Double prevVal = Double.parseDouble(prevHolder.get(1));
 		        	Double percentChange = (val - prevVal) / 100;
 		        	session.setAttribute("portfolioPercentage", f.format(percentChange));
-		        	System.out.println("Yesterday's portfolio val: " + prevVal);
+		        	
 	        	}        	
 			}
 			
 		}
 		
 		else if(action.equals("removeStock")) {
-			System.out.println("hi from remove stock");
+			
 			String username = session.getAttribute("username").toString();
 			String ticker = request.getParameter("removeStockTicker");
 			for(int i=0; i<myStocks.size(); i++) {
@@ -348,7 +348,7 @@ public class StockPerformanceServlet extends HttpServlet {
 			if (!portfolioValHistory.isEmpty()) {
 				DecimalFormat f = new DecimalFormat("##.00");
 				ArrayList<String> holder = portfolioValHistory.get(portfolioValHistory.size()-1);
-				System.out.println(holder);
+				
 				Double val = Double.parseDouble(holder.get(1));
 				session.setAttribute("portfolioVal", f.format(val));	
 	        	
@@ -358,8 +358,7 @@ public class StockPerformanceServlet extends HttpServlet {
 		        	Double prevVal = Double.parseDouble(prevHolder.get(1));
 		        	Double percentChange = (val - prevVal) / 100;
 		        	session.setAttribute("portfolioPercentage", f.format(percentChange));
-		        	System.out.println("Today's portfolio val: " + val);
-		        	System.out.println("Yesterday's portfolio val: " + prevVal);
+		        	
 	        	}       
 			} else {
 				session.setAttribute("portfolioVal", "0.00");	
@@ -367,7 +366,7 @@ public class StockPerformanceServlet extends HttpServlet {
 		} 
 		
 		else if(action.equals("addCSV")) {
-			System.out.println("In addCSV");
+			
 			String username = session.getAttribute("username").toString();
 			String splitBy = ",", csv = request.getParameter("csvContent");
 			String[] lines = csv.split("\n");
@@ -379,7 +378,7 @@ public class StockPerformanceServlet extends HttpServlet {
 				return;
 			}
 			for(int i = 1; i < lines.length; i++) {
-				System.out.println(lines[i]);
+				
 				String[] contents = lines[i].split(splitBy);
 				if(lines[i].compareTo(",,,") == 0) {
 					continue;
@@ -617,7 +616,7 @@ public class StockPerformanceServlet extends HttpServlet {
 			}
 		}
 		String stockHistory = new Gson().toJson(list);
-		System.out.println(stockHistory);
+		
 		return stockHistory;
 	}
 	
@@ -694,7 +693,7 @@ public class StockPerformanceServlet extends HttpServlet {
         	f.setRoundingMode(RoundingMode.HALF_EVEN);
         	ArrayList<String> holder = portfolioValHistory.get(portfolioValHistory.size()-1);
         	Double val = Double.parseDouble(holder.get(1));
-        	System.out.println("Portfolio val: " + val);
+        	
         	session.setAttribute("portfolioVal", f.format(val));
         	
         	if (portfolioValHistory.size() > 1) {
@@ -703,8 +702,7 @@ public class StockPerformanceServlet extends HttpServlet {
 	        	Double prevVal = Double.parseDouble(prevHolder.get(1));
 	        	Double percentChange = (val - prevVal) / 100;
 	        	session.setAttribute("portfolioPercentage", f.format(percentChange));
-	        	System.out.println("Today's portfolio val: " + val);
-	        	System.out.println("Yesterday's portfolio val: " + prevVal);
+	        	
         	}        	
         }
 	
@@ -759,7 +757,7 @@ public class StockPerformanceServlet extends HttpServlet {
 		}
 		
 		portfolioJSON = new Gson().toJson(list);
-		System.out.println(portfolioJSON);
+		
 	}
 
 
@@ -883,12 +881,12 @@ public class StockPerformanceServlet extends HttpServlet {
 		//whether or not it should be shown on graph
 		stock.add("Yes");
 		String json = viewStock("^GSPC", "1", fromTime, toTime);
-		System.out.println("sp: " + json);
+		
 		//add to big array
 		stock.add(json);
 		myStocks.add(stock);
 		
-		System.out.println(ref.toString());
+		
 		
 		ref.addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override

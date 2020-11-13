@@ -1,2 +1,2 @@
-﻿Ticker,Number of Shares,Date Purchased (mm/dd/yyyy),Date Sold (mm/dd/yyyy)
-AMZN,0.5,2020-01-01,2020-10-10
+﻿Ticker,Number of Shares,Date Purchased (mm/dd/yy),Date Sold (mm/dd/yy)
+AMZN,0.5,1/1/20,10/10/20
