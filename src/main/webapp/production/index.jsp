@@ -469,20 +469,20 @@
 					<strong id="login_error" style="color:red; margin-left: 20%;"><%if(failedAdd != null){ %> <%= failedAdd%> <% } %></strong>
                     </ul>
 
-										<%-- select/deselect all buttons --%>
-										<div class="d-flex">
-											<form class="" action="/dashboard" method="post">
-												<input type="hidden" name="action" value="selectViewAll">
-												<button id="btn-manage-portfolio-select-all" class="btn btn-secondary" type="submit" name="">Select All</button>
-											</form>
-										</div>
+					<%-- select/deselect all buttons --%>
+					<div class="d-flex">
+						<form class="" action="/dashboard" method="post">
+							<input type="hidden" name="action" value="selectViewAll">
+							<button id="btn-manage-portfolio-select-all" class="btn btn-secondary" type="submit" name="">Select All</button>
+						</form>
+					</div>
 
-										<div class="d-flex">
-											<form class="d-flex" action="/dashboard" method="post">
-												<input type="hidden" name="action" value="deselectViewAll">
-												<button id="btn-manage-portfolio-deselect-all" class="btn btn-secondary" type="submit" name="">Deselect All</button>
-											</form>
-										</div>
+					<div class="d-flex">
+						<form class="d-flex" action="/dashboard" method="post">
+							<input type="hidden" name="action" value="deselectViewAll">
+							<button id="btn-manage-portfolio-deselect-all" class="btn btn-secondary" type="submit" name="">Deselect All</button>
+						</form>
+					</div>
 
                     <!-- Button trigger modal --><br><br>
                     <div class="addstockbutton">
@@ -739,13 +739,60 @@
 							 <form name="formname" action="/dashboard" method="POST">
 	                            <input type="hidden" name="action" value="showViewStock">
 	                            <input type="hidden" name="ticker" value="<%=view.get(i).get(0) %>">
-	                            <button id="btn-view-toggle<%=view.get(i).get(0) %>" style="text-align:left; display:inline; font-weight:bold;">Toggle on Graph</button>
+	                            <button id="btn-view-toggle<%=view.get(i).get(0) %>" class="addstockbutton" style="text-align:left; display:inline; font-weight:bold;">Toggle on Graph</button>
 	                         </form>
-                             <form name="formname" action="/dashboard" method="POST">
+                            <%--  <form name="formname" action="/dashboard" method="POST">
 	                            <input type="hidden" name="action" value="removeViewStock">
 	                            <input type="hidden" name="removeTicker" value="<%=view.get(i).get(0) %>">
 	                            <button id="btn-view-remove<%=view.get(i).get(0) %>" style="text-align:left; display:inline; font-weight:bold;">Remove</button>
 	                         </form>
+	                         
+	                         
+	                          --%>
+	                         <div style="display:inline; float: left; width: 15%;">
+	                            <button type="button" id="view-removeStockButton-<%=view.get(i).get(0)%>" class="addstockbutton" style="text-align:left; display:inline; font-weight:bold;" data-toggle="modal" data-target="#view-removeStockModal-<%=view.get(i).get(0)%>">Remove</button>
+	                            <!-- Modal for Remove Stock -->
+	                            <div class="modal fade" id="view-removeStockModal-<%=view.get(i).get(0)%>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	                              <div class="modal-dialog" role="document">
+	                                <div class="modal-content">
+	                                  <div class="modal-header">
+	                                    <h5 class="modal-title" id="exampleModalLabel">Are you sure you want to remove this stock?</h5>
+	                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                                      <span aria-hidden="true">&times;</span>
+	                                    </button>
+	                                  </div>
+	                                  <div class="modal-footer">
+	                                    <button type="button" id="btn-view-removeStockCancel" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+										<form name="formname" id="removeStock-<%=view.get(i).get(0)%>" action="/dashboard" method="POST">
+				                            <input type="hidden" name="action" value="removeViewStock">
+				                            <input type="hidden" name="removeTicker" value="<%=view.get(i).get(0) %>">
+				                            <button id="btn-view-removeStockConfirm" class="btn btn-danger" >Remove Stock</button>
+				                        </form>
+
+										<%-- <form class="" id="removeStock-<%=myStocks.get(i).get(0)%>" action="/dashboard" method="POST">
+											<input type="hidden" name="action" value="removeStock">
+											<input type="hidden" name="removeStockTicker" value="<%=myStocks.get(i).get(0) %>">
+											<button type="submit" class="btn btn-primary deletestock" data-dismiss="modal" id="stockremovebutton<%=myStocks.get(i).get(0)%>">Remove Stock</button>
+										</form> --%>
+
+										<%-- remove stock form --%>
+										<script type="text/javascript">
+
+											var form = document.getElementById("removeStock-<%=view.get(i).get(0)%>");
+											console.log(form);
+											document.getElementById("stockremovebutton<%=view.get(i).get(0)%>").addEventListener("click", function() {
+												form.submit();
+												console.log("called remove");
+											});
+										</script>
+	                                  </div>
+	                                </div>
+	                              </div>
+	                            </div>
+	                          </div>
+	                         
+	                         
+	                         
 	                         <form name="formname" action="/dashboard" method="POST">
 	                         	<input type="hidden" name="ticker" value=<%=view.get(i).get(0) %>>
 	                         	<input type="hidden" name="numOfShares" value=<%=view.get(i).get(2) %>>

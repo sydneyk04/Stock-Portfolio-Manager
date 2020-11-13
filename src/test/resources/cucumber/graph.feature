@@ -1,5 +1,39 @@
 Feature: Using the graph and other basic functionality on dashboard
 
+   Scenario: Select all stocks to view on graph
+  	Given I am logged in on the dashboard page
+  	When I click the selectall button
+  	Then I should see the portfolio performance on the graph and the total portfolio value
+
+  Scenario: Add to portfolio from view stock
+    Given I am logged in on the dashboard page
+   	When I click the view stock button
+    And I fill out correct stock info
+    And I click the Add to Portfolio button in view
+    Then I should see the stock in my portfolio
+    
+
+ Scenario: Different values show in different colors
+    Given I am logged in on the dashboard page
+    When I have more than two lines on the graph
+    Then I should see two different colored lines
+
+  Scenario: Click remove view stock but then cancel
+    Given I am logged in on the dashboard page
+   	When I click the view stock button
+    And I fill out correct stock info
+    And I click the remove stock button in view
+    And I click the cancel delete stock button in view
+    Then I should see the stock on the graph
+    
+  Scenario: Remove View Stock
+    Given I am logged in on the dashboard page
+   	When I click the view stock button
+    And I fill out correct stock info
+    And I click the remove stock button in view
+     And I click the delete stock button in view
+    Then The stock should be removed
+
  Scenario: Successfully selecting date range (1y)
     Given I am logged in on the dashboard page
     When I click the button to change the graph date range
@@ -28,10 +62,7 @@ Feature: Using the graph and other basic functionality on dashboard
   	And I click the date range confirm button
   	Then I should see an error message under calendar
   
-  Scenario: Different values show in different colors
-    Given I am logged in on the dashboard page
-    When I have more than two lines on the graph
-    Then I should see two different colored lines
+ 
 
   Scenario: Default time unit is 3 months
     Given I am logged in on the dashboard page
@@ -63,13 +94,6 @@ Feature: Using the graph and other basic functionality on dashboard
     And I fill out incorrect stock info
     Then I should see a view stock error
 
-  Scenario: Remove View Stock
-    Given I am logged in on the dashboard page
-   	When I click the view stock button
-    And I fill out correct stock info
-    And I click the remove stock button in view
-    Then The stock should be removed
-
   Scenario: Toggle View Stock
     Given I am logged in on the dashboard page
    	When I click the view stock button
@@ -83,12 +107,7 @@ Feature: Using the graph and other basic functionality on dashboard
     And I fill out some stock info
     Then I should be told to fill out all info
 
-  Scenario: Add to portfolio from view stock
-    Given I am logged in on the dashboard page
-   	When I click the view stock button
-    And I fill out correct stock info
-    And I click the Add to Portfolio button in view
-    Then I should see the stock in my portfolio
+
 
   Scenario: Add stock you already own to portfolio from view stock
     Given I am logged in on the dashboard page
@@ -102,10 +121,7 @@ Feature: Using the graph and other basic functionality on dashboard
    	When I click calculate in portfolio
     Then the portfolio value should go down
 
-  Scenario: Select all stocks to view on graph
-  	Given I am logged in on the dashboard page
-  	When I click the selectall button
-  	Then I should see the portfolio performance on the graph and the total portfolio value
+  
 
   Scenario: Deselect all stocks to view on graph
   	Given I am logged in on the dashboard page
