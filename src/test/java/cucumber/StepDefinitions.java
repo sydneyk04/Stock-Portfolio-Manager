@@ -953,8 +953,8 @@ public class StepDefinitions {
 			msg = element.getAttribute("innerHTML");
 		}
 		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
-		//assertTrue(msg, msg.contains("Please enter a valid date."));
-		assertTrue(msg != null);
+		boolean msgCheck = (msg.contains("Please enter a valid date.") || msg.contains("Date sold cannot be before date purchased."));
+		assertTrue(msgCheck);
 	}
 
 	@When("I choose a CSV file with malformed date")
