@@ -50,6 +50,7 @@ public class DashboardServletTest extends Mockito {
 
 	@Test
 	public void testDoGetHttpServletRequestHttpServletResponse() throws IOException, ServletException {
+		when(session.getAttribute("username")).thenReturn("test");
 		servlet.doGet(request, response);
 		assertTrue(true);
 	}
