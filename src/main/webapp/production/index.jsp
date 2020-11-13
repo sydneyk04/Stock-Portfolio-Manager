@@ -750,9 +750,9 @@
 	                         
 	                          --%>
 	                         <div style="display:inline; float: left; width: 15%;">
-	                            <button type="button" id="view-removeStockButton-<%=view.get(i).get(0)%>" class="addstockbutton" style="text-align:left; display:inline; font-weight:bold;" data-toggle="modal" data-target="#removeStockModal-<%=view.get(i).get(0)%>">Remove</button>
+	                            <button type="button" id="view-removeStockButton-<%=view.get(i).get(0)%>" class="addstockbutton" style="text-align:left; display:inline; font-weight:bold;" data-toggle="modal" data-target="#view-removeStockModal-<%=view.get(i).get(0)%>">Remove</button>
 	                            <!-- Modal for Remove Stock -->
-	                            <div class="modal fade" id="removeStockModal-<%=view.get(i).get(0)%>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	                            <div class="modal fade" id="view-removeStockModal-<%=view.get(i).get(0)%>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	                              <div class="modal-dialog" role="document">
 	                                <div class="modal-content">
 	                                  <div class="modal-header">
