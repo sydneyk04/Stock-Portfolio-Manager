@@ -1,4 +1,6 @@
-# Project Repo Information
+# Stock Portfolio Manager
+
+This project allows users to create and save a stock portfolio to track return over a specified time period given defined investment amount. 
 
 Import this repository into Eclipse. This project provides everything needed to:
 
